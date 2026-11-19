@@ -119,8 +119,8 @@
 
   /* ---------- THE IN-WORLD WEBSITE ---------- */
   .site { min-height: 100%; color: #000; font-family: "Times New Roman", Times, serif; font-size: 16px; padding: 10px 8px 24px;
-    background-color: #fffbe0;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='118' height='104'%3E%3Cg transform='rotate(-22 50 52)' opacity='.33'%3E%3Cpath d='M38 18h22v44q0 7 7 9l22 7q9 3 7 12q-2 7-10 7H42q-8 0-8-8z' fill='%23f6d6ae' stroke='%23888' stroke-width='3' stroke-linejoin='round'/%3E%3Cellipse cx='49' cy='18' rx='11' ry='5' fill='%23e36b6b' stroke='%23888' stroke-width='3'/%3E%3Cellipse cx='49' cy='18' rx='4' ry='2' fill='%23fff'/%3E%3C/g%3E%3C/svg%3E");
+    background-color: #ece6cf;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='118' height='104'%3E%3Cg transform='rotate(-22 50 52)' opacity='.14'%3E%3Cpath d='M38 18h22v44q0 7 7 9l22 7q9 3 7 12q-2 7-10 7H42q-8 0-8-8z' fill='%23f6d6ae' stroke='%23888' stroke-width='3' stroke-linejoin='round'/%3E%3Cellipse cx='49' cy='18' rx='11' ry='5' fill='%23e36b6b' stroke='%23888' stroke-width='3'/%3E%3Cellipse cx='49' cy='18' rx='4' ry='2' fill='%23fff'/%3E%3C/g%3E%3C/svg%3E");
   }
   .chunk { visibility: hidden; } .chunk.in { visibility: visible; }
   .site a { color: #00e; } .site a:visited { color: #551a8b; }
@@ -270,6 +270,15 @@
   .fp::before { content: ""; position: absolute; left: 0; top: -5px; width: 9px; height: 4px; background: radial-gradient(circle, rgba(150,90,60,.55) 1.2px, transparent 1.6px) 0 0 / 3px 4px; }
   .fp.r { transform: scaleX(-1); }
   @keyframes fpf { to { opacity: 0; } }
+  .viewport { position: relative; }
+  .viewport::after { content: ""; position: absolute; inset: 2px; pointer-events: none; background: radial-gradient(ellipse at 50% 45%, transparent 50%, rgba(40, 20, 0, .22)); }
+  .site .lead { font-size: 34px; }
+  .site .boxw { background: #f8f6ee; }
+  .site .count { color: #8b0000; letter-spacing: 2px; animation: dimflick 7s infinite; }
+  @keyframes dimflick { 0%, 91%, 100% { opacity: 1; } 92% { opacity: .35; } 93% { opacity: 1; } 95% { opacity: .6; } }
+  .bubble.flinch { transform: translate(2px, -1px) skewX(-6deg); filter: invert(1); }
+  .upd { text-align: center; }
+  .upd b.h { color: #000; }
   /* server error page */
   .errpage { padding: 20px 26px; font: 13px Verdana, Arial, sans-serif; color: #000; background: #fff; min-height: 100%; }
   .errpage h2 { font: bold 18px Verdana, Arial, sans-serif; margin: 0 0 4px; }
@@ -341,14 +350,14 @@
 <body>
 
 <!-- 1. BIOS -->
-<div id="bios" class="screen on">
+<div id="bios" class="screen">
   <div class="logo"><div class="gf">GF</div><small>Energy Saver</small></div>
   <div id="biostext"></div>
   <div class="foot">Press <span class="hi">DEL</span> to enter SETUP, <span class="hi">ESC</span> to skip memory test<br>12/21/01-i440BX-GF-2A69KC09C-00</div>
 </div>
 
 <!-- 2. SPLASH -->
-<div id="splash" class="screen">
+<div id="splash" class="screen on">
   <div class="brand">
     <div class="mark"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><i></i></div>
     <div class="name">Geigerfilms<sup>98</sup></div>
@@ -548,8 +557,7 @@ const DESK = [
   { label: 'WebSurfer', icon: 'globe', open: 'w-browser' },
   { label: 'todo.txt', icon: 'note', open: 'w-readme' },
   { label: 'REEL_01.MPG', icon: 'film', open: 'w-film' },
-  { label: 'feet_before.jpg', icon: 'img', err: 'C:\\My Documents\\feet_before.jpg<br><br>The file is corrupt and cannot be opened.' },
-  { label: 'members.xls', icon: 'note', err: 'members.xls is locked for editing by another user.' }
+  { label: 'feet_before.jpg', icon: 'img', err: 'C:\\My Documents\\feet_before.jpg<br><br>The file is corrupt and cannot be opened.' }
 ];
 const iconsEl = document.getElementById('icons');
 DESK.forEach(d => {
@@ -590,7 +598,7 @@ function openWin(id) {
     tasksEl.appendChild(t);
   }
   focusWin(w); closeStart();
-  if (id === 'w-browser' && !wasOpen) connectThenLoad();
+  if (id === 'w-browser' && !wasOpen) loadSite('home');
 }
 function closeWin(w) {
   w.classList.remove('open', 'active');
@@ -674,136 +682,62 @@ function clearTimers() { timers.forEach(t => { clearInterval(t); clearTimeout(t)
 
 const wave = s => s.split('').map((c, i) => c === ' ' ? '<span class="sp"></span>' : `<span style="transform:rotate(${i % 2 ? 4 : -4}deg) translateY(${i % 3 === 0 ? -2 : i % 3 === 1 ? 2 : 0}px)">${c}</span>`).join('');
 
-const RELEASE = new Date('2027-06-01T00:00:00');   // countdown target (the film's release)
-const RELEASE_LABEL = 'SUMMER 2027';
+/* In-world "now" is January 7th, 2002 at the visitor's current time of day.
+   The broadcast is midnight, January 8th, 2002, so the countdown is always under 24 hours. */
+function hoursLeft() {
+  const n = new Date(); const sinceMidnight = n.getHours() * 3600 + n.getMinutes() * 60 + n.getSeconds();
+  return 86400 - sinceMidnight;
+}
 
-const BROKEN = (alt, w = 160, h = 110) => `<span class="broken chunk" style="width:${w}px;height:${h}px"><i></i>${alt}</span>`;
+const NAV = [['home', 'Home'], ['about', 'About Mikey'], ['fall', 'The Fall'], ['why', 'Why Feet?'], ['faq', 'Questions'], ['poem', 'A Poem']];
 
-const NAV = [
-  ['h', 'MIKEY'], ['about', 'About Mikey'], ['fall', 'The Fall'], ['why', 'Why Feet?'],
-  ['h', 'THE BROADCAST'], ['broadcast', 'Countdown'], ['equipment', 'The Equipment'], ['videos', 'Video Archive'],
-  ['h', 'GET INVOLVED'], ['join', 'Join Today!'], ['members', 'Members Only'], ['contest', 'Name My Feet!'], ['guestbook', 'Sign The Guestbook'],
-  ['h', 'MISCELLANEOUS'], ['facts', 'Foot Facts'], ['poem', 'A Poem'], ['faq', 'F.A.Q.'], ['links', 'Links'], ['contact', 'Contact Mikey']
-];
-const PLAYER = (file = 'mikey_message.rm') => `<div class="player chunk">
-    <div class="ph"><span>StreamCast Player 6.0</span><span id="pfile">${file}</span></div>
+const PLAYER = `<div class="player chunk">
+    <div class="ph"><span>StreamCast Player 6.0</span><span id="pfile">mikey_message.rm</span></div>
     <div class="screenbox" id="scr"><div class="static"></div><div class="grain"></div>
       <div class="msg" id="scrmsg">Click PLAY to watch</div></div>
     <div class="pctl"><button id="pplay">&#9654;</button><button id="pstop">&#9632;</button><div class="seekbar"><i id="pseek"></i></div><div class="stat" id="pstat">Ready</div></div>
   </div>`;
-const COUNT = `<div class="boxw chunk"><h3>THE BROADCAST</h3>
-  <div class="count" id="cd">--- days --:--:--</div>
-  <div class="cdl">${RELEASE_LABEL}</div>
-  <div style="font:13px Verdana,Arial;margin:6px 0">People waiting right now: <b id="viewers" style="color:#e00">4,213</b></div></div>`;
-const THERMO = `<div class="boxw chunk"><h3>MIKEY'S LEGS FUND</h3>
-  <div class="thermo"><i id="therm" style="width:73%"></i><span id="thermtxt">$18,340 of $25,000</span></div>
-  <a class="bigbtn" data-act2="donate">DONATE</a><a class="bigbtn blk" data-nav="join">BECOME A MEMBER</a></div>`;
 
 const PAGES = {
   home: { title: null, body: () => `
-    <p class="lead chunk">This is the official homepage of Mikey and his feet.</p>
-    <p class="body16 chunk">For fifteen years my feet have gone everywhere I go. They have not taken one step. Not one. Soon, LIVE over the World Wide Web, the three of us are going to say goodbye. I am going to cut them off with a guillotine I built myself.</p>
-    <p class="body16 chunk">Please do not laugh and please do not call anybody. This is not a joke and it is not a freak show. This is a grown man taking his life back, one foot at a time.</p>
-    ${COUNT}
-    <p class="body16 chunk"><b>WATCH MIKEY'S MESSAGE</b></p>
-    ${PLAYER()}
-    <div class="upd chunk"><b class="h">UPDATE 12/29/01</b>
-      Thank you to everybody who has written in from 41 countries. A woman in Finland mailed me a pair of wool socks. I will not be needing socks, but I appreciate the thought and I have given them to my mother.<br><br>
-      To the people asking if the feet will be for sale: they are NOT for sale. Please stop asking.<br><br>
-      God bless. - Mikey</div>
-    ${THERMO}
-    <p class="tiny chunk"><span class="newblink">NEW!</span> Vote in the <a data-nav="contest">Name My Feet</a> contest. Voting closes soon!</p>` },
+    <p class="lead chunk">My name is Mikey.<br>Tomorrow I am going to cut off my feet.</p>
+    <p class="body16 chunk">For fifteen years they have gone everywhere I go. They have not taken one step. On January 8th, 2002, LIVE over the World Wide Web, I am going to remove them with a guillotine I built myself.</p>
+    <p class="body16 chunk">This is not a joke. It is not a freak show. The money from this site buys me a pair of legs that work.</p>
+    <div class="boxw chunk"><h3>THE BROADCAST BEGINS IN</h3>
+      <div class="count" id="cd">--:--:--</div>
+      <div class="cdl">JANUARY 8TH, 2002</div>
+      <div class="tiny" style="margin-top:6px">People waiting: <b id="viewers">4,213</b></div>
+      <a class="bigbtn" data-act2="live">ENTER THE BROADCAST</a></div>
+    <p class="body16 chunk"><b>A message from Mikey</b></p>
+    ${PLAYER}
+    <div class="boxw chunk"><h3>MIKEY'S LEGS FUND</h3>
+      <div class="thermo"><i style="width:99.6%"></i><span>$24,910 of $25,000</span></div></div>
+    <div class="upd chunk"><b class="h">UPDATE 01/07/02</b>Thank you for waiting with me. - Mikey</div>` },
 
   about: { title: 'About Mikey', body: () => `
-    <p class="body16 l chunk">My name is Michael Dunbar but everybody calls me Mikey. I am 34 years old. I live with my mother and two parakeets named Pete and Re-Pete.</p>
-    <p class="body16 l chunk">Things I like: swimming at the Y, computers, the Weather Channel, my mother's tuna casserole, and being honest.</p>
-    <p class="body16 l chunk">Things I do not like: stairs, insurance companies, people who stare at the grocery store, and my feet.</p>
-    ${BROKEN('mikey_and_mom.jpg', 200, 140)}` },
+    <p class="body16 l chunk">My name is Michael Dunbar. Everybody calls me Mikey. I am 34 years old and I live with my mother.</p>
+    <p class="body16 l chunk">I like swimming at the Y, computers, and being honest.</p>
+    <p class="body16 l chunk">I do not like stairs, insurance companies, or my feet.</p>` },
 
   fall: { title: 'The Fall', body: () => `
     <p class="body16 l chunk">On August 3rd, 1986, I was 19 years old and painting a billboard on Route 9 for a dentist. The billboard said WE CARE ABOUT YOUR SMILE.</p>
-    <p class="body16 l chunk">I was finishing the E in SMILE when the catwalk let go. I fell forty-one feet into a soybean field. I remember the sky was very blue. I remember thinking about the dentist.</p>
-    <p class="body16 l chunk">I broke my back. I have not felt my feet since. The dentist sent flowers. I still have the card.</p>` },
+    <p class="body16 l chunk">I was finishing the E in SMILE when the catwalk let go. I fell forty-one feet into a soybean field. I remember the sky was very blue.</p>
+    <p class="body16 l chunk">I broke my back. I have not felt my feet since.</p>` },
 
   why: { title: 'Why Feet?', body: () => `
-    <p class="body16 l chunk">People ask me, Mikey, why not keep them? They are not hurting anybody.</p>
-    <p class="body16 l chunk">Here is my answer. A prosthetic leg does not need a foot that does not work. My feet are in the way of my future. They are like a houseguest who will not leave and does not do the dishes.</p>
-    <p class="body16 l chunk">The insurance company will not pay for new legs. But YOU can. Every member and every dollar goes to a brand new pair of legs that walk.</p>
+    <p class="body16 l chunk">People ask me why I don't just keep them. They are not hurting anybody.</p>
+    <p class="body16 l chunk">A prosthetic leg does not need a foot that does not work. My feet are in the way of my future.</p>
+    <p class="body16 l chunk">The insurance company will not pay for new legs. You can.</p>
     <p class="body16 l chunk">I want to walk into the ocean one time. That is all.</p>` },
 
-  broadcast: { title: 'Countdown', body: () => `${COUNT}
-    <p class="body16 chunk">The broadcast will be LIVE on this website. Members get a guaranteed seat. Non-members may not be able to get in when the server is full.</p>
-    <a class="bigbtn chunk" data-act2="live">&#9679; ENTER THE BROADCAST ROOM</a>` },
-
-  equipment: { title: 'The Equipment', body: () => `
-    <p class="body16 chunk">Here is everything we will use on the big day. Photos coming soon!</p>
-    <div class="brokenrow">${BROKEN('guillotine_front.jpg')}${BROKEN('guillotine_side.jpg')}${BROKEN('blade_closeup.jpg')}</div>
-    <ul class="body16 l chunk eq">
-      <li>1 guillotine (homemade, solid oak, 7 feet tall)</li>
-      <li>1 blade (sharpened by hand, 31 hours total)</li>
-      <li>2 leg rests (padded, for comfort)</li>
-      <li>1 blue tarp</li>
-      <li>1 webcam (320x240, very clear)</li>
-      <li>1 Pentium II computer (400 MHz)</li>
-      <li>1 EMT (my cousin Darryl, certified 1994)</li>
-      <li>1 cooler</li>
-    </ul>` },
-
-  videos: { title: 'Video Archive', body: () => `
-    <p class="body16 chunk">Click a video to watch it. You may need the StreamCast Player.</p>
-    ${PLAYER('(no file selected)')}
-    <table class="vids chunk"><tr><th>File</th><th>Size</th><th>Added</th></tr>
-      <tr><td><a data-vid="mikey_message.rm">mikey_message.rm</a></td><td>2.3 MB</td><td>11/02/01</td></tr>
-      <tr><td><a data-vid="guillotine_test_1.mov">guillotine_test_1.mov</a></td><td>4.8 MB</td><td>11/19/01</td></tr>
-      <tr><td><a data-vid="guillotine_test_2.mov">guillotine_test_2.mov</a></td><td>5.1 MB</td><td>11/20/01</td></tr>
-      <tr><td><a data-vid="tour_of_my_feet.avi">tour_of_my_feet.avi</a></td><td>12.6 MB</td><td>12/04/01</td></tr>
-      <tr><td><a data-vid="reel_01.mpg">reel_01.mpg</a> <span class="newblink">NEW!</span></td><td>??? MB</td><td>--/--/--</td></tr>
-    </table>` },
-
-  join: { title: 'Join Today!', body: () => `
-    <p class="body16 chunk">Members get a guaranteed seat for the LIVE broadcast, access to the private chat room, and a personal thank you e-mail from Mikey.</p>
-    <table class="price chunk" style="margin:0 auto">
-      <tr><td><b>TOE CLUB</b></td><td>1 month</td><td><b>$9.95</b></td></tr>
-      <tr><td><b>ANKLE CLUB</b></td><td>3 months</td><td><b>$19.95</b></td></tr>
-      <tr><td><b>SOLE MEMBER</b></td><td>lifetime</td><td><b>$49.95</b> <span class="newblink">BEST DEAL!</span></td></tr></table>
-    <div class="boxw chunk"><div class="form98"><label>Name</label><input><label>E-mail</label><input><label>Membership</label><select><option>Toe Club - $9.95</option><option>Ankle Club - $19.95</option><option>Sole Member - $49.95</option></select><br><button data-act2="member">SIGN ME UP!</button></div></div>` },
-
-  members: { title: 'Members Only', body: () => `
-    <div class="boxw chunk"><h3>MEMBER LOGIN</h3><div class="form98"><label>Username</label><input><label>Password</label><input type="password"><br><button data-act2="login">ENTER</button></div></div>
-    <p class="tiny chunk">Forgot your password? E-mail the webmaster.</p>` },
-
-  contest: { title: 'Name My Feet!', body: () => `
-    <p class="body16 chunk">They have been with me 34 years and they never had names. Before they go, they deserve names. Vote for your favorite!</p>
-    <table class="vids chunk"><tr><th>Names</th><th>Votes</th><th></th></tr>
-      <tr><td>Lefty &amp; Righty</td><td>4,112</td><td><a data-act2="vote">vote</a></td></tr>
-      <tr><td>Lewis &amp; Clark</td><td>3,870</td><td><a data-act2="vote">vote</a></td></tr>
-      <tr><td>Salt &amp; Pepper</td><td>2,201</td><td><a data-act2="vote">vote</a></td></tr>
-      <tr><td>Thelma &amp; Louise</td><td>1,958</td><td><a data-act2="vote">vote</a></td></tr>
-      <tr><td>Pete &amp; Re-Pete (like the birds)</td><td>12</td><td><a data-act2="vote">vote</a></td></tr></table>
-    <p class="tiny chunk">One vote per person please. I can see your IP address.</p>` },
-
-  guestbook: { title: 'Guestbook', body: () => `
-    <div class="gb chunk">${[
-      ['Linda K.', 'Duluth, MN', '12/31/01', 'I prayed on it and I think you are very brave. My husband thinks you are crazy. We are both watching.'],
-      ['dr_steve', 'Tampa, FL', '12/30/01', 'As a podiatrist I have mixed feelings about this site.'],
-      ['B.G.', 'Ohio', '12/30/01', "I'll be watching. Can't wait to see how this one ends."],
-      ['xXNiGhTxHaWkXx', 'unknown', '12/29/01', 'first!!!!!!!!'],
-      ['Ruth', 'Finland', '12/28/01', 'Did you get the socks? Please write back.'],
-      ['anonymous', 'Route 9', '12/27/01', 'I drive past that billboard every day. It says something different now.'],
-      ['Gary', 'Lansing, MI', '12/26/01', 'Do you need a second EMT. I have a van.']
-    ].map(([n, l, d, m]) => `<div class="gbe"><b>${n}</b> <span>from ${l} &middot; ${d}</span><p>${m}</p></div>`).join('')}</div>
-    <div class="boxw chunk"><div class="form98"><label>Name</label><input><label>Where are you from?</label><input><label>Message</label><textarea rows="3"></textarea><br><button data-act2="sign">SIGN</button></div></div>
-    <div class="boxw chunk"><h3>CHAT ROOM <span style="float:right;font-weight:normal" id="chatn">213 users</span></h3>
-      <div class="chat" id="chat"></div><input class="chatin" id="chatin" placeholder="Type a message and press Enter..." maxlength="80"></div>` },
-
-  facts: { title: 'Foot Facts', body: () => `
-    <ol class="body16 l chunk eq">
-      <li>Each foot has 26 bones. That is 52 bones I do not use.</li>
-      <li>A quarter of all the bones in your body are in your feet.</li>
-      <li>The average person walks 115,000 miles in a lifetime. My feet have walked 0 miles since 1986.</li>
-      <li>Your feet have 250,000 sweat glands. Mine still work. I do not know why.</li>
-      <li>The right foot is usually bigger than the left. Mine are exactly the same. My mother measured.</li>
-    </ol>` },
+  faq: { title: 'Questions', body: () => `
+    <dl class="faq chunk">
+      <dt>Is this real?</dt><dd>Yes.</dd>
+      <dt>Won't it hurt?</dt><dd>I have not felt my feet since 1986.</dd>
+      <dt>Why a guillotine?</dt><dd>One motion. No going back.</dd>
+      <dt>Is this legal?</dt><dd>I am an adult and these are my feet.</dd>
+      <dt>What happens to them after?</dt><dd>They will be scattered on Route 9.</dd>
+    </dl>` },
 
   poem: { title: 'A Poem', body: () => `
     <div class="poem chunk">
@@ -811,73 +745,29 @@ const PAGES = {
       You were with me on the ladder.<br>
       You were with me when I fell.<br>
       You came along to every place<br>
-      And never helped me, well.<br><br>
-      I wash you every Sunday.<br>
-      I keep you warm in socks.<br>
-      But now it's time to say goodbye<br>
-      And put you in a box.<br><br>
-      Go on now, little travelers,<br>
+      and never helped me, well.<br><br>
+      Go on now, little travelers.<br>
       You've done what you could do.<br>
       I'll find another way to walk.<br>
       I'll think of you.<br><br>
-      <i>- Mikey, 11/30/01</i></div>` },
-
-  faq: { title: 'F.A.Q.', body: () => `
-    <dl class="faq chunk">
-      <dt>Is this real?</dt><dd>Yes.</dd>
-      <dt>Won't it hurt?</dt><dd>I have not felt my feet since 1986.</dd>
-      <dt>Why a guillotine?</dt><dd>It is the most honest way. One motion. No going back.</dd>
-      <dt>Is this legal?</dt><dd>I am an adult and these are my feet.</dd>
-      <dt>What happens to the feet after?</dt><dd>They will be cremated and scattered on Route 9.</dd>
-      <dt>Can I buy them?</dt><dd>No.</dd>
-      <dt>Does your mother know?</dt><dd>She is making sandwiches for the crew.</dd>
-    </dl>` },
-
-  links: { title: 'Links', body: () => `
-    <p class="body16 chunk">Here are some other sites I like:</p>
-    <ul class="body16 l chunk eq linklist">
-      <li><a data-act2="dead">Stumpy's Amputee Pen Pal Page</a></li>
-      <li><a data-act2="dead">The Unofficial Weather Channel Fan Site</a></li>
-      <li><a data-act2="dead">Parakeet Paradise</a></li>
-      <li><a data-act2="dead">Billboards of the Midwest (a photo archive)</a></li>
-      <li><a data-act2="dead">Dave's Prosthetics Review Corner</a></li>
-      <li><a data-act2="dead">Is It The End Of The World? (Y2K follow-up)</a></li>
-    </ul>` },
-
-  contact: { title: 'Contact Mikey', body: () => `
-    <p class="body16 chunk">Questions? Prayers? Want to sponsor the broadcast? I read every e-mail.</p>
-    <p class="body16 chunk">E-mail: <a data-act2="mail">mikey@cutoffmyfeet</a></p>
-    <p class="body16 chunk">Please no more socks.</p>` }
+      <i>- Mikey</i></div>` }
 };
 
 function SITE(key) {
   const pg = PAGES[key] || PAGES.home;
-  const nav = NAV.map(([k, l]) => k === 'h' ? `<a class="nh">${l}</a>` : `<a class="nb${k === key ? ' cur' : ''}" data-nav="${k}">${l}</a>`).join('');
-  const head = pg.title ? wave(pg.title.toUpperCase()) : wave('WELCOME! WELCOME!') + '<br>' + wave('WELCOME!');
+  const nav = `<a class="nh">MENU</a>` + NAV.map(([k, l]) => `<a class="nb${k === key ? ' cur' : ''}" data-nav="${k}">${l}</a>`).join('');
+  const head = pg.title ? wave(pg.title.toUpperCase()) : wave('CUT OFF MY FEET');
   return `<div class="site">
   <div class="top chunk"><a class="homebub" data-nav="home"><span>HOME</span></a><div class="bubble">${head}</div></div>
-  <div class="uc chunk"><span class="guy">&#9874;</span> THIS SITE IS UNDER CONSTRUCTION &middot; NOW IN PRODUCTION <span class="guy">&#9874;</span></div>
   <table class="lay"><tr><td class="navcol chunk">${nav}</td><td class="maincol">${pg.body()}
     <div class="ads chunk">
       <a class="ad ad-ammo" data-ad="1"><span class="bul"><i></i><i></i><i></i><i></i></span>AMMOWORLD<span class="flash">BULK DEALS<br>SHIPS TODAY!</span><span class="lbl">ad</span></a>
       <a class="ad ad-adult" data-ad="1"><span class="pic">adultwarehouse</span><span class="txt"><span class="t1">DVDs &bull; VIDEOS &bull; MORE</span><span class="t2">FREE GIFT WITH EVERY ORDER &bull; 18+</span></span><span class="lbl">ad</span></a>
-      <a class="ad ad-yours" data-nav="contact">WANT TO SEE YOUR AD HERE?</a>
     </div>
     <div class="chunk">
-      <p class="getplayers">* There is video on this site. To watch it, you need the StreamCast Player and a media player installed. Get them here:</p>
-      <div class="badges">
-        <div class="badge b-stream" data-act2="dl"><span class="ic"></span><span class="tx">Get<br>StreamCast<br><span style="font-weight:normal">Free Download</span></span></div>
-        <div class="badge b-media" data-act2="dl"><span class="free">FREE</span><span class="ic"></span><span class="tx">WebSurfer<br>Media Player</span></div>
-      </div>
-      <div class="pobox">Send donations to:<br>Mikey's Legs Fund<br>P.O. Box 0000<br>Anytown, USA</div>
-      <div class="awards">
-        <div class="award"><span class="cup">&#127942;</span>STRANGEST SITE<br>OF THE WEEK</div>
-        <div class="award b"><span class="cup">&#11088;</span>SURFERS' CHOICE<br>AWARD 2001</div>
-      </div>
-      <div class="webring">&lt;&lt; Prev | <b>Capstone WebRing</b> | Random | Next &gt;&gt;</div>
-      <p style="font:12px Verdana,Arial;margin-top:12px">You are visitor # <span class="hits">${visitorCount().split('').map(d => '<b>' + d + '</b>').join('')}</span> &nbsp; Last updated: 12/31/2001</p>
-      <p style="font:11px Verdana,Arial">Webmaster: Mikey &middot; This site is dedicated to my mother.</p>
-      <div class="disclaimer">CutOffMyFeet is a fictional website created for <b>CUT OFF MY FEET</b>, a capstone short film by Bradley Geiger &middot; A Geigerfilms production &middot; Coming ${RELEASE_LABEL.toLowerCase().replace(/^\w/, c => c.toUpperCase())}.<br>No donations or memberships are collected. All people and advertisers are fictional.</div>
+      <p style="font:12px Verdana,Arial;margin-top:16px">You are visitor # <span class="hits" id="hits">${visitorCount().split('').map(d => '<b>' + d + '</b>').join('')}</span></p>
+      <p style="font:11px Verdana,Arial;color:#555">Last updated: 01/07/2002</p>
+      <div class="disclaimer">CutOffMyFeet is a fictional website created for <b>CUT OFF MY FEET</b>, a capstone short film by Bradley Geiger &middot; A Geigerfilms production &middot; Coming Summer 2027.<br>No donations or memberships are collected. All people and advertisers are fictional.</div>
     </div>
   </td></tr></table></div>`;
 }
@@ -934,7 +824,6 @@ function wireSite() {
   page.querySelectorAll('[data-ad]').forEach(a => a.addEventListener('click', () => msgbox('This advertiser has been removed from our site.', { title: 'WebSurfer', kind: 'info' })));
   const pp = document.getElementById('pplay'); if (pp) { pp.addEventListener('click', () => playVideo()); document.getElementById('pstop').addEventListener('click', stopPlayer); }
   page.querySelectorAll('[data-vid]').forEach(a => a.addEventListener('click', () => playVideo(a.dataset.vid)));
-  page.onmousemove = footTrail;
   const inp = document.getElementById('chatin');
   if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter' && inp.value.trim()) { chatLine('<span class="u">&lt;guest' + (Math.random() * 900 + 100 | 0) + '&gt;</span> ' + inp.value.replace(/[<>&]/g, '')); inp.value = ''; later(() => chatLine('<span class="sys">*** Message not sent: server busy</span>'), 900); } });
 }
@@ -948,40 +837,30 @@ function crash() {
   later(() => { document.getElementById('page').innerHTML = ERRPAGE; w.classList.remove('loading'); st.textContent = 'Cannot find server or DNS Error'; setProgress(0); play('error'); }, 2600);
 }
 
-/* live elements: countdown, viewers, chat */
-const CHAT = [
-  ['sys', '*** Mikey is away'], ['ruth_fi', 'hello from finland'], ['danny_boy77', 'a/s/l?'], ['linda_k', 'is mikey here tonight'],
-  ['xXNiGhTxHaWkXx', 'is it today??'], ['gary_lansing', 'not today'], ['danny_boy77', 'what happens to the feet after'],
-  ['linda_k', 'read the faq'], ['ruth_fi', 'did he get the socks'], ['skate_or_die', 'my computer is slow can someone tell me if it started'],
-  ['gary_lansing', 'it has not started'], ['moonchild', 'i had a dream about this website'], ['dr_steve', 'evening all'],
-  ['xXNiGhTxHaWkXx', 'lefty and righty forever'], ['moonchild', 'in the dream the billboard was blank'], ['sys', '*** skate_or_die has left (Ping timeout)'],
-  ['linda_k', 'god bless you mikey'], ['danny_boy77', 'brb mom needs the phone'], ['sys', '*** danny_boy77 has left (Connection reset by peer)'],
-  ['ruth_fi', 'i will wait'], ['dr_steve', 'see you all on the day']
-];
-let ci = 0;
-function chatLine(html) {
-  const c = document.getElementById('chat'); if (!c) return;
-  const p = document.createElement('p'); p.innerHTML = html; c.appendChild(p);
-  while (c.children.length > 14) c.removeChild(c.firstChild);
-}
+/* live elements */
+function chatLine() {}
 function startLive() {
   const cd = () => {
     const el = document.getElementById('cd'); if (!el) return;
-    let s = Math.max(0, (RELEASE - Date.now()) / 1000 | 0);
-    const d = s / 86400 | 0; s %= 86400; const h = s / 3600 | 0, m = (s % 3600) / 60 | 0; s %= 60;
-    el.textContent = `${d} days ` + [h, m, s].map(v => String(v).padStart(2, '0')).join(':');
+    let s = hoursLeft(); const h = s / 3600 | 0, m = (s % 3600) / 60 | 0; s %= 60;
+    el.textContent = [h, m, s].map(v => String(v).padStart(2, '0')).join(':');
   };
   cd(); every(cd, 1000);
-  let v = 4213; every(() => { const el = document.getElementById('viewers'); if (!el) return; v += Math.random() * 40 - 8 | 0; el.textContent = v.toLocaleString('en-US'); }, 1700);
-  let u = 213; every(() => { const n = document.getElementById('chatn'); if (!n) return; u += Math.random() * 6 - 3 | 0; n.textContent = u + ' users'; }, 2300);
-  let raised = 18340; every(() => { raised += Math.random() < .5 ? 0 : (Math.random() * 3 + 1 | 0) * 5; const p = Math.min(99, raised / 250); const t = document.getElementById('therm'); if (!t) return; t.style.width = p + '%'; document.getElementById('thermtxt').textContent = '$' + raised.toLocaleString('en-US') + ' of $25,000'; }, 2600);
-  if (document.getElementById('chat')) {
-    const nextChat = () => { const [n, m] = CHAT[ci++ % CHAT.length]; chatLine(n === 'sys' ? `<span class="sys">${m}</span>` : `<span class="u">&lt;${n}&gt;</span> ${m}`); later(nextChat, 1500 + Math.random() * 3000); };
-    chatLine('<span class="sys">*** You have joined #cutoffmyfeet</span>'); later(nextChat, 800);
-  }
+  let v = 4213; every(() => { const el = document.getElementById('viewers'); if (!el) return; v += Math.random() * 30 - 4 | 0; el.textContent = v.toLocaleString('en-US'); }, 2100);
+  // the visitor counter keeps climbing while you sit there
+  let hits = parseInt(document.getElementById('hits')?.textContent || '0', 10);
+  const bump = () => { const el = document.getElementById('hits'); if (!el) return; hits += 1; el.innerHTML = String(hits).padStart(7, '0').split('').map(d => '<b>' + d + '</b>').join(''); later(bump, 3000 + Math.random() * 7000); };
+  later(bump, 4000);
+  // the page never quite finishes loading
+  const st = document.getElementById('bstatus');
+  st.textContent = '(1 item remaining) Waiting for http://live.cutoffmyfeet.net/cam.jpg...';
+  setProgress(.93);
+  // every so often, the heading flinches
+  const flinch = () => { const b = document.querySelector('#page .bubble'); if (b) { b.classList.add('flinch'); later(() => b.classList.remove('flinch'), 140); } later(flinch, 9000 + Math.random() * 14000); };
+  later(flinch, 6000);
 }
 
-/* videos: none exist yet, so every one of them fails to load (in character) */
+/* there are no videos yet, so the message never loads (in character) */
 let pTimers = [];
 function stopPlayer() {
   pTimers.forEach(clearTimeout); pTimers = [];
@@ -990,31 +869,18 @@ function stopPlayer() {
   document.getElementById('scrmsg').textContent = 'Click PLAY to watch';
   document.getElementById('pseek').style.width = '0'; document.getElementById('pstat').textContent = 'Stopped';
 }
-function playVideo(file) {
+function playVideo() {
   stopPlayer();
-  const f = document.getElementById('pfile'); if (file) f.textContent = file; else file = f.textContent;
-  if (file.startsWith('(')) { file = 'mikey_message.rm'; f.textContent = file; }
+  const file = document.getElementById('pfile').textContent;
   const s = document.getElementById('scr'), msg = document.getElementById('scrmsg'), stat = document.getElementById('pstat'), seek = document.getElementById('pseek');
   const T = (fn, ms) => pTimers.push(setTimeout(fn, ms));
   stat.textContent = 'Contacting...'; msg.textContent = 'Contacting host...';
-  T(() => { msg.textContent = 'Connecting to stream.cutoffmyfeet.net...'; }, 800);
-  [4, 11, 19, 23, 23, 23].forEach((p, i) => T(() => { stat.textContent = 'Buffering ' + p + '%'; msg.textContent = 'Buffering... ' + p + '%'; seek.style.width = p / 4 + '%'; }, 1600 + i * 600));
+  [4, 11, 19, 23, 23, 23].forEach((p, i) => T(() => { stat.textContent = 'Buffering ' + p + '%'; msg.textContent = 'Buffering... ' + p + '%'; seek.style.width = p / 4 + '%'; }, 1000 + i * 600));
   T(() => {
     s.classList.add('err'); stat.textContent = 'Error'; seek.style.width = '0';
-    msg.innerHTML = `ERROR 0x80040265<br><br>${file}<br>could not be loaded.<br><br>The file is not available yet.<br>Please try again later.`;
+    msg.innerHTML = `${file}<br>could not be loaded.<br><br>The file is not available yet.`;
     play('error');
-  }, 1600 + 6 * 600 + 400);
-}
-
-/* little footprints follow the mouse around the site */
-let lastFp = 0, fpSide = 0;
-function footTrail(e) {
-  const now = Date.now(); if (now - lastFp < 90) return; lastFp = now;
-  const site = document.querySelector('#page .site'); if (!site) return;
-  const r = site.getBoundingClientRect();
-  const fp = document.createElement('span'); fp.className = 'fp' + (fpSide++ % 2 ? ' r' : '');
-  fp.style.left = (e.clientX - r.left + (fpSide % 2 ? 6 : -6)) + 'px'; fp.style.top = (e.clientY - r.top + 8) + 'px';
-  site.appendChild(fp); setTimeout(() => fp.remove(), 1300);
+  }, 1000 + 6 * 600 + 400);
 }
 
 /* ================= BOOT ================= */
@@ -1060,7 +926,7 @@ async function splash() {
   await sleep(700); document.body.style.cursor = '';
   openWin('w-browser');
 }
-async function boot() { await sleep(300); await bios(); await splash(); }
+async function boot() { await splash(); }
 
 /* Browsers block sound until the visitor clicks or presses a key.
    play2() remembers the last sound that was blocked and plays it on the first interaction if it's still relevant. */
