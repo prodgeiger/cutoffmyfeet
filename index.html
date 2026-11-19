@@ -20,15 +20,6 @@
   .screen.on { display: block; }
   u { text-decoration: underline; }
 
-  /* ---------- POWER ---------- */
-  #power { background: #000; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 18px; cursor: pointer; }
-  #power.on { display: flex; }
-  #power .btn-power { width: 72px; height: 72px; border-radius: 50%; border: 3px solid #333; display: grid; place-items: center; background: radial-gradient(circle at 40% 35%, #2a2a2a, #0d0d0d); box-shadow: 0 0 0 4px #111; transition: .2s; }
-  #power .btn-power svg { width: 34px; height: 34px; }
-  #power:hover .btn-power { border-color: #4a4; box-shadow: 0 0 18px #2f2; }
-  #power p { color: #555; font-family: "Courier New", monospace; font-size: 13px; letter-spacing: 2px; margin: 0; text-transform: uppercase; }
-  #power .hint { font-size: 11px; color: #333; letter-spacing: 1px; text-transform: none; }
-  #power .led { width: 6px; height: 6px; border-radius: 50%; background: #300; }
 
   /* ---------- BIOS ---------- */
   #bios { background: #000; color: #aaa; font-family: "Courier New", Courier, monospace; font-size: 15px; line-height: 1.35; padding: 24px 28px; white-space: pre-wrap; }
@@ -56,6 +47,11 @@
 
   /* ---------- DESKTOP ---------- */
   #desktop { background: var(--desk); }
+  #wallpaper { position: absolute; inset: 0 0 30px 0; display: flex; flex-direction: column; align-items: flex-end; justify-content: flex-end; padding: 0 36px 40px 0; gap: 10px; pointer-events: none; opacity: .5; }
+  .wmark { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 110px; height: 110px; }
+  .wmark span { background: #004848; } .wmark span:nth-child(odd) { background: #6fb3b3; } .wmark i { border: 3px dashed #6fb3b3; }
+  .wname { font: italic 900 44px "Arial Black", Arial, sans-serif; color: #6fb3b3; letter-spacing: -1px; }
+  .wname sup { font-size: 24px; }
   #icons { position: absolute; top: 8px; left: 6px; bottom: 36px; display: flex; flex-direction: column; flex-wrap: wrap; align-content: flex-start; gap: 6px; }
   .icon { width: 76px; padding: 4px 2px; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #fff; text-align: center; cursor: default; }
   .icon svg { width: 32px; height: 32px; }
@@ -105,37 +101,96 @@
   .progress i { width: 7px; background: var(--navy); }
 
   /* ---------- THE IN-WORLD WEBSITE ---------- */
-  .site { min-height: 100%; background: #ffeb00; color: #000; font-family: "Times New Roman", Times, serif; font-size: 15px; padding: 10px 10px 24px; }
-  .site .wrap { max-width: 640px; margin: 0 auto; }
-  .chunk { visibility: hidden; }
-  .chunk.in { visibility: visible; }
+  .site { min-height: 100%; color: #000; font-family: "Times New Roman", Times, serif; font-size: 16px; padding: 10px 8px 24px;
+    background-color: #fffbe0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='118' height='104'%3E%3Cg transform='rotate(-22 50 52)' opacity='.33'%3E%3Cpath d='M38 18h22v44q0 7 7 9l22 7q9 3 7 12q-2 7-10 7H42q-8 0-8-8z' fill='%23f6d6ae' stroke='%23888' stroke-width='3' stroke-linejoin='round'/%3E%3Cellipse cx='49' cy='18' rx='11' ry='5' fill='%23e36b6b' stroke='%23888' stroke-width='3'/%3E%3Cellipse cx='49' cy='18' rx='4' ry='2' fill='%23fff'/%3E%3C/g%3E%3C/svg%3E");
+  }
+  .chunk { visibility: hidden; } .chunk.in { visibility: visible; }
   .site a { color: #00e; } .site a:visited { color: #551a8b; }
-  .ad { display: block; height: 60px; max-width: 468px; margin: 0 auto 8px; border: 2px solid #000; overflow: hidden; position: relative; font-family: Impact, "Arial Black", sans-serif; text-decoration: none !important; cursor: pointer; }
-  .ad .lbl { position: absolute; right: 2px; bottom: 1px; font: 9px Arial, sans-serif; color: inherit; opacity: .8; }
-  .site a.ad-ammo { background: repeating-linear-gradient(-45deg, #2b3a14 0 12px, #33451a 12px 24px); color: #fc0; display: flex; align-items: center; justify-content: space-around; font-size: 24px; letter-spacing: 1px; }
-  .ad-ammo b { color: #fff; font-size: 15px; font-family: Arial, sans-serif; animation: blink .8s steps(1) infinite; }
-  .site a.ad-adult { background: #000; color: #f0c; display: flex; align-items: center; justify-content: space-around; font-size: 22px; }
-  .ad-adult b { font-family: Arial, sans-serif; font-size: 12px; color: #fff; border: 1px solid #fff; padding: 2px 6px; }
-  .logo { text-align: center; margin: 6px 0 2px; }
-  .logo h1 { margin: 0; font: 900 46px/1 "Arial Black", Impact, sans-serif; letter-spacing: -2px; color: #000; text-shadow: 3px 3px 0 #e00; }
-  .logo h1 span { color: #e00; text-shadow: 3px 3px 0 #000; }
-  .logo .tag { font: bold 13px Verdana, Arial, sans-serif; letter-spacing: 2px; margin-top: 4px; }
-  .navrow { text-align: center; font: bold 12px Verdana, Arial, sans-serif; margin: 8px 0; }
-  .navrow a { margin: 0 4px; }
+  .site .top { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 8px; }
+  .homebub { display: grid; place-items: center; width: 108px; height: 70px; border-radius: 50%; background: #fff; border: 3px solid #000; transform: rotate(-12deg); box-shadow: 4px 4px 0 #000; cursor: pointer; text-decoration: none !important; flex-shrink: 0; }
+  .homebub span { font: 900 22px "Arial Black", Arial, sans-serif; color: #fff; -webkit-text-stroke: 1.5px #000; text-shadow: 2px 2px 0 #000; letter-spacing: 1px; }
+  .bubble { text-align: center; line-height: 1.05; }
+  .bubble span { display: inline-block; font: 900 40px "Arial Black", "Comic Sans MS", Impact, sans-serif; color: #fff; -webkit-text-stroke: 2px #000; text-shadow: 3px 3px 0 #000, 4px 4px 0 #999; }
+  .bubble span.sp { width: .35em; }
+  table.lay { border-collapse: collapse; margin: 0 auto; max-width: 860px; width: 100%; }
+  td.navcol { width: 170px; vertical-align: top; padding-right: 14px; }
+  td.maincol { vertical-align: top; text-align: center; }
+  .nh, .nb { display: block; width: 168px; margin: 3px 0; padding: 7px 4px; text-align: center; font: bold 12px Arial, Helvetica, sans-serif; color: #fff !important; text-decoration: none !important; text-transform: uppercase; letter-spacing: .3px; cursor: pointer; border: 2px solid; }
+  .nb { background: linear-gradient(#ff4a4a, #e00000 55%, #b00000); border-color: #ff9a9a #6a0000 #6a0000 #ff9a9a; text-shadow: 1px 1px #600; }
+  .nh { background: linear-gradient(#3b5bff, #0010e0 55%, #000aa0); border-color: #9aa8ff #000060 #000060 #9aa8ff; font-style: italic; margin-top: 18px; text-shadow: 1px 1px #003; }
+  .nh:first-child { margin-top: 0; }
+  .nb:hover { background: linear-gradient(#ff6a6a, #ff1010 55%, #c00000); }
+  .nb.cur { background: linear-gradient(#ffd23a, #e0a000 55%, #a07000); border-color: #ffe9a0 #604000 #604000 #ffe9a0; color: #000 !important; text-shadow: none; }
+  .lead { font-weight: bold; font-size: 30px; line-height: 1.25; margin: 4px 0 12px; }
+  .body16 { font-size: 21px; line-height: 1.35; margin: 0 auto 12px; max-width: 640px; }
+  .body16.l { text-align: left; }
+  .pgtitle { font: 900 28px "Arial Black", Arial, sans-serif; color: #e00; text-shadow: 2px 2px 0 #000; margin: 4px 0 10px; text-transform: uppercase; }
+  .photo { display: inline-block; background: #fff; padding: 6px 6px 4px; border: 1px solid #999; box-shadow: 3px 3px 0 rgba(0,0,0,.25); margin: 6px auto; }
+  .photo svg { display: block; width: 300px; max-width: 100%; height: auto; }
+  .photo .capt { font: italic 13px "Times New Roman", serif; margin-top: 4px; max-width: 300px; }
+  .quote { font: italic bold 18px "Times New Roman", serif; margin: 14px auto; }
+  .upd { text-align: left; max-width: 620px; margin: 12px auto; background: #fff; border: 2px solid #000; padding: 10px 14px; font-size: 16px; }
+  .upd b.h { font: bold 15px Arial, sans-serif; display: block; margin-top: 8px; }
+  .upd b.h.good { color: #070; } .upd b.h.bad { color: #c00; }
+  .boxw { background: #fff; border: 2px solid #000; padding: 10px; max-width: 620px; margin: 12px auto; text-align: center; }
+  .boxw h3 { margin: 0 0 6px; font: bold 15px Arial, sans-serif; background: #000; color: #fff; padding: 4px; }
+  .faq { text-align: left; max-width: 620px; margin: 0 auto; }
+  .faq dt { font: bold 17px Arial, sans-serif; color: #c00; margin-top: 12px; }
+  .faq dd { margin: 3px 0 0 18px; font-size: 18px; }
+  .form98 { text-align: left; display: inline-block; font: 14px Arial, sans-serif; }
+  .form98 label { display: block; margin: 6px 0 2px; }
+  .form98 input, .form98 select, .form98 textarea { font: 14px Arial, sans-serif; width: 260px; max-width: 100%; }
+  .form98 button { margin-top: 8px; font: bold 13px Arial, sans-serif; }
+  .price td { border: 1px solid #000; padding: 4px 10px; font: 14px Arial, sans-serif; background: #fff; }
+  /* ads (fictional advertisers from the script) */
+  .ads { display: flex; flex-direction: column; align-items: center; gap: 14px; margin: 24px 0 10px; }
+  .ad { display: block; width: 468px; max-width: 100%; height: 60px; overflow: hidden; position: relative; cursor: pointer; text-decoration: none !important; border: 1px solid #000; }
+  .site a.ad-ammo { background: repeating-linear-gradient(-45deg, #2b3a14 0 12px, #36481b 12px 24px); color: #fc0; display: flex; align-items: center; gap: 12px; padding: 0 10px; font: 26px Impact, "Arial Black", sans-serif; }
+  .ad-ammo .bul { display: flex; gap: 3px; }
+  .ad-ammo .bul i { width: 9px; height: 30px; background: linear-gradient(#e8b04a, #b8862b); border-radius: 5px 5px 1px 1px; box-shadow: inset -2px 0 rgba(0,0,0,.3); }
+  .ad-ammo .flash { margin-left: auto; font: bold 14px Arial, sans-serif; color: #fff; text-align: center; animation: adflip 1.6s steps(1) infinite; }
+  @keyframes adflip { 50% { color: #f30; } }
+  .site a.ad-adult { background: linear-gradient(#cfe0ff, #8fb0e8); display: flex; color: #000; }
+  .ad-adult .pic { width: 110px; background: linear-gradient(135deg, #d7a07a, #7b4b33); display: grid; place-items: end center; color: #fff; font: bold 10px Arial, sans-serif; padding-bottom: 3px; }
+  .ad-adult .txt { flex: 1; display: flex; flex-direction: column; }
+  .ad-adult .t1 { flex: 1; display: grid; place-items: center; font: 900 24px "Arial Black", Arial, sans-serif; letter-spacing: 1px; background: linear-gradient(90deg, #00a, #a0a, #e40); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ad-adult .t2 { background: #00f; color: #fff; text-align: center; font: bold 13px Arial, sans-serif; padding: 3px; animation: adflip2 1.2s steps(1) infinite; }
+  @keyframes adflip2 { 50% { background: #e00; } }
+  .site a.ad-yours { background: linear-gradient(#5aa86a, #1d5a2a); color: #f22; display: grid; place-items: center; font: 26px "Times New Roman", serif; text-shadow: 1px 1px 0 #000; box-shadow: inset 3px 3px 0 #8fd39d, inset -3px -3px 0 #0e3016; width: 400px; }
+  .ad .lbl { position: absolute; right: 3px; bottom: 1px; font: 8px Arial, sans-serif; color: #fff; opacity: .7; }
+  .getplayers { font: 14px "Times New Roman", serif; max-width: 560px; margin: 16px auto 6px; }
+  .badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 8px; }
+  .badge { width: 88px; height: 31px; border: 1px solid #000; display: flex; align-items: center; gap: 3px; padding: 2px 3px; cursor: pointer; overflow: hidden; }
+  .badge .ic { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; }
+  .badge .tx { font: bold 9px/1.05 Arial, sans-serif; text-align: left; }
+  .b-stream { background: linear-gradient(#fff, #c8c8c8); color: #000; }
+  .b-stream .ic { background: radial-gradient(circle at 35% 35%, #9ff, #08a 60%, #035); box-shadow: inset 0 0 0 2px #fff; }
+  .b-media { background: linear-gradient(#456, #123); color: #fff; }
+  .b-media .ic { border-radius: 3px; background: linear-gradient(135deg, #f60 50%, #fc0 50%); }
+  .b-media .free { writing-mode: vertical-rl; transform: rotate(180deg); background: #3a3; font: bold 8px Arial; padding: 0 1px; height: 100%; display: grid; place-items: center; margin: -2px 0 -2px -3px; }
+  .awards { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 14px; }
+  .award { width: 110px; padding: 4px; border: 2px ridge #c90; background: #000; color: #fc0; font: bold 10px Arial, sans-serif; text-align: center; }
+  .award .cup { font-size: 22px; display: block; }
+  .award.b { background: #fff; color: #00a; border-color: #00a; }
+  .pobox { font: bold 15px "Times New Roman", serif; margin-top: 14px; }
+  .hits { display: inline-flex; gap: 1px; background: #000; padding: 2px; vertical-align: middle; }
+  .hits b { font: 15px "Courier New", monospace; color: #0f0; background: #030; width: 12px; text-align: center; }
+  .disclaimer { margin: 18px auto 0; max-width: 620px; font: 11px Verdana, Arial, sans-serif; text-align: center; color: #333; border-top: 1px solid #000; padding-top: 8px; }
   /* player */
-  .player { margin: 10px auto; width: 100%; max-width: 400px; background: #c0c0c0; border: 2px outset #fff; padding: 3px; font-family: var(--ui-font); font-size: 11px; }
+  .player { margin: 10px auto; width: 100%; max-width: 360px; background: #c0c0c0; border: 2px outset #fff; padding: 3px; font-family: var(--ui-font); font-size: 11px; text-align: left; }
   .player .ph { background: linear-gradient(90deg, #333, #666); color: #fff; padding: 2px 4px; font-weight: bold; display: flex; justify-content: space-between; }
   .screenbox { position: relative; aspect-ratio: 4 / 3; background: #000; overflow: hidden; border: 2px inset #fff; }
   .screenbox .scene { position: absolute; inset: 0; background:
       radial-gradient(ellipse 22% 30% at 50% 42%, #6b5640 0 60%, transparent 62%),
       radial-gradient(ellipse 34% 40% at 50% 92%, #2b3340 0 70%, transparent 72%),
-      linear-gradient(#3a3226 0 60%, #262019 60%); filter: blur(1.5px) contrast(1.2); image-rendering: pixelated; opacity: 0; transition: opacity .6s; }
+      linear-gradient(#3a3226 0 60%, #262019 60%); filter: blur(1.5px) contrast(1.2); opacity: 0; transition: opacity .6s; }
   .screenbox.playing .scene { opacity: 1; animation: jitter .18s steps(2) infinite; }
   @keyframes jitter { 50% { transform: translate(1px, -1px) scale(1.01); } }
   .screenbox .grain { position: absolute; inset: 0; opacity: .18; background: repeating-linear-gradient(0deg, #000 0 2px, transparent 2px 4px); pointer-events: none; }
   .screenbox .blocks { position: absolute; inset: 0; background-image: linear-gradient(90deg, rgba(255,255,255,.05) 50%, transparent 50%), linear-gradient(rgba(0,0,0,.08) 50%, transparent 50%); background-size: 16px 16px; pointer-events: none; }
-  .screenbox .msg { position: absolute; inset: 0; display: grid; place-items: center; color: #ccc; font: 12px "Courier New", monospace; text-align: center; }
-  .screenbox .cap { position: absolute; left: 6px; right: 6px; bottom: 8px; text-align: center; color: #ff0; font: bold 13px Arial, sans-serif; text-shadow: 1px 1px 0 #000, -1px -1px 0 #000; min-height: 1em; }
+  .screenbox .msg { position: absolute; inset: 0; display: grid; place-items: center; color: #ccc; font: 12px "Courier New", monospace; text-align: center; padding: 10px; }
+  .screenbox .cap { position: absolute; left: 6px; right: 6px; bottom: 8px; text-align: center; color: #ff0; font: bold 13px Arial, sans-serif; text-shadow: 1px 1px 0 #000, -1px -1px 0 #000; }
   .screenbox .rec { position: absolute; top: 6px; left: 8px; color: #f33; font: bold 11px "Courier New", monospace; display: none; }
   .screenbox.playing .rec { display: block; }
   .screenbox .handcover { position: absolute; inset: 0; background: radial-gradient(circle at 50% 60%, #4a2d22, #120806 70%); opacity: 0; transition: opacity .25s; }
@@ -146,31 +201,31 @@
   .pctl .seekbar { flex: 1; height: 8px; border: 1px inset #fff; background: #fff; position: relative; }
   .pctl .seekbar i { position: absolute; left: 0; top: 0; bottom: 0; background: #00a; width: 0; }
   .pctl .stat { width: 92px; text-align: right; white-space: nowrap; }
-  /* panels */
-  .boxrow { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
-  .box { flex: 1 1 280px; background: #fff; border: 3px double #000; padding: 8px 10px; }
-  .box h3 { margin: 0 0 6px; font: bold 14px Verdana, Arial, sans-serif; background: #000; color: #ffeb00; padding: 3px 6px; }
-  .count { font: bold 26px "Courier New", monospace; color: #e00; text-align: center; letter-spacing: 1px; }
-  .count small { display: block; font: 10px Verdana, Arial, sans-serif; color: #000; letter-spacing: 0; }
-  .thermo { height: 22px; border: 2px inset #999; background: #eee; position: relative; margin: 6px 0; }
+  .count { font: bold 30px "Courier New", monospace; color: #e00; }
+  .thermo { height: 24px; border: 2px inset #999; background: #eee; position: relative; margin: 6px 0; }
   .thermo i { position: absolute; left: 0; top: 0; bottom: 0; background: repeating-linear-gradient(90deg, #e00 0 6px, #c00 6px 8px); }
-  .thermo span { position: absolute; inset: 0; display: grid; place-items: center; font: bold 11px Verdana, Arial, sans-serif; color: #000; text-shadow: 0 0 2px #fff; }
-  .bigbtn { display: inline-block; margin: 4px 2px; padding: 5px 10px; font: bold 12px Verdana, Arial, sans-serif; background: #e00; color: #fff !important; border: 3px outset #f66; text-decoration: none; cursor: pointer; }
+  .thermo span { position: absolute; inset: 0; display: grid; place-items: center; font: bold 12px Verdana, Arial, sans-serif; text-shadow: 0 0 2px #fff; }
+  .bigbtn { display: inline-block; margin: 4px 2px; padding: 6px 12px; font: bold 13px Verdana, Arial, sans-serif; background: #e00; color: #fff !important; border: 3px outset #f66; text-decoration: none !important; cursor: pointer; }
   .bigbtn:active { border-style: inset; }
-  .bigbtn.blk { background: #000; border-color: #666; color: #ffeb00 !important; }
-  .chat { height: 150px; overflow: hidden; background: #000; color: #0f0; font: 12px "Courier New", monospace; padding: 4px 6px; border: 2px inset #999; display: flex; flex-direction: column; justify-content: flex-end; }
+  .bigbtn.blk { background: #000; border-color: #666; color: #ff0 !important; }
+  .chat { height: 190px; overflow: hidden; background: #000; color: #0f0; font: 12px "Courier New", monospace; padding: 4px 6px; border: 2px inset #999; display: flex; flex-direction: column; justify-content: flex-end; text-align: left; }
   .chat p { margin: 0 0 2px; word-break: break-word; }
-  .chat .sys { color: #ff0; }
-  .chat .u { color: #6cf; }
-  .chat input { margin-top: 4px; width: 100%; font: 12px "Courier New", monospace; }
+  .chat .sys { color: #ff0; } .chat .u { color: #6cf; }
+  .chatin { margin-top: 4px; width: 100%; font: 12px "Courier New", monospace; }
   .newblink { color: #e00; font: bold 11px Arial, sans-serif; animation: blink 1s steps(1) infinite; }
-  .site hr { border: 0; border-top: 2px dashed #000; margin: 14px 0; }
-  .webring { text-align: center; font: 12px Verdana, Arial, sans-serif; }
-  .badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 10px; }
-  .badge { width: 88px; height: 31px; font: bold 9px/1.1 Verdana, Arial, sans-serif; display: flex; align-items: center; justify-content: center; text-align: center; border: 1px solid #000; padding: 2px; }
-  .hits { display: inline-flex; gap: 1px; background: #000; padding: 2px; vertical-align: middle; }
-  .hits b { font: 15px "Courier New", monospace; color: #0f0; background: #030; width: 12px; text-align: center; }
-  .disclaimer { margin-top: 18px; font: 11px Verdana, Arial, sans-serif; text-align: center; color: #333; border-top: 1px solid #000; padding-top: 8px; }
+  @media (max-width: 700px) {
+    table.lay, table.lay tbody, table.lay tr { display: block; width: 100%; }
+    td.navcol, td.maincol { display: block; width: auto; padding: 0; }
+    .site a.ad-yours { width: 100%; }
+    .player { max-width: 100%; }
+    td.navcol { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; margin-bottom: 10px; }
+    .nh, .nb { width: auto; flex: 1 1 45%; margin: 0; }
+    .nh { flex-basis: 100%; margin-top: 6px; }
+    .bubble span { font-size: 26px; } .homebub { width: 80px; height: 52px; } .homebub span { font-size: 16px; }
+    .lead { font-size: 22px; } .body16 { font-size: 17px; }
+    .ad { transform-origin: left top; }
+    .site a.ad-ammo { font-size: 18px; } .ad-adult .t1 { font-size: 16px; } .site a.ad-yours { font-size: 18px; }
+  }
   /* server error page */
   .errpage { padding: 20px 26px; font: 13px Verdana, Arial, sans-serif; color: #000; background: #fff; min-height: 100%; }
   .errpage h2 { font: bold 18px Verdana, Arial, sans-serif; margin: 0 0 4px; }
@@ -241,16 +296,8 @@
 </head>
 <body>
 
-<!-- 0. POWER -->
-<div id="power" class="screen on" role="button" tabindex="0" aria-label="Power on">
-  <div class="btn-power"><svg viewBox="0 0 24 24" fill="none" stroke="#3c3" stroke-width="2.4" stroke-linecap="round"><path d="M12 3v8"/><path d="M6.5 6.8a8 8 0 1 0 11 0"/></svg></div>
-  <p>Press power to start</p>
-  <p class="hint">sound on for the full experience</p>
-  <div class="led" id="led"></div>
-</div>
-
 <!-- 1. BIOS -->
-<div id="bios" class="screen">
+<div id="bios" class="screen on">
   <div class="logo"><div class="gf">GF</div><small>Energy Saver</small></div>
   <div id="biostext"></div>
   <div class="foot">Press <span class="hi">DEL</span> to enter SETUP, <span class="hi">ESC</span> to skip memory test<br>12/21/01-i440BX-GF-2A69KC09C-00</div>
@@ -268,6 +315,7 @@
 
 <!-- 3. DESKTOP -->
 <div id="desktop" class="screen">
+  <div id="wallpaper"><div class="wmark"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><i></i></div><div class="wname">Geigerfilms<sup>98</sup></div></div>
   <div id="icons"></div>
 
   <!-- Browser -->
@@ -279,7 +327,7 @@
       <div class="tool dim"><svg data-i="fwd"></svg><span>Forward</span></div>
       <div class="tool" data-act="stop"><svg data-i="stop"></svg><span>Stop</span></div>
       <div class="tool" data-act="reload"><svg data-i="reload"></svg><span>Refresh</span></div>
-      <div class="tool" data-act="reload"><svg data-i="home"></svg><span>Home</span></div>
+      <div class="tool" data-act="home"><svg data-i="home"></svg><span>Home</span></div>
       <div class="sep"></div>
       <div class="tool"><svg data-i="search"></svg><span>Search</span></div>
       <div class="tool"><svg data-i="star"></svg><span>Favorites</span></div>
@@ -518,7 +566,7 @@ function openWin(id) {
 function closeWin(w) {
   w.classList.remove('open', 'active');
   const t = tasksEl.querySelector(`[data-for="${w.id}"]`); if (t) t.remove();
-  if (w.id === 'w-dial') { stopSnd('dialup'); dialAbort = true; }
+  if (w.id === 'w-dial') { stopSnd('dialup'); dialAbort = true; dialing = false; }
   if (w.id === 'w-browser') { stopPlayer(); clearTimers(); }
 }
 document.querySelectorAll('.win').forEach(w => {
@@ -532,7 +580,7 @@ document.querySelectorAll('.win').forEach(w => {
       else { w.dataset.prev = w.style.cssText; Object.assign(w.style, { left: '0', top: '0', width: '100%', height: 'calc(100% - 30px)' }); }
       w.style.zIndex = ++z;
     }
-    if (a === 'reload') loadSite();
+    if (a === 'reload') loadSite(); if (a === 'home') loadSite('home', true);
     if (a === 'stop') { document.getElementById('w-browser').classList.remove('loading'); document.getElementById('bstatus').textContent = 'Done'; }
   }));
   const bar = w.querySelector('.title');
@@ -571,18 +619,18 @@ function wireVol() {
 function tick() { document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); }
 
 /* ================= DIAL-UP ================= */
-let dialAbort = false;
+let dialAbort = false, dialing = false;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 async function connectThenLoad() {
   if (connected) return loadSite();
   dialAbort = false;
   const st = document.getElementById('dialstat'), sp = document.getElementById('dialspeed');
   st.textContent = 'Dialing...'; sp.textContent = '--';
-  openWin('w-dial'); play('dialup', .6);
+  openWin('w-dial'); dialing = true; play2('dialup', .6);
   document.getElementById('page').innerHTML = '<div style="padding:20px;font:13px Verdana,Arial">Waiting for connection...</div>';
-  const steps = [[1200, 'Dialing...'], [2400, 'Waiting for answer...'], [4200, 'Verifying user name and password...'], [2600, 'Logging on to network...']];
+  const steps = [[900, 'Dialing...'], [1300, 'Waiting for answer...'], [1500, 'Verifying user name and password...'], [800, 'Logging on to network...']];
   for (const [ms, s] of steps) { st.textContent = s; await sleep(ms); if (dialAbort) return; }
-  sp.textContent = '53,333 bps'; st.textContent = 'Connected'; await sleep(700); if (dialAbort) return;
+  sp.textContent = '53,333 bps'; st.textContent = 'Connected'; await sleep(400); if (dialAbort) return; dialing = false; stopSnd('dialup');
   connected = true; closeWin(document.getElementById('w-dial')); document.getElementById('net').classList.add('on');
   focusWin(document.getElementById('w-browser'));
   loadSite();
@@ -595,66 +643,133 @@ function every(fn, ms) { timers.push(setInterval(fn, ms)); }
 function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
 function clearTimers() { timers.forEach(t => { clearInterval(t); clearTimeout(t); }); timers = []; }
 
-const SITE = () => `
-<div class="site"><div class="wrap">
-  <a class="ad ad-ammo chunk" data-ad="ammo"><span>AMMOWORLD</span><b>BULK DEALS &bull; SHIPS TODAY</b><span class="lbl">advertisement</span></a>
-  <div class="logo chunk"><h1>CutOff<span>My</span>Feet</h1><div class="tag">ONE MAN &bull; ONE GOAL &bull; ONE LIVE BROADCAST</div></div>
-  <div class="navrow chunk">[ <a href="#" data-nav="home">Home</a> | <a href="#" data-nav="paul">About Paul</a> | <a href="#" data-nav="member">Members</a> <span class="newblink">NEW!</span> | <a href="#" data-nav="live">Watch LIVE</a> | <a href="#" data-nav="guest">Guestbook</a> | <a href="#" data-nav="press">Press</a> ]</div>
+const wave = s => s.split('').map((c, i) => c === ' ' ? '<span class="sp"></span>' : `<span style="transform:rotate(${i % 2 ? 4 : -4}deg) translateY(${i % 3 === 0 ? -2 : i % 3 === 1 ? 2 : 0}px)">${c}</span>`).join('');
 
-  <div class="player chunk">
+const PHOTO = (cap) => `<div class="photo chunk"><svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+  <defs><filter id="grn"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" result="n"/><feColorMatrix in="n" type="saturate" values="0"/><feBlend in="SourceGraphic" mode="multiply"/></filter></defs>
+  <g filter="url(#grn)">
+    <rect width="300" height="300" fill="#d9d2bf"/>
+    <path d="M0 0h300v40H0z" fill="#4a3a2a"/><path d="M0 34h300v8H0z" fill="#6b5232"/>
+    <path d="M20 42q20 120 6 258M95 42q-12 130 4 258M170 42q14 120-4 258M250 42q-10 140 8 258" stroke="#b8ae95" stroke-width="5" fill="none"/>
+    <path d="M0 252h300v48H0z" fill="#7d776a"/>
+    <rect x="104" y="30" width="20" height="235" fill="#a77b45"/><rect x="164" y="30" width="20" height="235" fill="#9b7040"/>
+    <path d="M108 40v220M114 36v226M168 40v220M176 36v226" stroke="#7a5428" stroke-width="1.5"/>
+    <rect x="98" y="24" width="92" height="14" fill="#8b6436"/>
+    <path d="M124 44h40v20l-40 12z" fill="#b9c0c6" stroke="#666"/><path d="M124 76l40-12" stroke="#eef" stroke-width="2"/>
+    <rect x="90" y="236" width="108" height="26" fill="#8f6a3a"/><path d="M128 236q16 10 32 0" fill="#5d4426"/>
+    <rect x="203" y="120" width="40" height="150" rx="16" fill="#3d4b5c"/><circle cx="223" cy="104" r="17" fill="#c69a78"/>
+    <rect x="198" y="132" width="10" height="70" fill="#3d4b5c"/>
+  </g>
+  <text x="292" y="292" text-anchor="end" font-family="Arial" font-size="10" fill="#f80">12 21 '01</text>
+</svg><div class="capt">${cap}</div></div>`;
+
+const NAV = [
+  ['h', "PAUL'S STORY"], ['about', 'About Paul'], ['accident', 'The Accident'], ['idea', 'The Idea'],
+  ['h', 'THE BIG DAY'], ['guillotine', 'The Guillotine'], ['prosthetics', 'The Prosthetics'],
+  ['h', 'WATCH IT LIVE'], ['webcam', 'The Webcam'], ['join', 'Join Today!'], ['members', 'Members Only'],
+  ['h', 'MISCELLANEOUS'], ['contact', 'Contact Paul'], ['board', 'Message Board'], ['faq', 'F.A.Q.'], ['tell', 'Tell A Friend']
+];
+const PLAYER = `<div class="player chunk">
     <div class="ph"><span>StreamCast Player 6.0</span><span>paul_intro.rm</span></div>
     <div class="screenbox" id="scr"><div class="scene"></div><div class="blocks"></div><div class="grain"></div><div class="handcover"></div>
       <div class="rec">&#9679; REC</div><div class="msg" id="scrmsg">Click PLAY to watch Paul's message</div><div class="cap" id="cap"></div></div>
     <div class="pctl"><button id="pplay">&#9654;</button><button id="pstop">&#9632;</button><div class="seekbar"><i id="pseek"></i></div><div class="stat" id="pstat">Ready</div></div>
-  </div>
+  </div>`;
+const THERMO = `<div class="boxw chunk"><h3>THE PROSTHETICS FUND</h3>
+  <div class="thermo"><i id="therm" style="width:73%"></i><span id="thermtxt">$18,340 of $25,000</span></div>
+  <a class="bigbtn" data-act2="donate">DONATE NOW</a><a class="bigbtn blk" data-nav="join">BECOME A MEMBER</a></div>`;
 
-  <div class="boxrow">
-    <div class="box chunk">
-      <h3>THE GOAL</h3>
-      New prosthetic legs for Paul. If we reach our goal by <b>January 8th, 2002</b>, Paul will host a <b>LIVE BROADCAST</b> of the procedure, right here.
-      <div class="thermo"><i id="therm" style="width:73%"></i><span id="thermtxt">$18,340 of $25,000</span></div>
-      <div style="text-align:center"><a class="bigbtn" data-act2="donate">DONATE NOW</a><a class="bigbtn blk" data-act2="member">BECOME A MEMBER</a></div>
-      <div style="font-size:12px;margin-top:4px">Members get a front row seat, private chat access &amp; exclusive photos. Only <b>$19.95</b>!</div>
-    </div>
-    <div class="box chunk">
-      <h3>BROADCAST COUNTDOWN</h3>
-      <div class="count" id="cd">--:--:--<small>until we go LIVE</small></div>
-      <div style="text-align:center;margin-top:6px;font:12px Verdana,Arial">Viewers online: <b id="viewers" style="color:#e00">4,213</b></div>
-      <div style="text-align:center"><a class="bigbtn" data-act2="live">&#9679; WATCH LIVE</a></div>
-    </div>
-  </div>
+const PAGES = {
+  home: { title: null, body: () => `
+    <p class="lead chunk">Get ready for something the World Wide Web has never seen. On January 8th, 2002... LIVE on the internet... you can watch me cut off my feet with a homemade guillotine!</p>
+    <p class="body16 chunk">That's right. You read it correctly. I know what you're thinking: what kind of sick website did I just find? People see the word GUILLOTINE and they panic. This is not a freak show. I just want to fish again.</p>
+    ${PLAYER}
+    ${PHOTO('This is me next to the guillotine. Still under construction!')}
+    <p class="quote chunk">"Clean cut."<br>- Paul</p>
+    <div class="upd chunk">Lots of you have been asking about the broadcast. Here is where we're at:
+      <b class="h good">THE GOOD NEWS -</b> We've got a camera guy, a computer guy, a producer (thanks Carrie!), a tarp, and of course, the guillotine. Paramedics will be called.
+      <b class="h bad">THE BAD NEWS -</b> One of our sponsors pulled their ads, and the server crashed twice this week from all of you. Tim says we need a bigger one.
+      <br><br>If you want to help, become a member or tell your friends. Membership money goes straight to the prosthetics. - Paul</div>
+    ${THERMO}` },
+  about: { title: 'About Paul', body: () => `
+    <p class="body16 l chunk">Hello. My name is Paul Morgan. I'm in my thirties. I like fishing, my garage, and the internet.</p>
+    <p class="body16 l chunk">Fifteen years ago I severed my T12 vertebra in a boating accident. I haven't felt my feet since. Due to a lapse in insurance, I can't afford proper treatment.</p>
+    <p class="body16 l chunk">So I started this website with some friends. You'll see us on the broadcast.</p>
+    <p class="quote chunk">"Nobody'll know I'm funny." - Paul</p>` },
+  accident: { title: 'The Accident', body: () => `
+    <p class="body16 l chunk">It was a nice day on the lake. Then it wasn't.</p>
+    <p class="body16 l chunk">[PLACEHOLDER: the full story of the boating accident goes here.]</p>` },
+  idea: { title: 'The Idea', body: () => `
+    <p class="body16 l chunk">Prosthetic legs cost a lot of money. My feet don't work anyway. Feet are kind of in the way of prosthetic legs.</p>
+    <p class="body16 l chunk">So here's the deal: if we hit our goal by <b>January 8th, 2002</b>, I will host a <b>LIVE BROADCAST</b> cutting off my feet. You pay to watch. I get new legs. Everybody wins.</p>
+    <p class="body16 l chunk">They'll see us. They need to.</p>${THERMO}` },
+  guillotine: { title: 'The Guillotine', body: () => `
+    ${PHOTO('Built by hand in my garage. Blade is real.')}
+    <p class="body16 l chunk">Two posts, a crossbar, a blade, and two wooden divots for my legs. We tested it on a slab of meat. It went right through.</p>
+    <p class="body16 l chunk">We'll draw a dotted line across my ankles with a Sharpie so the cut is straight.</p>` },
+  prosthetics: { title: 'The Prosthetics', body: () => `
+    <p class="body16 l chunk">Every dollar goes to a brand new pair of legs.</p>${THERMO}
+    <p class="body16 l chunk">[PLACEHOLDER: photos of the prosthetics Paul wants.]</p>` },
+  webcam: { title: 'The Webcam', body: () => `
+    <div class="boxw chunk"><h3>BROADCAST BEGINS IN</h3><div class="count" id="cd">--:--:--</div>
+      <div style="font:13px Verdana,Arial;margin:6px 0">Viewers waiting: <b id="viewers" style="color:#e00">4,213</b></div>
+      <a class="bigbtn" data-act2="live">&#9679; WATCH LIVE</a></div>
+    <p class="body16 chunk">Members get the best seat in the house. Non-members may be booted when the server is full.</p>` },
+  join: { title: 'Join Today!', body: () => `
+    <p class="body16 chunk">Become a member and get front row access to the LIVE broadcast, the private chat room, and exclusive behind the scenes photos!</p>
+    <table class="price chunk" style="margin:0 auto"><tr><td>1 Month</td><td><b>$19.95</b></td></tr><tr><td>3 Months</td><td><b>$49.95</b></td></tr><tr><td>Lifetime</td><td><b>$99.95</b> <span class="newblink">BEST DEAL!</span></td></tr></table>
+    <div class="boxw chunk"><div class="form98"><label>Name</label><input><label>Email</label><input><label>Plan</label><select><option>1 Month - $19.95</option><option>Lifetime - $99.95</option></select><br><button data-act2="member">SIGN ME UP!</button></div></div>` },
+  members: { title: 'Members Only', body: () => `
+    <div class="boxw chunk"><h3>MEMBER LOGIN</h3><div class="form98"><label>Username</label><input><label>Password</label><input type="password"><br><button data-act2="login">ENTER</button></div></div>` },
+  contact: { title: 'Contact Paul', body: () => `
+    <p class="body16 chunk">Questions? Comments? Want to sponsor the broadcast?</p>
+    <p class="body16 chunk">Email me: <a data-act2="mail">paul@cutoffmyfeet</a></p>
+    <p class="body16 chunk">Press: please contact Carrie. Nobody talks to news until she says.</p>` },
+  board: { title: 'Message Board', body: () => `
+    <div class="boxw chunk"><h3>LIVE CHAT <span style="float:right;font-weight:normal" id="chatn">213 users</span></h3>
+      <div class="chat" id="chat"></div><input class="chatin" id="chatin" placeholder="Type a message and press Enter..." maxlength="80"></div>` },
+  faq: { title: 'F.A.Q.', body: () => `
+    <dl class="faq chunk">
+      <dt>Is this real?</dt><dd>Yes.</dd>
+      <dt>Won't that hurt?</dt><dd>I can't feel my feet. That's kind of the whole point.</dd>
+      <dt>Why a guillotine?</dt><dd>Clean cut.</dd>
+      <dt>Is this legal?</dt><dd>We'll find out.</dd>
+      <dt>Who's going to clean up?</dt><dd>Don't worry. I'll pay for your therapy.</dd>
+      <dt>Can I watch for free?</dt><dd>Members get priority. When the server is full, everybody else gets booted.</dd>
+    </dl>` },
+  tell: { title: 'Tell A Friend', body: () => `
+    <p class="body16 chunk">The more people watch, the faster I get my legs!</p>
+    <div class="boxw chunk"><div class="form98"><label>Your name</label><input><label>Friend's email</label><input><label>Message</label><textarea rows="3">You have to see this website!!</textarea><br><button data-act2="tell">SEND</button></div></div>` }
+};
 
-  <div class="boxrow">
-    <div class="box chunk" style="flex-basis:100%">
-      <h3>LIVE CHAT <span style="float:right;font-weight:normal" id="chatn">213 users</span></h3>
-      <div class="chat" id="chat"></div>
-      <input id="chatin" placeholder="Type a message and press Enter..." maxlength="80">
+function SITE(key) {
+  const pg = PAGES[key] || PAGES.home;
+  const nav = NAV.map(([k, l]) => k === 'h' ? `<a class="nh">${l}</a>` : `<a class="nb${k === key ? ' cur' : ''}" data-nav="${k}">${l}</a>`).join('');
+  const head = pg.title ? wave(pg.title.toUpperCase()) : wave('WELCOME! WELCOME!') + '<br>' + wave('WELCOME!');
+  return `<div class="site">
+  <div class="top chunk"><a class="homebub" data-nav="home"><span>HOME</span></a><div class="bubble">${head}</div></div>
+  <table class="lay"><tr><td class="navcol chunk">${nav}</td><td class="maincol">${pg.body()}
+    <div class="ads chunk">
+      <a class="ad ad-ammo" data-ad="1"><span class="bul"><i></i><i></i><i></i><i></i></span>AMMOWORLD<span class="flash">BULK DEALS<br>SHIPS TODAY!</span><span class="lbl">ad</span></a>
+      <a class="ad ad-adult" data-ad="1"><span class="pic">adultwarehouse</span><span class="txt"><span class="t1">DVDs &bull; VIDEOS &bull; MORE</span><span class="t2">FREE GIFT WITH EVERY ORDER &bull; 18+</span></span><span class="lbl">ad</span></a>
+      <a class="ad ad-yours" data-nav="contact">WANT TO SEE YOUR AD HERE?</a>
     </div>
-  </div>
-
-  <div class="boxrow">
-    <div class="box chunk">
-      <h3>ABOUT PAUL</h3>
-      <p style="margin:0 0 6px">Hello. My name is Paul Morgan. Fifteen years ago I was paralyzed when I severed my T12 vertebra in a boating accident. Due to a lapse in insurance, I am unable to afford proper treatment.</p>
-      <p style="margin:0">So I started this website with some friends. Thanks.</p>
+    <div class="chunk">
+      <p class="getplayers">* There is video on this site. To watch it, you need the StreamCast Player and a media player installed. Get them here:</p>
+      <div class="badges">
+        <div class="badge b-stream" data-act2="dl"><span class="ic"></span><span class="tx">Get<br>StreamCast<br><span style="font-weight:normal">Free Download</span></span></div>
+        <div class="badge b-media" data-act2="dl"><span class="free">FREE</span><span class="ic"></span><span class="tx">WebSurfer<br>Media Player</span></div>
+      </div>
+      <div class="pobox">Send donations to:<br>Paul's Promotions<br>P.O. Box 0000<br>Anytown, USA</div>
+      <div class="awards">
+        <div class="award"><span class="cup">&#127942;</span>WEIRD SITE<br>OF THE DAY</div>
+        <div class="award b"><span class="cup">&#11088;</span>SURFERS' CHOICE<br>AWARD 2001</div>
+      </div>
+      <p style="font:12px Verdana,Arial;margin-top:12px">You are visitor # <span class="hits">${visitorCount().split('').map(d => '<b>' + d + '</b>').join('')}</span> &nbsp; Last updated: 01/07/2002</p>
+      <div class="disclaimer">CutOffMyFeet is a fictional website made for <b>CUT OFF MY FEET</b>, a short film written by Bradley Geiger &middot; A Geigerfilms production &middot; Based on a true story.<br>No donations or memberships are collected. All advertisers are fictional.</div>
     </div>
-  </div>
-
-  <a class="ad ad-adult chunk" style="margin-top:12px" data-ad="adult"><span>ADULT WAREHOUSE</span><b>18+ ENTER</b><span class="lbl">advertisement</span></a>
-
-  <div class="chunk">
-    <hr>
-    <div class="webring">&lt;&lt; Prev | <b>True Stories WebRing</b> | Random | Next &gt;&gt;</div>
-    <div class="badges">
-      <div class="badge" style="background:#000;color:#ffeb00">BEST VIEWED<br>800 x 600</div>
-      <div class="badge" style="background:#00a;color:#fff">GET WEBSURFER<br>FREE!</div>
-      <div class="badge" style="background:#fff;color:#000">STREAMCAST<br>PLAYER 6</div>
-      <div class="badge" style="background:#e00;color:#fff">SIGN THE<br>GUESTBOOK</div>
-    </div>
-    <p style="text-align:center;font:12px Verdana,Arial;margin-top:10px">You are visitor # <span class="hits">${visitorCount().split('').map(d => '<b>' + d + '</b>').join('')}</span> &nbsp; Last updated: 01/07/2002</p>
-    <div class="disclaimer">CutOffMyFeet is a fictional website made for <b>CUT OFF MY FEET</b>, a short film written by Bradley Geiger &middot; A Geigerfilms production &middot; Based on a true story.<br>No donations or memberships are collected. Advertisers shown are fictional.</div>
-  </div>
-</div></div>`;
+  </td></tr></table></div>`;
+}
 
 const ERRPAGE = `<div class="errpage">
   <h2>The page cannot be displayed</h2>
@@ -671,39 +786,41 @@ function visitorCount() {
 }
 function setProgress(p) { document.getElementById('prog').innerHTML = '<i></i>'.repeat(Math.round(p * 14)); }
 
-function loadSite() {
-  clearTimers(); stopPlayer();
+let curPage = 'home';
+function loadSite(key = curPage, fast = false) {
+  curPage = key; clearTimers(); stopPlayer();
   const w = document.getElementById('w-browser'), page = document.getElementById('page'), st = document.getElementById('bstatus');
-  document.getElementById('url').textContent = 'http://www.cutoffmyfeet.net/main.html';
-  w.classList.add('loading'); page.innerHTML = SITE(); page.scrollTop = 0; wireSite();
+  document.getElementById('url').textContent = 'http://www.cutoffmyfeet.net/' + (key === 'home' ? 'main' : key) + '.html';
+  w.classList.add('loading'); page.innerHTML = SITE(key); page.scrollTop = 0; wireSite();
   const chunks = [...page.querySelectorAll('.chunk')];
-  const msgs = ['Finding site: www.cutoffmyfeet.net', 'Connecting to site 64.81.20.9', 'Web site found. Waiting for reply...'];
-  msgs.forEach((m, i) => later(() => { st.textContent = m; setProgress(i * .08); }, i * 500));
+  const pre = fast ? 200 : 600, step = fast ? 60 : 110;
+  st.textContent = 'Opening page http://www.cutoffmyfeet.net/...'; setProgress(.1);
   chunks.forEach((c, i) => later(() => {
-    c.classList.add('in'); st.textContent = `(${chunks.length - i - 1} items remaining) Downloading picture http://www.cutoffmyfeet.net/img/${['bnr_ammo', 'logo', 'nav', 'player', 'goal', 'cd', 'chat', 'paul', 'bnr_xxx', 'footer'][i] || 'img' + i}.gif...`;
-    setProgress(.25 + .75 * (i + 1) / chunks.length);
-  }, 1500 + i * (300 + Math.random() * 350)));
-  later(() => { st.textContent = 'Done'; w.classList.remove('loading'); startLive(); }, 1600 + chunks.length * 650);
+    c.classList.add('in'); st.textContent = `(${chunks.length - i - 1} items remaining) Downloading picture http://www.cutoffmyfeet.net/images/${['home_bub', 'nav_btn', 'welcome', 'text', 'player', 'guillotine', 'quote', 'update', 'fund', 'banners', 'footer'][i] || 'img' + i}.gif...`;
+    setProgress(.15 + .85 * (i + 1) / chunks.length);
+  }, pre + i * (step + Math.random() * step)));
+  later(() => { st.textContent = 'Done'; setProgress(0); w.classList.remove('loading'); startLive(); }, pre + chunks.length * step * 2 + 100);
 }
 
 function wireSite() {
   const page = document.getElementById('page');
-  page.querySelectorAll('[data-nav]').forEach(a => a.addEventListener('click', e => {
-    e.preventDefault(); const n = a.dataset.nav;
-    if (n === 'home') return loadSite();
-    if (n === 'live') return crash();
-    msgbox({ paul: 'Page under construction. Check back soon!', member: 'Members area is temporarily closed while we upgrade our servers.', guest: 'Guestbook is full. Please try again later.', press: 'Press inquiries: please contact Carrie.<br><br>Nobody talks to news until she says.' }[n], { title: 'WebSurfer', kind: 'info' });
-  }));
+  page.querySelectorAll('[data-nav]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); play('click', .5); loadSite(a.dataset.nav, true); }));
+  const MSG = {
+    donate: ['Secure transaction server is not responding.<br><br>(This is a film promo. No real donations are collected.)', 'warn'],
+    member: ['Membership signup is temporarily unavailable.<br><br>(This is a film promo. Nothing is collected.)', 'warn'],
+    login: ['Access denied.<br><br>Invalid username or password.', 'warn'],
+    mail: ['Could not send mail: the recipient\'s mailbox is full.', 'warn'],
+    tell: ['Mail server unavailable. Please try again later.', 'warn'],
+    dl: ['Download failed. The connection to the server was reset.', 'warn']
+  };
   page.querySelectorAll('[data-act2]').forEach(a => a.addEventListener('click', () => {
-    const n = a.dataset.act2;
-    if (n === 'live') return crash();
-    msgbox(n === 'donate' ? 'Secure transaction server is not responding.<br><br>(This is a film promo. No real donations are collected.)' : 'Membership signup is currently unavailable.<br><br>(This is a film promo. Nothing is collected.)', { title: 'WebSurfer', kind: 'warn' });
+    const n = a.dataset.act2; if (n === 'live') return crash();
+    msgbox(MSG[n][0], { title: 'WebSurfer', kind: MSG[n][1] });
   }));
   page.querySelectorAll('[data-ad]').forEach(a => a.addEventListener('click', () => msgbox('This advertiser has been removed from our site.', { title: 'WebSurfer', kind: 'info' })));
-  document.getElementById('pplay').addEventListener('click', playIntro);
-  document.getElementById('pstop').addEventListener('click', stopPlayer);
+  const pp = document.getElementById('pplay'); if (pp) { pp.addEventListener('click', playIntro); document.getElementById('pstop').addEventListener('click', stopPlayer); }
   const inp = document.getElementById('chatin');
-  inp.addEventListener('keydown', e => { if (e.key === 'Enter' && inp.value.trim()) { chatLine('<span class="u">&lt;guest' + (Math.random() * 900 + 100 | 0) + '&gt;</span> ' + inp.value.replace(/[<>&]/g, ''), true); inp.value = ''; later(() => chatLine('<span class="sys">*** Message not sent: server busy</span>'), 900); } });
+  if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter' && inp.value.trim()) { chatLine('<span class="u">&lt;guest' + (Math.random() * 900 + 100 | 0) + '&gt;</span> ' + inp.value.replace(/[<>&]/g, '')); inp.value = ''; later(() => chatLine('<span class="sys">*** Message not sent: server busy</span>'), 900); } });
 }
 
 function crash() {
@@ -711,8 +828,8 @@ function crash() {
   const w = document.getElementById('w-browser'), st = document.getElementById('bstatus');
   w.classList.add('loading'); st.textContent = 'Connecting to live.cutoffmyfeet.net...'; setProgress(.1);
   document.getElementById('url').textContent = 'http://live.cutoffmyfeet.net/broadcast.html';
-  later(() => { st.textContent = 'Waiting for reply...'; setProgress(.3); }, 1200);
-  later(() => { document.getElementById('page').innerHTML = ERRPAGE; w.classList.remove('loading'); st.textContent = 'Cannot find server or DNS Error'; setProgress(0); play('error'); }, 3200);
+  later(() => { st.textContent = 'Waiting for reply...'; setProgress(.3); }, 1000);
+  later(() => { document.getElementById('page').innerHTML = ERRPAGE; w.classList.remove('loading'); st.textContent = 'Cannot find server or DNS Error'; setProgress(0); play('error'); }, 2600);
 }
 
 /* live elements: countdown, viewers, chat */
@@ -776,32 +893,29 @@ function playIntro() {
 function show(id) { document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id)); }
 let skipping = false;
 async function bios() {
-  show('bios'); play('hdd', .5);
+  show('bios'); play('post', .6); play2('hdd', .45);
   const t = document.getElementById('biostext');
-  const line = async (html, wait = 180) => { if (!skipping) await sleep(wait); t.innerHTML = t.innerHTML.replace(/<span class="cursor"><\/span>$/, '') + html + '\n<span class="cursor"></span>'; };
+  const line = async (html, wait = 60) => { if (!skipping) await sleep(wait); t.innerHTML = t.innerHTML.replace(/<span class="cursor"><\/span>$/, '') + html + '\n<span class="cursor"></span>'; };
   t.innerHTML = '<span class="cursor"></span>';
-  await line('<span class="hi">Geigerfilms Modular BIOS v4.51PG</span>, An Energy Star Ally', 300);
-  await line('Copyright (C) 1984-2001, Geigerfilms Software, Inc.', 100);
-  await line('', 100);
-  await line('Pentium-II CPU at 400MHz', 300);
+  await line('<span class="hi">Geigerfilms Modular BIOS v4.51PG</span>, An Energy Star Ally', 150);
+  await line('Copyright (C) 1984-2001, Geigerfilms Software, Inc.', 40);
+  await line('', 40);
+  await line('Pentium-II CPU at 400MHz', 100);
   t.innerHTML = t.innerHTML.replace(/<span class="cursor"><\/span>$/, '') + 'Memory Test :  <span id="mem">0</span>K';
   const mem = document.getElementById('mem');
-  for (let k = 0; k <= 131072; k += 4096) { mem.textContent = k; if (!skipping) await sleep(28); }
+  for (let k = 0; k <= 131072; k += 8192) { mem.textContent = k; if (!skipping) await sleep(18); }
   mem.innerHTML = '131072 <span class="ok">OK</span>';
   t.innerHTML += '\n<span class="cursor"></span>';
-  await line('', 200);
-  await line('Geigerfilms Plug and Play BIOS Extension v1.0A', 200);
-  await line('  Detecting IDE Primary Master  ... <span class="hi">QUANTUM FIREBALL 6.4GB</span>', 500);
-  await line('  Detecting IDE Primary Slave   ... None', 350);
-  await line('  Detecting IDE Secondary Master... <span class="hi">CD-ROM 32X</span>', 400);
-  await line('  Detecting IDE Secondary Slave ... None', 300);
-  await line('', 200);
-  await line('<span class="warn">WARNING: CMOS checksum error - Defaults loaded</span>', 500);
-  await line('', 200);
-  await line('Verifying DMI Pool Data ........ <span class="ok">Update Success</span>', 700);
-  await line('Boot from ATAPI CD-ROM : Failure ...', 500);
-  await line('Starting Geigerfilms 98...', 600);
-  await sleep(skipping ? 100 : 900);
+  await line('', 60);
+  await line('Geigerfilms Plug and Play BIOS Extension v1.0A', 60);
+  await line('  Detecting IDE Primary Master  ... <span class="hi">QUANTUM FIREBALL 6.4GB</span>', 160);
+  await line('  Detecting IDE Primary Slave   ... None', 90);
+  await line('  Detecting IDE Secondary Master... <span class="hi">CD-ROM 32X</span>', 120);
+  await line('  Detecting IDE Secondary Slave ... None', 80);
+  await line('', 40);
+  await line('Verifying DMI Pool Data ........ <span class="ok">Update Success</span>', 200);
+  await line('Starting Geigerfilms 98...', 150);
+  await sleep(skipping ? 50 : 300);
 }
 async function splash() {
   stopSnd('hdd'); show('splash');
@@ -811,25 +925,39 @@ async function splash() {
     Object.assign(c.style, { width: w + 'px', height: w * .45 + 'px', left: Math.random() * 100 - 10 + '%', top: Math.random() * 85 + '%' });
     sp.insertBefore(c, sp.firstChild);
   }
-  await sleep(skipping ? 800 : 4200);
+  await sleep(skipping ? 500 : 1800);
   show('desktop'); const d = document.getElementById('desktop');
   d.style.visibility = 'hidden'; document.body.style.cursor = 'wait';
-  await sleep(500); d.style.visibility = 'visible'; play('startup', .8);
-  await sleep(1500); document.body.style.cursor = '';
+  await sleep(250); d.style.visibility = 'visible'; play2('startup', .8);
+  await sleep(700); document.body.style.cursor = '';
   openWin('w-browser');
 }
-async function boot() {
-  const led = document.getElementById('led'); led.style.background = '#3f3'; led.style.boxShadow = '0 0 6px #3f3';
-  play('post', .7); await sleep(1200);
-  await bios(); await splash();
+async function boot() { await sleep(300); await bios(); await splash(); }
+
+/* Browsers block sound until the visitor clicks or presses a key.
+   play2() remembers the last sound that was blocked and plays it on the first interaction if it's still relevant. */
+let audioOK = false, pendingSnd = null;
+function play2(n, vol) {
+  if (audioOK) return play(n, vol);
+  pendingSnd = { n, vol, at: Date.now() };
+  try { SND[n].volume = vol; SND[n].currentTime = 0; SND[n].play().then(() => { audioOK = true; pendingSnd = null; }).catch(() => {}); } catch (e) {}
 }
+function unlockAudio() {
+  if (audioOK) return; audioOK = true;
+  if (pendingSnd && !muted) {
+    const { n, vol, at } = pendingSnd;
+    if (n === 'dialup' ? dialing : Date.now() - at < 4000) play(n, vol);
+  }
+  pendingSnd = null;
+}
+addEventListener('pointerdown', unlockAudio, { once: true, capture: true });
+addEventListener('keydown', unlockAudio, { once: true, capture: true });
+
 paintIcons(); wireVol(); tick(); setInterval(tick, 10000);
-const power = document.getElementById('power'); let started = false;
-const start = () => { if (started) return; started = true; boot(); };
-power.addEventListener('click', start);
-power.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') start(); });
-addEventListener('keydown', e => { if (started && (e.key === 'Escape' || e.key === 'Delete')) skipping = true; });
+addEventListener('keydown', e => { if (e.key === 'Escape' || e.key === 'Delete') skipping = true; });
 document.getElementById('bios').addEventListener('click', () => skipping = true);
+document.getElementById('splash').addEventListener('click', () => skipping = true);
+boot();
 </script>
 </body>
 </html>
