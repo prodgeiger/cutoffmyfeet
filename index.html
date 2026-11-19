@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cutoffmyfeet.net</title>
+<style>
+  :root {
+    --face: #c0c0c0;
+    --light: #dfdfdf;
+    --white: #ffffff;
+    --shadow: #808080;
+    --dark: #0a0a0a;
+    --navy: #000080;
+    --desk: #008080;
+    --raised: inset -1px -1px var(--dark), inset 1px 1px var(--white), inset -2px -2px var(--shadow), inset 2px 2px var(--light);
+    --pressed: inset -1px -1px var(--white), inset 1px 1px var(--dark), inset -2px -2px var(--light), inset 2px 2px var(--shadow);
+    --sunken: inset -1px -1px var(--white), inset 1px 1px var(--shadow), inset -2px -2px var(--light), inset 2px 2px var(--dark);
+    --ui-font: "Pixelated MS Sans Serif", "MS Sans Serif", "Microsoft Sans Serif", Tahoma, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #000; }
+  body { font-family: var(--ui-font); font-size: 12px; color: #000; user-select: none; -webkit-user-select: none; }
+  .screen { position: fixed; inset: 0; display: none; }
+  .screen.on { display: block; }
+
+  /* ---------- POWER ---------- */
+  #power { background: #000; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 18px; cursor: pointer; }
+  #power.on { display: flex; }
+  #power .btn-power { width: 72px; height: 72px; border-radius: 50%; border: 3px solid #333; display: grid; place-items: center; background: radial-gradient(circle at 40% 35%, #2a2a2a, #0d0d0d); box-shadow: 0 0 0 4px #111; }
+  #power .btn-power svg { width: 34px; height: 34px; }
+  #power:hover .btn-power { border-color: #4a4; box-shadow: 0 0 18px #2f2; }
+  #power p { color: #555; font-family: "Courier New", monospace; font-size: 13px; letter-spacing: 2px; margin: 0; text-transform: uppercase; }
+  #power .led { width: 6px; height: 6px; border-radius: 50%; background: #300; }
+
+  /* ---------- BIOS ---------- */
+  #bios { background: #000; color: #aaa; font-family: "Courier New", Courier, monospace; font-size: 15px; line-height: 1.35; padding: 24px 28px; white-space: pre-wrap; }
+  #bios .hi { color: #fff; }
+  #bios .ok { color: #5f5; }
+  #bios .warn { color: #ff5; }
+  #bios .logo { position: absolute; right: 28px; top: 24px; color: #55f; font-weight: bold; text-align: right; white-space: pre; font-size: 13px; line-height: 1.1; }
+  #bios .foot { position: absolute; left: 28px; bottom: 20px; right: 28px; color: #aaa; }
+  .cursor { display: inline-block; width: 9px; height: 15px; background: #aaa; vertical-align: -2px; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ---------- SPLASH ---------- */
+  #splash { background: linear-gradient(#5a8fd6 0%, #8fb8ea 45%, #c9ddf5 100%); overflow: hidden; }
+  #splash .cloud { position: absolute; background: #fff; border-radius: 50%; filter: blur(14px); opacity: .85; }
+  #splash .brand { position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%); text-align: center; color: #fff; text-shadow: 2px 2px 0 rgba(0,0,0,.35); }
+  #splash .mark { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; width: 72px; height: 72px; margin: 0 auto 14px; }
+  #splash .mark span { background: #000; border: 2px solid #fff; }
+  #splash .mark span:nth-child(odd) { background: #b00; }
+  #splash .mark i { border: 2px dashed rgba(255,255,255,.7); }
+  #splash .name { font-family: "Franklin Gothic Medium", "Arial Black", Arial, sans-serif; font-size: 54px; font-weight: 900; letter-spacing: -1px; font-style: italic; }
+  #splash .name sup { font-size: 30px; color: #ffe; }
+  #splash .sub { font-family: Arial, sans-serif; font-size: 15px; letter-spacing: 4px; margin-top: 4px; }
+  #splash .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 14px; background: repeating-linear-gradient(90deg, #00f 0 40px, #0af 40px 80px, #fff 80px 90px, #0af 90px 130px, #00f 130px 170px); background-size: 340px 14px; animation: slide 1.1s linear infinite; }
+  @keyframes slide { to { background-position: 340px 0; } }
+
+  /* ---------- DESKTOP ---------- */
+  #desktop { background: var(--desk); }
+  #icons { position: absolute; top: 8px; left: 6px; bottom: 36px; display: flex; flex-direction: column; flex-wrap: wrap; align-content: flex-start; gap: 6px; }
+  .icon { width: 76px; padding: 4px 2px; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #fff; text-align: center; cursor: default; }
+  .icon svg { width: 32px; height: 32px; image-rendering: pixelated; }
+  .icon span { padding: 1px 2px; line-height: 1.2; font-size: 11px; }
+  .icon.sel span { background: var(--navy); outline: 1px dotted #ff0; }
+  .icon.sel svg { filter: brightness(.6) sepia(1) hue-rotate(190deg) saturate(4); }
+
+  /* Window */
+  .win { position: absolute; background: var(--face); box-shadow: var(--raised); padding: 3px; display: none; flex-direction: column; min-width: 220px; }
+  .win.open { display: flex; }
+  .win.min { display: none; }
+  .title { height: 20px; background: linear-gradient(90deg, #808080, #b5b5b5); color: #c0c0c0; display: flex; align-items: center; padding: 0 2px 0 3px; gap: 4px; font-weight: bold; font-size: 12px; flex-shrink: 0; }
+  .win.active .title { background: linear-gradient(90deg, var(--navy), #1084d0); color: #fff; }
+  .title .t { flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .title svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .tb { width: 16px; height: 14px; background: var(--face); box-shadow: var(--raised); border: 0; padding: 0; display: grid; place-items: center; font: bold 10px/1 Arial, sans-serif; color: #000; }
+  .tb:active { box-shadow: var(--pressed); }
+  .tb.x { margin-left: 2px; }
+  .menubar { display: flex; gap: 0; padding: 2px 0; flex-shrink: 0; }
+  .menubar span { padding: 2px 7px; }
+  .menubar span:hover { box-shadow: inset -1px -1px var(--shadow), inset 1px 1px var(--white); }
+  .menubar u { text-decoration: underline; }
+  .body { flex: 1; overflow: auto; }
+  .statusbar { display: flex; gap: 2px; margin-top: 2px; flex-shrink: 0; }
+  .statusbar div { box-shadow: inset -1px -1px var(--white), inset 1px 1px var(--shadow); padding: 2px 4px; flex: 1; white-space: nowrap; overflow: hidden; }
+  .statusbar div:last-child { flex: 0 0 120px; }
+
+  button.b98 { font-family: var(--ui-font); font-size: 12px; background: var(--face); border: 0; box-shadow: var(--raised); min-width: 75px; min-height: 23px; padding: 0 12px; color: #000; }
+  button.b98:active { box-shadow: var(--pressed); }
+  button.b98:focus { outline: 1px dotted #000; outline-offset: -4px; }
+
+  /* Browser */
+  .toolbar { display: flex; gap: 1px; padding: 2px; border-top: 1px solid var(--shadow); border-bottom: 1px solid var(--white); box-shadow: 0 1px 0 var(--shadow); flex-shrink: 0; }
+  .toolbar .tool { display: flex; flex-direction: column; align-items: center; min-width: 50px; padding: 2px 4px; font-size: 11px; color: #000; }
+  .toolbar .tool:hover { box-shadow: inset -1px -1px var(--shadow), inset 1px 1px var(--white); }
+  .toolbar .tool:active { box-shadow: inset 1px 1px var(--shadow), inset -1px -1px var(--white); }
+  .toolbar .tool svg { width: 22px; height: 22px; }
+  .toolbar .tool.dim { color: var(--shadow); text-shadow: 1px 1px var(--white); }
+  .toolbar .tool.dim svg { opacity: .35; }
+  .toolbar .sep { width: 2px; margin: 2px 3px; border-left: 1px solid var(--shadow); border-right: 1px solid var(--white); }
+  .addr { display: flex; align-items: center; gap: 4px; padding: 3px 2px; flex-shrink: 0; }
+  .addr .field { flex: 1; background: #fff; box-shadow: var(--sunken); padding: 3px 5px; display: flex; align-items: center; gap: 4px; font-size: 12px; white-space: nowrap; overflow: hidden; }
+  .addr .field svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .throbber { width: 38px; height: 38px; margin-left: auto; background: #000; box-shadow: var(--sunken); display: grid; place-items: center; flex-shrink: 0; }
+  .throbber svg { width: 26px; height: 26px; }
+  .loading .throbber svg { animation: spin 1.2s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .viewport { flex: 1; background: #fff; box-shadow: var(--sunken); padding: 2px; overflow: hidden; display: flex; }
+  .page { flex: 1; overflow: auto; user-select: text; -webkit-user-select: text; }
+
+  /* ---------- THE RETRO SITE (inside the browser) ---------- */
+  .site { min-height: 100%; background-color: #000; background-image: radial-gradient(#222 1px, transparent 1px); background-size: 6px 6px; color: #ddd; font-family: "Times New Roman", Times, serif; font-size: 16px; padding: 14px 10px 30px; text-align: center; }
+  .site a { color: #4af; }
+  .site a:visited { color: #c6f; }
+  .site h1 { font-family: "Comic Sans MS", "Times New Roman", serif; font-size: 40px; color: #e00; margin: 6px 0 2px; text-shadow: 3px 3px 0 #400; letter-spacing: 1px; }
+  .site .tag { color: #aaa; font-style: italic; margin-bottom: 10px; }
+  .site marquee, .site .marq { color: #ff0; font-family: "Courier New", monospace; font-weight: bold; background: #200; border-top: 1px solid #600; border-bottom: 1px solid #600; padding: 3px 0; }
+  .marq { overflow: hidden; white-space: nowrap; }
+  .marq span { display: inline-block; padding-left: 100%; animation: marq 16s linear infinite; }
+  @keyframes marq { to { transform: translateX(-100%); } }
+  .site hr { border: 0; height: 3px; background: linear-gradient(90deg, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00); margin: 14px auto; width: 90%; }
+  .construction { display: inline-flex; align-items: center; gap: 10px; margin: 8px auto; padding: 6px 10px; background: #ff0; color: #000; font: bold 14px Arial, sans-serif; border: 4px solid; border-image: repeating-linear-gradient(45deg, #000 0 8px, #ff0 8px 16px) 8; }
+  .construction .guy { font-size: 22px; animation: dig .5s steps(2) infinite; }
+  @keyframes dig { 50% { transform: rotate(-20deg); } }
+  .site table.layout { margin: 0 auto; border-collapse: separate; border-spacing: 8px; max-width: 620px; width: 100%; }
+  .site td { vertical-align: top; text-align: left; }
+  .site td.nav { width: 150px; background: #111; border: 2px outset #555; padding: 8px; font-family: Verdana, Arial, sans-serif; font-size: 13px; }
+  .site td.nav a { display: block; margin: 4px 0; }
+  .site td.main { background: #0a0a0a; border: 2px inset #555; padding: 10px 12px; }
+  .site .new { color: #f00; font-weight: bold; font-size: 11px; font-family: Arial, sans-serif; animation: blink 1s steps(1) infinite; }
+  .site .ph { color: #6a6; font-family: "Courier New", monospace; font-size: 13px; border: 1px dashed #363; padding: 6px; margin: 8px 0; }
+  .counter { display: inline-flex; gap: 2px; background: #000; padding: 3px; border: 2px inset #666; vertical-align: middle; }
+  .counter b { font-family: "Courier New", monospace; font-size: 18px; color: #f22; background: #210; width: 15px; text-align: center; text-shadow: 0 0 4px #f00; }
+  .badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 14px; }
+  .badge { width: 88px; height: 31px; font: bold 9px/1.1 Verdana, Arial, sans-serif; display: flex; align-items: center; justify-content: center; text-align: center; border: 1px solid #fff; padding: 2px; }
+  .webring { margin-top: 14px; font-family: Verdana, Arial, sans-serif; font-size: 12px; border: 1px solid #444; display: inline-block; padding: 6px 12px; background: #111; }
+  .small { font-size: 11px; color: #777; font-family: Arial, sans-serif; margin-top: 12px; }
+
+  /* Notepad */
+  .notepad { background: #fff; box-shadow: var(--sunken); padding: 4px 6px; font-family: "Fixedsys", "Lucida Console", "Courier New", monospace; font-size: 13px; white-space: pre-wrap; user-select: text; -webkit-user-select: text; }
+  /* Explorer */
+  .explorer { background: #fff; box-shadow: var(--sunken); display: flex; flex-wrap: wrap; align-content: flex-start; gap: 6px; padding: 8px; }
+  .explorer .icon { color: #000; }
+  /* Player */
+  .player { background: #000; flex: 1; display: grid; place-items: center; color: #ccc; font-family: "Courier New", monospace; text-align: center; min-height: 180px; box-shadow: var(--sunken); }
+  .player .noise { position: absolute; inset: 0; opacity: .08; background: repeating-linear-gradient(0deg, #fff 0 1px, transparent 1px 3px); pointer-events: none; }
+  .controls { display: flex; gap: 2px; padding: 4px 0 0; align-items: center; }
+  .controls button.b98 { min-width: 28px; padding: 0 6px; }
+  .seek { flex: 1; height: 6px; box-shadow: var(--sunken); background: #fff; margin: 0 6px; }
+  /* Dialog */
+  .dialog .body { display: flex; gap: 14px; padding: 14px 12px 8px; align-items: flex-start; }
+  .dialog .btns { display: flex; justify-content: center; gap: 6px; padding: 6px 0 8px; }
+
+  /* Taskbar */
+  #taskbar { position: absolute; left: 0; right: 0; bottom: 0; height: 30px; background: var(--face); box-shadow: inset 0 1px var(--light), inset 0 2px var(--white); display: flex; align-items: center; gap: 3px; padding: 3px 2px 2px; z-index: 9000; }
+  #startbtn { display: flex; align-items: center; gap: 3px; height: 22px; padding: 0 5px 0 3px; font-weight: bold; font-family: var(--ui-font); font-size: 12px; background: var(--face); border: 0; box-shadow: var(--raised); color: #000; }
+  #startbtn.down { box-shadow: var(--pressed); }
+  #startbtn svg { width: 18px; height: 16px; }
+  .tsep { width: 2px; height: 22px; border-left: 1px solid var(--shadow); border-right: 1px solid var(--white); margin: 0 1px; }
+  #tasks { flex: 1; display: flex; gap: 3px; overflow: hidden; }
+  .task { height: 22px; flex: 0 1 160px; min-width: 40px; display: flex; align-items: center; gap: 4px; padding: 0 5px; background: var(--face); box-shadow: var(--raised); white-space: nowrap; overflow: hidden; font-size: 11px; }
+  .task svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .task span { overflow: hidden; text-overflow: ellipsis; }
+  .task.active { box-shadow: var(--pressed); font-weight: bold; background: repeating-conic-gradient(var(--face) 0 25%, var(--white) 0 50%) 0 0 / 2px 2px; }
+  #tray { height: 22px; display: flex; align-items: center; gap: 6px; padding: 0 8px; box-shadow: inset -1px -1px var(--white), inset 1px 1px var(--shadow); font-size: 11px; }
+  #tray svg { width: 16px; height: 16px; }
+
+  /* Start menu */
+  #startmenu { position: absolute; left: 2px; bottom: 28px; background: var(--face); box-shadow: var(--raised); padding: 3px; display: none; z-index: 9500; }
+  #startmenu.on { display: flex; }
+  #startmenu .side { width: 22px; background: linear-gradient(0deg, var(--navy), #1084d0); color: #c0c0c0; writing-mode: vertical-rl; transform: rotate(180deg); font: 900 18px Arial, sans-serif; padding: 6px 0; letter-spacing: 1px; }
+  #startmenu .side b { color: #fff; }
+  #startmenu ul { list-style: none; margin: 0; padding: 0; min-width: 170px; }
+  #startmenu li { display: flex; align-items: center; gap: 8px; padding: 4px 18px 4px 6px; height: 32px; position: relative; }
+  #startmenu li svg { width: 24px; height: 24px; }
+  #startmenu li:hover { background: var(--navy); color: #fff; }
+  #startmenu li.arrow::after { content: "\25B6"; position: absolute; right: 6px; font-size: 8px; }
+  #startmenu li.div { height: 0; padding: 0; margin: 3px 2px; border-top: 1px solid var(--shadow); border-bottom: 1px solid var(--white); }
+  #startmenu li.div:hover { background: none; }
+
+  /* Shutdown */
+  #shutdown { background: #000; display: none; align-items: center; justify-content: center; text-align: center; color: #f80; font: bold 28px "Courier New", monospace; flex-direction: column; gap: 30px; }
+  #shutdown.on { display: flex; }
+  #shutdown small { font-size: 13px; color: #555; cursor: pointer; }
+  #dim { position: absolute; inset: 0; background: repeating-conic-gradient(#000 0 25%, transparent 0 50%) 0 0 / 2px 2px; display: none; z-index: 9700; }
+  #dim.on { display: block; }
+
+  @media (max-width: 640px) {
+    .win.open { left: 0 !important; top: 0 !important; width: 100% !important; height: calc(100% - 30px) !important; }
+    .toolbar .tool span { display: none; }
+    .toolbar .tool { min-width: 30px; }
+    .site h1 { font-size: 28px; }
+    .site td.nav { display: block; width: auto; }
+    .site td.main { display: block; }
+    #bios { font-size: 12px; padding: 14px 16px; }
+    #bios .logo { display: none; }
+    #splash .name { font-size: 38px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 0. POWER BUTTON (also lets us play sound later, browsers need a click first) -->
+<div id="power" class="screen on" role="button" tabindex="0" aria-label="Power on">
+  <div class="btn-power"><svg viewBox="0 0 24 24" fill="none" stroke="#3c3" stroke-width="2.4" stroke-linecap="round"><path d="M12 3v8"/><path d="M6.5 6.8a8 8 0 1 0 11 0"/></svg></div>
+  <p>Press power to start</p>
+  <div class="led" id="led"></div>
+</div>
+
+<!-- 1. BIOS POST -->
+<div id="bios" class="screen">
+  <div class="logo">  ▄▄▄  ▄   ▄ ▄▄▄▄
+ █     █▀▄▀█ █▄▄
+ ▀▄▄▄  █   █ █
+  Energy Saver</div>
+  <div id="biostext"></div>
+  <div class="foot">Press <span class="hi">DEL</span> to enter SETUP, <span class="hi">ESC</span> to skip memory test<br>11/19/98-i440BX-CMF-2A69KC09C-00</div>
+</div>
+
+<!-- 2. SPLASH -->
+<div id="splash" class="screen">
+  <div class="brand">
+    <div class="mark"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><i></i></div>
+    <div class="name">CutOff<sup>98</sup></div>
+    <div class="sub">OPERATING SYSTEM</div>
+  </div>
+  <div class="bar"></div>
+</div>
+
+<!-- 3. DESKTOP -->
+<div id="desktop" class="screen">
+  <div id="icons"></div>
+
+  <!-- Browser -->
+  <div class="win" id="w-browser" data-title="cutoffmyfeet.net - WebSurfer" data-icon="globe" style="left:110px; top:20px; width:min(820px, calc(100% - 130px)); height:calc(100% - 70px);">
+    <div class="title"><svg data-i="globe"></svg><span class="t">cutoffmyfeet.net - WebSurfer</span><button class="tb" data-act="min">_</button><button class="tb" data-act="max">□</button><button class="tb x" data-act="close">✕</button></div>
+    <div class="menubar"><span><u>F</u>ile</span><span><u>E</u>dit</span><span><u>V</u>iew</span><span><u>G</u>o</span><span>F<u>a</u>vorites</span><span><u>H</u>elp</span></div>
+    <div class="toolbar">
+      <div class="tool dim"><svg data-i="back"></svg><span>Back</span></div>
+      <div class="tool dim"><svg data-i="fwd"></svg><span>Forward</span></div>
+      <div class="tool" data-act="stop"><svg data-i="stop"></svg><span>Stop</span></div>
+      <div class="tool" data-act="reload"><svg data-i="reload"></svg><span>Refresh</span></div>
+      <div class="tool" data-act="reload"><svg data-i="home"></svg><span>Home</span></div>
+      <div class="sep"></div>
+      <div class="tool"><svg data-i="search"></svg><span>Search</span></div>
+      <div class="tool"><svg data-i="star"></svg><span>Favorites</span></div>
+      <div class="tool"><svg data-i="print"></svg><span>Print</span></div>
+      <div class="throbber"><svg data-i="globe"></svg></div>
+    </div>
+    <div class="addr"><span>A<u>d</u>dress</span> <div class="field"><svg data-i="page"></svg><span>http://www.cutoffmyfeet.net/</span></div></div>
+    <div class="viewport"><div class="page" id="page"></div></div>
+    <div class="statusbar"><div id="bstatus">Done</div><div>Internet zone</div></div>
+  </div>
+
+  <!-- My Computer -->
+  <div class="win" id="w-computer" data-title="My Computer" data-icon="computer" style="left:160px; top:60px; width:380px; height:270px;">
+    <div class="title"><svg data-i="computer"></svg><span class="t">My Computer</span><button class="tb" data-act="min">_</button><button class="tb" data-act="max">□</button><button class="tb x" data-act="close">✕</button></div>
+    <div class="menubar"><span><u>F</u>ile</span><span><u>E</u>dit</span><span><u>V</u>iew</span><span><u>H</u>elp</span></div>
+    <div class="body explorer">
+      <div class="icon"><svg data-i="floppy"></svg><span>3½ Floppy (A:)</span></div>
+      <div class="icon"><svg data-i="drive"></svg><span>Local Disk (C:)</span></div>
+      <div class="icon"><svg data-i="cd"></svg><span>CD-ROM (D:)</span></div>
+      <div class="icon"><svg data-i="folder"></svg><span>Control Panel</span></div>
+      <div class="icon"><svg data-i="folder"></svg><span>Printers</span></div>
+    </div>
+    <div class="statusbar"><div>5 object(s)</div><div></div></div>
+  </div>
+
+  <!-- README -->
+  <div class="win" id="w-readme" data-title="README.TXT - Notepad" data-icon="note" style="left:210px; top:90px; width:420px; height:300px;">
+    <div class="title"><svg data-i="note"></svg><span class="t">README.TXT - Notepad</span><button class="tb" data-act="min">_</button><button class="tb" data-act="max">□</button><button class="tb x" data-act="close">✕</button></div>
+    <div class="menubar"><span><u>F</u>ile</span><span><u>E</u>dit</span><span><u>S</u>earch</span><span><u>H</u>elp</span></div>
+    <div class="body notepad">[PLACEHOLDER — film synopsis / teaser text goes here]
+
+If you found this computer, please don't turn it off.
+
+- - - - - - - - - - - - - - - -
+CUT OFF MY FEET
+a short film
+coming soon
+- - - - - - - - - - - - - - - -</div>
+  </div>
+
+  <!-- Film player -->
+  <div class="win" id="w-film" data-title="TRAILER.AVI - Media Player" data-icon="film" style="left:260px; top:120px; width:440px; height:330px;">
+    <div class="title"><svg data-i="film"></svg><span class="t">TRAILER.AVI - Media Player</span><button class="tb" data-act="min">_</button><button class="tb" data-act="max">□</button><button class="tb x" data-act="close">✕</button></div>
+    <div class="menubar"><span><u>F</u>ile</span><span><u>E</u>dit</span><span><u>D</u>evice</span><span>S<u>c</u>ale</span><span><u>H</u>elp</span></div>
+    <div class="player" style="position:relative"><div class="noise"></div><div>[ TRAILER PLACEHOLDER ]<br><br><span style="color:#777">NO SIGNAL</span></div></div>
+    <div class="controls"><button class="b98">▶</button><button class="b98">■</button><div class="seek"></div><span>00:00</span></div>
+  </div>
+
+  <!-- Recycle Bin -->
+  <div class="win" id="w-bin" data-title="Recycle Bin" data-icon="bin" style="left:300px; top:150px; width:360px; height:230px;">
+    <div class="title"><svg data-i="bin"></svg><span class="t">Recycle Bin</span><button class="tb" data-act="min">_</button><button class="tb" data-act="max">□</button><button class="tb x" data-act="close">✕</button></div>
+    <div class="menubar"><span><u>F</u>ile</span><span><u>E</u>dit</span><span><u>V</u>iew</span><span><u>H</u>elp</span></div>
+    <div class="body explorer">
+      <div class="icon"><svg data-i="note"></svg><span>dont_open.txt</span></div>
+    </div>
+    <div class="statusbar"><div>1 object(s)</div><div>1.4KB</div></div>
+  </div>
+
+  <!-- Error dialog -->
+  <div class="win dialog" id="w-error" data-title="Error" data-icon="warn" style="left:calc(50% - 170px); top:calc(50% - 80px); width:340px;">
+    <div class="title"><span class="t">Error</span><button class="tb x" data-act="close">✕</button></div>
+    <div class="body"><svg data-i="warn" style="width:32px;height:32px;flex-shrink:0"></svg><div id="errmsg">This file cannot be opened.<br><br>[PLACEHOLDER message]</div></div>
+    <div class="btns"><button class="b98" data-act="close">OK</button></div>
+  </div>
+
+  <div id="startmenu">
+    <div class="side"><b>CutOff</b>98</div>
+    <ul>
+      <li class="arrow"><svg data-i="folder"></svg>Programs</li>
+      <li class="arrow"><svg data-i="note"></svg>Documents</li>
+      <li class="arrow"><svg data-i="computer"></svg>Settings</li>
+      <li class="arrow"><svg data-i="search"></svg>Find</li>
+      <li data-open="w-error" data-msg="Help is not available for this program."><svg data-i="help"></svg>Help</li>
+      <li data-open="w-browser"><svg data-i="globe"></svg>Run...</li>
+      <li class="div"></li>
+      <li id="shutbtn"><svg data-i="power"></svg>Shut Down...</li>
+    </ul>
+  </div>
+
+  <div id="taskbar">
+    <button id="startbtn"><svg data-i="logo"></svg>Start</button>
+    <div class="tsep"></div>
+    <div id="tasks"></div>
+    <div id="tray"><svg data-i="speaker"></svg><span id="clock">12:00 AM</span></div>
+  </div>
+  <div id="dim"></div>
+</div>
+
+<!-- 4. SHUT DOWN -->
+<div id="shutdown"><div>It's now safe to turn off<br>your computer.</div><small id="restart">[ click to restart ]</small></div>
+
+<script>
+/* ---------------- ICONS (original pixel-style SVGs) ---------------- */
+const ICONS = {
+  computer: '<svg viewBox="0 0 32 32" shape-rendering="crispEdges"><rect x="4" y="3" width="24" height="18" fill="#c0c0c0" stroke="#000"/><rect x="7" y="6" width="18" height="12" fill="#008080"/><rect x="7" y="6" width="18" height="1" fill="#000"/><rect x="12" y="21" width="8" height="3" fill="#808080"/><rect x="6" y="24" width="20" height="5" fill="#c0c0c0" stroke="#000"/><rect x="20" y="26" width="4" height="1" fill="#0a0"/></svg>',
+  bin: '<svg viewBox="0 0 32 32" shape-rendering="crispEdges"><rect x="7" y="6" width="18" height="3" fill="#c0c0c0" stroke="#000"/><path d="M9 9h14l-2 20H11z" fill="#dfdfdf" stroke="#000"/><path d="M13 12v14M16 12v14M19 12v14" stroke="#808080"/></svg>',
+  globe: '<svg viewBox="0 0 32 32" shape-rendering="crispEdges"><circle cx="16" cy="16" r="12" fill="#1e5fd6" stroke="#000"/><path d="M9 9h6v4h-3v4h-4zM18 6h4v4h4v6h-4v-3h-4zM14 19h6v6h-4v3h-2z" fill="#2a2"/><ellipse cx="16" cy="16" rx="5" ry="12" fill="none" stroke="#9cf" stroke-width=".8"/><path d="M4 16h24" stroke="#9cf" stroke-width=".8"/></svg>',
+  note: '<svg viewBox="0 0 32 32" shape-rendering="crispEdges"><path d="M7 3h13l5 5v21H7z" fill="#fff" stroke="#000"/><path d="M20 3v5h5" fill="#c0c0c0" stroke="#000"/><path d="M10 12h12M10 15h12M10 18h12M10 21h9M10 24h12" stroke="#000080"/></svg>',
+  film: '<svg viewBox="0 0 32 32" shape-rendering="crispEdges"><rect x="4" y="6" width="24" height="20" fill="#222" stroke="#000"/><path d="M6 8h2v2H6zM6 12h2v2H6zM6 16h2v2H6zM6 20h2v2H6zM24 8h2v2h-2zM24 12h2v2h-2zM24 16h2v2h-2zM24 20h2v2h-2z" fill="#fff"/><rect x="10" y="9" width="12" height="14" fill="#a00"/><path d="M14 12l5 4-5 4z" fill="#fff"/></svg>',
+  folder: '<svg viewBox="0 0 32 32" shape-rendering="crispEdges"><path d="M3 8h9l2 2h15v17H3z" fill="#e8c84a" stroke="#000"/><path d="M3 13h26" stroke="#fff6b0"/></svg>',
+  floppy: '<svg viewBox="0 0 32 32" shape-rendering="crispEdges"><rect x="5" y="5" width="22" height="22" fill="#333" stroke="#000"/><rect x="10" y="5" width="12" height="8" fill="#c0c0c0"/><rect x="17" y="6" width="3" height="6" fill="#333"/><rect x="9" y="17" width="14" height="10" fill="#fff"/></svg>',
+  drive: '<svg viewBox="0 0 32 32" shape-rendering="crispEdges"><rect x="3" y="12" width="26" height="10" fill="#c0c0c0" stroke="#000"/><rect x="5" y="18" width="4" height="2" fill="#0c0"/><path d="M3 12l3-4h20l3 4" fill="#dfdfdf" stroke="#000"/></svg>',
+  cd: '<svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="12" fill="#dde" stroke="#000"/><circle cx="16" cy="16" r="12" fill="url(#g)" opacity=".5"/><defs><linearGradient id="g" x2="1" y2="1"><stop offset="0" stop-color="#f0f"/><stop offset=".5" stop-color="#0ff"/><stop offset="1" stop-color="#ff0"/></linearGradient></defs><circle cx="16" cy="16" r="3" fill="#fff" stroke="#000"/></svg>',
+  warn: '<svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="13" fill="#e00" stroke="#600"/><path d="M10 10l12 12M22 10L10 22" stroke="#fff" stroke-width="3.5"/></svg>',
+  help: '<svg viewBox="0 0 32 32"><path d="M4 6h10q2 0 2 2v20q0-2-2-2H4zM28 6H18q-2 0-2 2v20q0-2 2-2h10z" fill="#ff8" stroke="#000"/><text x="16" y="21" font-size="14" font-weight="bold" text-anchor="middle" fill="#000080">?</text></svg>',
+  power: '<svg viewBox="0 0 32 32" shape-rendering="crispEdges"><rect x="4" y="4" width="24" height="18" fill="#c0c0c0" stroke="#000"/><rect x="7" y="7" width="18" height="12" fill="#000"/><rect x="8" y="24" width="16" height="4" fill="#808080" stroke="#000"/></svg>',
+  logo: '<svg viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="1" y="1" width="4" height="4" fill="#b00"/><rect x="6" y="1" width="4" height="4"/><rect x="11" y="1" width="4" height="4" fill="#b00"/><rect x="1" y="6" width="4" height="4"/><rect x="6" y="6" width="4" height="4" fill="#b00"/><rect x="11" y="6" width="4" height="4"/><rect x="1" y="11" width="4" height="4" fill="#b00"/><rect x="6" y="11" width="4" height="4"/></svg>',
+  speaker: '<svg viewBox="0 0 16 16" shape-rendering="crispEdges"><path d="M2 6h3l4-3v10L5 10H2z" fill="#ff0" stroke="#000"/><path d="M11 5q2 3 0 6M12.5 3.5q3.5 4.5 0 9" stroke="#000" fill="none"/></svg>',
+  back: '<svg viewBox="0 0 24 24"><path d="M3 12l8-7v4h10v6H11v4z" fill="#2a2" stroke="#000"/></svg>',
+  fwd: '<svg viewBox="0 0 24 24"><path d="M21 12l-8-7v4H3v6h10v4z" fill="#2a2" stroke="#000"/></svg>',
+  stop: '<svg viewBox="0 0 24 24"><path d="M8 2h8l6 6v8l-6 6H8l-6-6V8z" fill="#d00" stroke="#000"/><path d="M8 8l8 8M16 8l-8 8" stroke="#fff" stroke-width="2.4"/></svg>',
+  reload: '<svg viewBox="0 0 24 24"><path d="M19 12a7 7 0 1 1-3-5.7" fill="none" stroke="#2a2" stroke-width="3"/><path d="M13 3h7v7z" fill="#2a2" stroke="#000"/></svg>',
+  home: '<svg viewBox="0 0 24 24"><path d="M2 12L12 3l10 9h-3v9H5v-9z" fill="#ff8" stroke="#000"/><rect x="10" y="14" width="4" height="7" fill="#a52"/></svg>',
+  search: '<svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6" fill="#bdf" stroke="#000" stroke-width="2"/><path d="M14 14l7 7" stroke="#000" stroke-width="3"/></svg>',
+  star: '<svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .5-5.5 4.5 2 7.5L12 17l-6.5 4.5 2-7.5L2 9.5 9 9z" fill="#fc0" stroke="#000"/></svg>',
+  print: '<svg viewBox="0 0 24 24" shape-rendering="crispEdges"><rect x="6" y="2" width="12" height="7" fill="#fff" stroke="#000"/><rect x="2" y="9" width="20" height="9" fill="#c0c0c0" stroke="#000"/><rect x="6" y="15" width="12" height="7" fill="#fff" stroke="#000"/></svg>',
+  page: '<svg viewBox="0 0 16 16"><path d="M3 1h7l3 3v11H3z" fill="#fff" stroke="#000"/><circle cx="8" cy="9" r="3.4" fill="#1e5fd6"/></svg>'
+};
+function paintIcons(root = document) {
+  root.querySelectorAll('svg[data-i]').forEach(s => {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = ICONS[s.dataset.i] || '';
+    const n = tmp.firstChild; if (!n) return;
+    if (s.getAttribute('style')) n.setAttribute('style', s.getAttribute('style'));
+    s.replaceWith(n);
+  });
+}
+
+/* ---------------- DESKTOP ICONS ---------------- */
+const DESK = [
+  { label: 'My Computer', icon: 'computer', open: 'w-computer' },
+  { label: 'Recycle Bin', icon: 'bin', open: 'w-bin' },
+  { label: 'WebSurfer', icon: 'globe', open: 'w-browser' },
+  { label: 'README.TXT', icon: 'note', open: 'w-readme' },
+  { label: 'TRAILER.AVI', icon: 'film', open: 'w-film' },
+  { label: 'feet.jpg', icon: 'note', open: 'w-error', msg: 'C:\\WINDOWS\\Desktop\\feet.jpg<br><br>The file is corrupt and cannot be opened.' }
+];
+const iconsEl = document.getElementById('icons');
+DESK.forEach(d => {
+  const el = document.createElement('div');
+  el.className = 'icon'; el.tabIndex = 0;
+  el.innerHTML = `<svg data-i="${d.icon}"></svg><span>${d.label}</span>`;
+  el.addEventListener('click', e => {
+    document.querySelectorAll('#icons .icon').forEach(i => i.classList.remove('sel'));
+    el.classList.add('sel');
+    if (matchMedia('(pointer: coarse)').matches) openWin(d.open, d.msg);
+    e.stopPropagation();
+  });
+  el.addEventListener('dblclick', () => openWin(d.open, d.msg));
+  el.addEventListener('keydown', e => { if (e.key === 'Enter') openWin(d.open, d.msg); });
+  iconsEl.appendChild(el);
+});
+document.querySelectorAll('.explorer .icon').forEach(el => {
+  el.addEventListener('dblclick', () => openWin('w-error', 'Access is denied.<br><br>The device is not ready.'));
+});
+
+/* ---------------- WINDOW MANAGER ---------------- */
+let z = 10;
+const tasksEl = document.getElementById('tasks');
+function focusWin(w) {
+  document.querySelectorAll('.win').forEach(x => x.classList.remove('active'));
+  w.classList.add('active'); w.style.zIndex = ++z;
+  document.querySelectorAll('.task').forEach(t => t.classList.toggle('active', t.dataset.for === w.id && !w.classList.contains('min')));
+}
+function openWin(id, msg) {
+  const w = document.getElementById(id);
+  if (id === 'w-error' && msg) document.getElementById('errmsg').innerHTML = msg;
+  w.classList.add('open'); w.classList.remove('min');
+  if (!tasksEl.querySelector(`[data-for="${id}"]`) && id !== 'w-error') {
+    const t = document.createElement('div');
+    t.className = 'task'; t.dataset.for = id;
+    t.innerHTML = `<svg data-i="${w.dataset.icon}"></svg><span>${w.dataset.title}</span>`;
+    paintIcons(t);
+    t.addEventListener('click', () => {
+      if (w.classList.contains('active') && !w.classList.contains('min')) { w.classList.add('min'); t.classList.remove('active'); w.classList.remove('active'); }
+      else { w.classList.remove('min'); focusWin(w); }
+    });
+    tasksEl.appendChild(t);
+  }
+  if (id === 'w-browser') loadPage();
+  focusWin(w);
+  closeStart();
+}
+function closeWin(w) {
+  w.classList.remove('open', 'active');
+  const t = tasksEl.querySelector(`[data-for="${w.id}"]`); if (t) t.remove();
+}
+document.querySelectorAll('.win').forEach(w => {
+  w.addEventListener('mousedown', () => focusWin(w));
+  w.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', e => {
+    e.stopPropagation();
+    const a = b.dataset.act;
+    if (a === 'close') closeWin(w);
+    if (a === 'min') { w.classList.add('min'); w.classList.remove('active'); const t = tasksEl.querySelector(`[data-for="${w.id}"]`); if (t) t.classList.remove('active'); }
+    if (a === 'max') {
+      if (w.dataset.prev) { w.style.cssText = w.dataset.prev; delete w.dataset.prev; }
+      else { w.dataset.prev = w.style.cssText; Object.assign(w.style, { left: '0', top: '0', width: '100%', height: 'calc(100% - 30px)' }); }
+      w.style.zIndex = ++z;
+    }
+    if (a === 'reload') loadPage();
+    if (a === 'stop') { document.getElementById('w-browser').classList.remove('loading'); document.getElementById('bstatus').textContent = 'Done'; }
+  }));
+  // drag by title bar
+  const bar = w.querySelector('.title');
+  bar.addEventListener('pointerdown', e => {
+    if (e.target.closest('.tb') || innerWidth <= 640 || w.dataset.prev) return;
+    focusWin(w);
+    const sx = e.clientX - w.offsetLeft, sy = e.clientY - w.offsetTop;
+    const move = ev => {
+      w.style.left = Math.max(-w.offsetWidth + 60, Math.min(innerWidth - 60, ev.clientX - sx)) + 'px';
+      w.style.top = Math.max(0, Math.min(innerHeight - 60, ev.clientY - sy)) + 'px';
+    };
+    const up = () => { removeEventListener('pointermove', move); removeEventListener('pointerup', up); };
+    addEventListener('pointermove', move); addEventListener('pointerup', up);
+  });
+  bar.addEventListener('dblclick', e => { if (!e.target.closest('.tb')) w.querySelector('[data-act="max"]')?.click(); });
+});
+document.getElementById('desktop').addEventListener('click', e => {
+  if (!e.target.closest('.icon')) document.querySelectorAll('#icons .icon').forEach(i => i.classList.remove('sel'));
+  if (!e.target.closest('#startmenu') && !e.target.closest('#startbtn')) closeStart();
+});
+
+/* ---------------- START MENU ---------------- */
+const startBtn = document.getElementById('startbtn'), startMenu = document.getElementById('startmenu');
+function closeStart() { startMenu.classList.remove('on'); startBtn.classList.remove('down'); }
+startBtn.addEventListener('click', () => { const on = startMenu.classList.toggle('on'); startBtn.classList.toggle('down', on); });
+startMenu.querySelectorAll('li[data-open]').forEach(li => li.addEventListener('click', () => openWin(li.dataset.open, li.dataset.msg)));
+document.getElementById('shutbtn').addEventListener('click', () => {
+  closeStart();
+  document.getElementById('dim').classList.add('on');
+  setTimeout(() => { show('shutdown'); document.getElementById('dim').classList.remove('on'); }, 900);
+});
+document.getElementById('restart').addEventListener('click', () => location.reload());
+
+/* ---------------- CLOCK ---------------- */
+function tick() { document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); }
+tick(); setInterval(tick, 10000);
+
+/* ---------------- THE RETRO WEBSITE ---------------- */
+function visitorCount() {
+  let n = 4816;
+  try { n = parseInt(localStorage.getItem('cmf_visits') || '4816', 10) + 1; localStorage.setItem('cmf_visits', n); } catch (e) {}
+  return String(n).padStart(6, '0');
+}
+function loadPage() {
+  const w = document.getElementById('w-browser'), page = document.getElementById('page'), st = document.getElementById('bstatus');
+  w.classList.add('loading'); page.innerHTML = '';
+  const steps = ['Finding site: www.cutoffmyfeet.net...', 'Connecting to site 209.66.12.4...', 'Web site found. Waiting for reply...', 'Opening page http://www.cutoffmyfeet.net/...'];
+  steps.forEach((s, i) => setTimeout(() => st.textContent = s, i * 450));
+  setTimeout(() => {
+    const digits = visitorCount().split('').map(d => `<b>${d}</b>`).join('');
+    page.innerHTML = `
+    <div class="site">
+      <div class="marq"><span>*** WELCOME TO MY HOMEPAGE *** PLEASE SIGN THE GUESTBOOK *** [PLACEHOLDER SCROLLING TEXT] ***</span></div>
+      <h1>~ cutoffmyfeet.net ~</h1>
+      <div class="tag">[placeholder tagline goes here]</div>
+      <div class="construction"><span class="guy">⛏</span> THIS PAGE IS UNDER CONSTRUCTION <span class="guy">⛏</span></div>
+      <hr>
+      <table class="layout"><tr>
+        <td class="nav">
+          <b style="color:#e00">:: MENU ::</b>
+          <a href="#" onclick="return false">&gt; Home</a>
+          <a href="#" onclick="return false">&gt; About Me</a>
+          <a href="#" onclick="return false">&gt; Pictures <span class="new">NEW!</span></a>
+          <a href="#" onclick="return false">&gt; My Story</a>
+          <a href="#" onclick="return false">&gt; Guestbook</a>
+          <a href="#" onclick="return false">&gt; Links</a>
+          <a href="#" onclick="return false">&gt; Email Me</a>
+        </td>
+        <td class="main">
+          <b style="color:#fc0">Welcome!!</b>
+          <div class="ph">[PLACEHOLDER: main page text. Details coming later.]</div>
+          <p style="font-size:14px">Last updated: <b>11/19/1998</b></p>
+          <p style="font-size:14px">You are visitor number <span class="counter">${digits}</span></p>
+        </td>
+      </tr></table>
+      <hr>
+      <div class="webring">&lt;&lt; Prev | <b>[Placeholder] WebRing</b> | Random | Next &gt;&gt;</div>
+      <div class="badges">
+        <div class="badge" style="background:#004;color:#ff0">BEST VIEWED<br>800 x 600</div>
+        <div class="badge" style="background:#400;color:#fff">GET WEBSURFER<br>4.0 NOW!</div>
+        <div class="badge" style="background:#030;color:#0f0">MADE WITH<br>NOTEPAD</div>
+        <div class="badge" style="background:#222;color:#f0f">SIGN MY<br>GUESTBOOK</div>
+      </div>
+      <div class="small">&copy; 1998 &middot; all rights reserved &middot; do not steal my graphics</div>
+    </div>`;
+    st.textContent = 'Done'; w.classList.remove('loading');
+  }, 2000);
+}
+
+/* ---------------- BOOT SEQUENCE ---------------- */
+function show(id) { document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id)); }
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+let skipping = false;
+
+async function bios() {
+  show('bios');
+  const t = document.getElementById('biostext');
+  const line = async (html, wait = 180) => { if (!skipping) await sleep(wait); t.innerHTML = t.innerHTML.replace(/<span class="cursor"><\/span>$/, '') + html + '\n<span class="cursor"></span>'; };
+  t.innerHTML = '<span class="cursor"></span>';
+  await line('<span class="hi">CMF Modular BIOS v4.51PG</span>, An Energy Star Ally', 300);
+  await line('Copyright (C) 1984-98, CutOff Software, Inc.', 100);
+  await line('', 100);
+  await line('Pentium-II CPU at 400MHz', 300);
+  // memory count
+  t.innerHTML = t.innerHTML.replace(/<span class="cursor"><\/span>$/, '') + 'Memory Test :  <span id="mem">0</span>K';
+  const mem = document.getElementById('mem');
+  for (let k = 0; k <= 131072; k += 4096) { mem.textContent = k; if (!skipping) await sleep(28); }
+  mem.innerHTML = '131072 <span class="ok">OK</span>';
+  t.innerHTML += '\n<span class="cursor"></span>';
+  await line('', 200);
+  await line('CMF Plug and Play BIOS Extension v1.0A', 200);
+  await line('  Detecting IDE Primary Master  ... <span class="hi">QUANTUM FIREBALL 6.4GB</span>', 500);
+  await line('  Detecting IDE Primary Slave   ... None', 350);
+  await line('  Detecting IDE Secondary Master... <span class="hi">CD-ROM 32X</span>', 400);
+  await line('  Detecting IDE Secondary Slave ... None', 300);
+  await line('', 200);
+  await line('<span class="warn">WARNING: CMOS checksum error - Defaults loaded</span>', 500);
+  await line('', 200);
+  await line('Verifying DMI Pool Data ........ <span class="ok">Update Success</span>', 700);
+  await line('Boot from ATAPI CD-ROM : Failure ...', 500);
+  await line('Starting CutOff 98...', 600);
+  await sleep(skipping ? 100 : 900);
+}
+async function splash() {
+  show('splash');
+  // random clouds
+  const sp = document.getElementById('splash');
+  sp.querySelectorAll('.cloud').forEach(c => c.remove());
+  for (let i = 0; i < 9; i++) {
+    const c = document.createElement('div'); c.className = 'cloud';
+    const w = 120 + Math.random() * 260;
+    Object.assign(c.style, { width: w + 'px', height: w * .45 + 'px', left: Math.random() * 100 - 10 + '%', top: Math.random() * 85 + '%' });
+    sp.insertBefore(c, sp.firstChild);
+  }
+  await sleep(skipping ? 600 : 3800);
+  show('desktop'); // short black flash like the real thing
+  document.getElementById('desktop').style.visibility = 'hidden';
+  document.body.style.cursor = 'wait';
+  await sleep(500);
+  document.getElementById('desktop').style.visibility = 'visible';
+  await sleep(700);
+  document.body.style.cursor = '';
+  openWin('w-browser');
+}
+async function boot() {
+  document.getElementById('led').style.background = '#3f3';
+  document.getElementById('led').style.boxShadow = '0 0 6px #3f3';
+  await sleep(500);
+  await bios();
+  await splash();
+}
+paintIcons();
+const power = document.getElementById('power');
+let started = false;
+const start = () => { if (started) return; started = true; boot(); };
+power.addEventListener('click', start);
+power.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') start(); });
+addEventListener('keydown', e => { if (started && (e.key === 'Escape' || e.key === 'Delete')) skipping = true; });
+document.getElementById('bios').addEventListener('click', () => skipping = true);
+</script>
+</body>
+</html>
