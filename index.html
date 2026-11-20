@@ -391,10 +391,10 @@
   #w-mines .mbody { padding: 6px; }
   .mhead { display: flex; justify-content: space-between; align-items: center; padding: 4px 5px; box-shadow: var(--sunken); margin-bottom: 6px; }
   .mhead .led { background: #000; color: #f00; font: bold 20px/1 "Courier New", monospace; padding: 2px 3px; letter-spacing: 1px; box-shadow: inset 1px 1px #808080, inset -1px -1px #fff; }
-  .mface { width: 28px; height: 28px; font-size: 16px; line-height: 1; padding: 0; background: #c0c0c0; border: 0; box-shadow: var(--raised); }
+  .mface { width: 28px; height: 28px; display: grid; place-items: center; padding: 0; background: #c0c0c0; border: 0; box-shadow: var(--raised); }
   .mface:active { box-shadow: var(--pressed); }
   .mgrid { display: grid; grid-template-columns: repeat(9, 18px); box-shadow: var(--sunken); padding: 3px; width: max-content; }
-  .mgrid i { width: 18px; height: 18px; background: #c0c0c0; box-shadow: var(--raised); font: bold 13px/18px Tahoma, Arial, sans-serif; font-style: normal; text-align: center; cursor: default; user-select: none; }
+  .mgrid i { display: grid; place-items: center; width: 18px; height: 18px; background: #c0c0c0; box-shadow: var(--raised); font: bold 13px/18px Tahoma, Arial, sans-serif; font-style: normal; text-align: center; cursor: default; user-select: none; }
   .mgrid i.o { box-shadow: inset 1px 1px #808080; }
   .mgrid i.boom { background: #f00; }
   .mgrid i.n1 { color: #00f; } .mgrid i.n2 { color: #008000; } .mgrid i.n3 { color: #f00; } .mgrid i.n4 { color: #000080; }
@@ -603,7 +603,7 @@ Coming Summer 2027.</div>
     <div class="title"><svg data-i="mine"></svg><span class="t">Mines</span><button class="tb" data-act="min">_</button><button class="tb x" data-act="close">✕</button></div>
     <div class="menubar"><span><u>G</u>ame</span><span><u>H</u>elp</span></div>
     <div class="mbody">
-      <div class="mhead"><div class="led" id="mleft">010</div><button class="mface" id="mface">&#128578;</button><div class="led" id="mtime">000</div></div>
+      <div class="mhead"><div class="led" id="mleft">010</div><button class="mface" id="mface"></button><div class="led" id="mtime">000</div></div>
       <div class="mgrid" id="mgrid"></div>
     </div>
   </div>
@@ -1250,12 +1250,28 @@ document.getElementById('titlecard').addEventListener('click', () => {
 
 
 /* ================= MINES EASTER EGG ================= */
+const FACE = (() => {
+  const head = '<rect x="5" y="1" width="6" height="1"/><rect x="3" y="2" width="2" height="1"/><rect x="11" y="2" width="2" height="1"/><rect x="2" y="3" width="1" height="2"/><rect x="13" y="3" width="1" height="2"/><rect x="1" y="5" width="1" height="6"/><rect x="14" y="5" width="1" height="6"/><rect x="2" y="11" width="1" height="2"/><rect x="13" y="11" width="1" height="2"/><rect x="3" y="13" width="2" height="1"/><rect x="11" y="13" width="2" height="1"/><rect x="5" y="14" width="6" height="1"/>';
+  const fill = '<path fill="#ff0" d="M5 2h6v1h2v2h1v6h-1v2h-2v1H5v-1H3v-2H2V5h1V3h2z"/>';
+  const wrap = inner => `<svg viewBox="0 0 16 16" width="20" height="20" shape-rendering="crispEdges">${fill}<g fill="#000">${head}${inner}</g></svg>`;
+  return {
+    smile: wrap('<rect x="5" y="5" width="2" height="2"/><rect x="9" y="5" width="2" height="2"/><rect x="4" y="9" width="1" height="1"/><rect x="11" y="9" width="1" height="1"/><rect x="5" y="10" width="1" height="1"/><rect x="10" y="10" width="1" height="1"/><rect x="6" y="11" width="4" height="1"/>'),
+    dead: wrap('<rect x="4" y="4" width="1" height="1"/><rect x="6" y="4" width="1" height="1"/><rect x="5" y="5" width="1" height="1"/><rect x="4" y="6" width="1" height="1"/><rect x="6" y="6" width="1" height="1"/><rect x="9" y="4" width="1" height="1"/><rect x="11" y="4" width="1" height="1"/><rect x="10" y="5" width="1" height="1"/><rect x="9" y="6" width="1" height="1"/><rect x="11" y="6" width="1" height="1"/><rect x="6" y="10" width="4" height="1"/><rect x="5" y="11" width="1" height="1"/><rect x="10" y="11" width="1" height="1"/>'),
+    cool: wrap('<rect x="3" y="5" width="10" height="1"/><rect x="4" y="6" width="3" height="2"/><rect x="9" y="6" width="3" height="2"/><rect x="4" y="9" width="1" height="1"/><rect x="11" y="9" width="1" height="1"/><rect x="5" y="10" width="1" height="1"/><rect x="10" y="10" width="1" height="1"/><rect x="6" y="11" width="4" height="1"/>'),
+    oh: wrap('<rect x="5" y="5" width="2" height="2"/><rect x="9" y="5" width="2" height="2"/><rect x="7" y="9" width="2" height="1"/><rect x="6" y="10" width="1" height="2"/><rect x="9" y="10" width="1" height="2"/><rect x="7" y="12" width="2" height="1"/>')
+  };
+})();
+let faceNow = '';
+function setFace(n) { if (faceNow === n) return; faceNow = n; const f = document.getElementById('mface'); if (f) f.innerHTML = FACE[n]; }
+const PFLAG = '<svg viewBox="0 0 16 16" width="14" height="14" shape-rendering="crispEdges"><path fill="#f00" d="M5 2h2v6H5zM3 4h2v3H3zM4 3h1v5H4z"/><path fill="#000" d="M7 2h1v9H7zM5 11h4v1H5zM3 12h8v2H3z"/></svg>';
+const PBOMB = '<svg viewBox="0 0 16 16" width="14" height="14" shape-rendering="crispEdges"><path fill="#000" d="M7 1h1v14H7zM1 7h14v1H1zM5 3h5v1H5zM4 4h7v7H4zM5 11h5v1H5zM3 5h1v5H3zM11 5h1v5h-1zM3 3h1v1H3zM11 3h1v1h-1zM3 11h1v1H3zM11 11h1v1h-1z"/><path fill="#fff" d="M5 5h2v2H5z"/></svg>';
+
 const MS = { w: 9, h: 9, mines: 10 };
 let mb, mtimer, mt, mstarted, mover;
 function mReset() {
   clearInterval(mtimer); mt = 0; mstarted = false; mover = false;
   mb = Array.from({ length: MS.w * MS.h }, () => ({ m: false, o: false, f: false, n: 0 }));
-  document.getElementById('mface').innerHTML = '&#128578;';
+  setFace('smile');
   document.getElementById('mtime').textContent = '000';
   mDraw();
 }
@@ -1282,10 +1298,15 @@ function mClick(i) {
   if (mover) return;
   if (!mstarted) { mstarted = true; mPlant(i); mtimer = setInterval(() => { mt = Math.min(999, mt + 1); document.getElementById('mtime').textContent = String(mt).padStart(3, '0'); }, 1000); }
   const c = mb[i]; if (c.f || c.o) return;
-  if (c.m) { c.boom = true; mb.forEach(x => { if (x.m) x.o = true; }); mover = true; clearInterval(mtimer); document.getElementById('mface').innerHTML = '&#128565;'; play('error', .6); mDraw(); return; }
+  if (c.m) { c.boom = true; mb.forEach(x => { if (x.m) x.o = true; }); mover = true; clearInterval(mtimer); setFace('dead'); play('error', .6); mDraw(); return; }
   mOpen(i); play('click', .3);
-  if (mb.filter(x => !x.o && !x.m).length === 0) { mover = true; clearInterval(mtimer); mb.forEach(x => { if (x.m) x.f = true; }); document.getElementById('mface').innerHTML = '&#128526;'; mDraw(); setTimeout(startIM, 1800); return; }
+  if (mb.filter(x => !x.o && !x.m).length === 0) { mover = true; clearInterval(mtimer); mb.forEach(x => { if (x.m) x.f = true; }); setFace('cool'); mDraw(); setTimeout(startIM, 1800); return; }
   mDraw();
+}
+function mSolve() {                    // cheat: triple-click the face
+  mReset(); mClick(40);
+  mb.forEach((c, i) => { if (!c.m && !c.o && !mover) mOpen(i); });
+  if (!mover) { mover = true; clearInterval(mtimer); mb.forEach(x => { if (x.m) x.f = true; }); setFace('cool'); mDraw(); play('ding', .6); setTimeout(startIM, 1800); }
 }
 function mFlag(i) {
   if (mover || mb[i].o) return; mb[i].f = !mb[i].f; mDraw();
@@ -1293,8 +1314,8 @@ function mFlag(i) {
 function mDraw() {
   const g = document.getElementById('mgrid');
   g.innerHTML = mb.map((c, i) => {
-    if (!c.o) return `<i data-i="${i}">${c.f ? '&#128681;' : ''}</i>`;
-    if (c.m) return `<i class="o${c.boom ? ' boom' : ''}">&#128163;</i>`;
+    if (!c.o) return `<i data-i="${i}">${c.f ? PFLAG : ''}</i>`;
+    if (c.m) return `<i class="o${c.boom ? ' boom' : ''}">${PBOMB}</i>`;
     return `<i class="o n${c.n}">${c.n || ''}</i>`;
   }).join('');
   document.getElementById('mleft').textContent = String(Math.max(0, MS.mines - mb.filter(c => c.f).length)).padStart(3, '0');
@@ -1308,7 +1329,14 @@ function mDraw() {
     press = setTimeout(() => { g.dataset.long = 1; mFlag(+t.dataset.i); }, 450);
   });
   ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => g.addEventListener(ev, () => clearTimeout(press)));
-  document.getElementById('mface').addEventListener('click', mReset);
+  let fc = 0, ft = 0;
+  document.getElementById('mface').addEventListener('click', () => {
+    const now = Date.now(); fc = now - ft < 500 ? fc + 1 : 1; ft = now;
+    if (fc >= 3) { fc = 0; mSolve(); } else mReset();
+  });
+  // the little "oh!" face while holding the mouse down on the board
+  g.addEventListener('mousedown', e => { if (!mover && e.button === 0) setFace('oh'); });
+  addEventListener('mouseup', () => { if (!mover && faceNow === 'oh') setFace('smile'); });
   mReset();
 })();
 
