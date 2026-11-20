@@ -381,12 +381,9 @@
   .gbform input, .gbform textarea { width: 100%; }
   .gbform .hp { position: absolute; left: -9999px; width: 1px; height: 1px; }
   .gbnote { font: 11px Verdana, Arial, sans-serif; color: #555; margin-top: 6px; }
-  #crash { position: fixed; inset: 0; z-index: 100000; background: #0000aa; color: #fff; display: none; place-items: center; font: 16px/1.5 "Courier New", Courier, monospace; padding: 20px; cursor: default; }
+  #crash { position: fixed; inset: 0; z-index: 100000; background: #0000aa; display: none; place-items: center; cursor: none; }
   #crash.on { display: grid; }
-  #crash .cbox { max-width: 640px; }
-  #crash .ctitle { background: #aaa; color: #0000aa; display: table; margin: 0 auto 22px; padding: 0 8px; font-weight: bold; }
-  #crash .cc { text-align: center; margin-top: 22px; }
-  #crash .cursor { background: #fff; }
+  #bsod { width: min(100vw, 133.333vh); height: min(75vw, 100vh); image-rendering: pixelated; image-rendering: crisp-edges; }
   /* mines */
   #w-mines .mbody { padding: 6px; }
   .mhead { display: flex; justify-content: space-between; align-items: center; padding: 4px 5px; box-shadow: var(--sunken); margin-bottom: 6px; }
@@ -714,13 +711,7 @@ Coming Summer 2027.</div>
 </div>
 
 <!-- Crash screen (after the title card) -->
-<div id="crash"><div class="cbox">
-  <div class="ctitle">Kestrel 98</div>
-  <p>A fatal error has occurred in BROADCAST.VXD at 0028:C0011E36.<br>The current application will be terminated.</p>
-  <p>* live.cutoffmyfeet.net is not responding.<br>* Too many users are connected.</p>
-  <p>* Press any key to restart your computer.<br>* Restarting automatically in <span id="crashn">8</span> seconds.</p>
-  <p class="cc">Press any key to continue <span class="cursor"></span></p>
-</div></div>
+<div id="crash"><canvas id="bsod" width="720" height="400"></canvas></div>
 
 <!-- 4. SHUT DOWN -->
 <div id="shutdown"><div>It's now safe to turn off<br>your computer.</div><small id="restart">[ click to restart ]</small></div>
@@ -1298,20 +1289,6 @@ function titleCard() {
   T(() => { card.classList.add('on'); }, 3900);
   T(crashNow, 3900 + 7000);
 }
-let crashed = false;
-function crashNow() {
-  if (crashed) return; crashed = true;
-  tcTimers.forEach(clearTimeout); tcTimers = [];
-  document.getElementById('titlecard').classList.remove('on');
-  document.getElementById('crash').classList.add('on'); play('error');
-  let n = 8; const el = document.getElementById('crashn');
-  const iv = setInterval(() => { el.textContent = --n; if (n <= 0) reboot(); }, 1000);
-  const reboot = () => { clearInterval(iv); document.getElementById('crash').style.background = '#000'; document.getElementById('crash').innerHTML = ''; setTimeout(() => location.reload(), 900); };
-  setTimeout(() => {
-    addEventListener('keydown', reboot, { once: true });
-    document.getElementById('crash').addEventListener('click', reboot, { once: true });
-  }, 600);
-}
 document.getElementById('titlecard').addEventListener('click', () => {
   if (document.getElementById('tcard').classList.contains('on')) crashNow();
 });
@@ -1467,41 +1444,6 @@ function bigCrash() {
   setTimeout(() => { fr.remove(); filmCrash(); }, 1800);
 }
 
-/* 2. the blue error screen, which glitches and types out the title, then reboots */
-function filmCrash() {
-  const c = document.getElementById('crash');
-  c.innerHTML = `<div class="cbox" id="cbox">
-    <div class="ctitle">Kestrel 98</div>
-    <p>A fatal error has occurred in BROADCAST.VXD at 0028:C0011E36.<br>The current application will be terminated.</p>
-    <p>* live.cutoffmyfeet.net is not responding.<br>* Too many users are connected.</p>
-    <p class="cc">Press any key to continue <span class="cursor"></span></p></div>`;
-  c.classList.add('on'); play('error');
-  const box = document.getElementById('cbox');
-  const glyphs = '#%&@$*!?/\\<>[]{}=+_|~^01';
-  setTimeout(() => {                                   // glitch: jitter and scramble the text
-    box.classList.add('glitch');
-    const nodes = []; const walk = n => n.nodeType === 3 ? nodes.push(n) : n.childNodes.forEach(walk); walk(box);
-    let k = 0; const iv = setInterval(() => {
-      nodes.forEach(n => { n.textContent = n.textContent.split('').map(ch => ch.trim() && Math.random() < .12 + k * .06 ? glyphs[Math.random() * glyphs.length | 0] : ch).join(''); });
-      if (++k > 10) { clearInterval(iv); typeTitle(); }
-    }, 70);
-  }, 2600);
-  function typeTitle() {
-    box.classList.remove('glitch');
-    box.innerHTML = '<div class="ctype" id="ctype"></div>';
-    const out = document.getElementById('ctype');
-    const text = 'CUT OFF MY FEET\n\na short film by Bradley Geiger\n\nSummer 2027';
-    let i = 0;
-    const step = () => {
-      out.innerHTML = text.slice(0, i).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/\n/g, '<br>') + '<span class="cursor"></span>';
-      if (i++ < text.length) setTimeout(step, text[i - 1] === '\n' ? 180 : 45);
-      else setTimeout(reboot, 3800);
-    };
-    step();
-  }
-  function reboot() { try { sessionStorage.setItem('cmf_seized', '1'); } catch (e) {} c.style.background = '#000'; c.innerHTML = ''; setTimeout(() => location.reload(), 900); }
-}
-
 /* ================= AD POP-UPS (and the occasional scare) ================= */
 const SPAM = [
   { t: 'CONGRATULATIONS!!!', h: 'YOU ARE A WINNER!', b: 'You are our <b>1,000,000th</b> visitor!<br>You have WON a <b>FREE Pentium III</b> computer!!', btn: 'CLAIM MY PRIZE', c: '#ff0', bg: '#c00' },
@@ -1538,6 +1480,124 @@ function scarePopup() {
 function adClick(e) {
   e.preventDefault();
   if (Math.random() < 1 / 20) scarePopup(); else spamPopup();
+}
+
+/* VGA 9x16 text-mode font: 'Px437 IBM VGA 9x16' from The Ultimate Oldschool PC Font Pack by VileR
+   (int10h.org), CC BY-SA 4.0. Bitmap extraction via pcface by Susam Pal. */
+const VGA9x16 = {"32":"0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0","33":"0.0.30.78.78.78.30.30.30.0.30.30.0.0.0.0","34":"0.cc.cc.cc.48.0.0.0.0.0.0.0.0.0.0.0","35":"0.0.0.d8.d8.1fc.d8.d8.d8.1fc.d8.d8.0.0.0.0","36":"30.30.f8.18c.184.180.f8.c.c.10c.18c.f8.30.30.0.0","37":"0.0.0.0.184.18c.18.30.60.c0.18c.10c.0.0.0.0","38":"0.0.70.d8.d8.70.ec.1b8.198.198.198.ec.0.0.0.0","39":"0.60.60.60.c0.0.0.0.0.0.0.0.0.0.0.0","40":"0.0.18.30.60.60.60.60.60.60.30.18.0.0.0.0","41":"0.0.60.30.18.18.18.18.18.18.30.60.0.0.0.0","42":"0.0.0.0.0.cc.78.1fe.78.cc.0.0.0.0.0.0","43":"0.0.0.0.0.30.30.fc.30.30.0.0.0.0.0.0","44":"0.0.0.0.0.0.0.0.0.30.30.30.60.0.0.0","45":"0.0.0.0.0.0.0.1fc.0.0.0.0.0.0.0.0","46":"0.0.0.0.0.0.0.0.0.0.30.30.0.0.0.0","47":"0.0.0.0.4.c.18.30.60.c0.180.100.0.0.0.0","48":"0.0.78.cc.186.186.1b6.1b6.186.186.cc.78.0.0.0.0","49":"0.0.30.70.f0.30.30.30.30.30.30.fc.0.0.0.0","50":"0.0.f8.18c.c.18.30.60.c0.180.18c.1fc.0.0.0.0","51":"0.0.f8.18c.c.c.78.c.c.c.18c.f8.0.0.0.0","52":"0.0.18.38.78.d8.198.1fc.18.18.18.3c.0.0.0.0","53":"0.0.1fc.180.180.180.1f8.c.c.c.18c.f8.0.0.0.0","54":"0.0.70.c0.180.180.1f8.18c.18c.18c.18c.f8.0.0.0.0","55":"0.0.1fc.18c.c.c.18.30.60.60.60.60.0.0.0.0","56":"0.0.f8.18c.18c.18c.f8.18c.18c.18c.18c.f8.0.0.0.0","57":"0.0.f8.18c.18c.18c.fc.c.c.c.18.f0.0.0.0.0","58":"0.0.0.0.30.30.0.0.0.30.30.0.0.0.0.0","59":"0.0.0.0.30.30.0.0.0.30.30.60.0.0.0.0","60":"0.0.0.c.18.30.60.c0.60.30.18.c.0.0.0.0","61":"0.0.0.0.0.fc.0.0.fc.0.0.0.0.0.0.0","62":"0.0.0.c0.60.30.18.c.18.30.60.c0.0.0.0.0","63":"0.0.f8.18c.18c.18.30.30.30.0.30.30.0.0.0.0","64":"0.0.0.f8.18c.18c.1bc.1bc.1bc.1b8.180.f8.0.0.0.0","65":"0.0.20.70.d8.18c.18c.1fc.18c.18c.18c.18c.0.0.0.0","66":"0.0.1f8.cc.cc.cc.f8.cc.cc.cc.cc.1f8.0.0.0.0","67":"0.0.78.cc.184.180.180.180.180.184.cc.78.0.0.0.0","68":"0.0.1f0.d8.cc.cc.cc.cc.cc.cc.d8.1f0.0.0.0.0","69":"0.0.1fc.cc.c4.d0.f0.d0.c0.c4.cc.1fc.0.0.0.0","70":"0.0.1fc.cc.c4.d0.f0.d0.c0.c0.c0.1e0.0.0.0.0","71":"0.0.78.cc.184.180.180.1bc.18c.18c.cc.74.0.0.0.0","72":"0.0.18c.18c.18c.18c.1fc.18c.18c.18c.18c.18c.0.0.0.0","73":"0.0.78.30.30.30.30.30.30.30.30.78.0.0.0.0","74":"0.0.3c.18.18.18.18.18.198.198.198.f0.0.0.0.0","75":"0.0.1cc.cc.cc.d8.f0.f0.d8.cc.cc.1cc.0.0.0.0","76":"0.0.1e0.c0.c0.c0.c0.c0.c0.c4.cc.1fc.0.0.0.0","77":"0.0.186.1ce.1fe.1fe.1b6.186.186.186.186.186.0.0.0.0","78":"0.0.18c.1cc.1ec.1fc.1bc.19c.18c.18c.18c.18c.0.0.0.0","79":"0.0.f8.18c.18c.18c.18c.18c.18c.18c.18c.f8.0.0.0.0","80":"0.0.1f8.cc.cc.cc.f8.c0.c0.c0.c0.1e0.0.0.0.0","81":"0.0.f8.18c.18c.18c.18c.18c.18c.1ac.1bc.f8.18.1c.0.0","82":"0.0.1f8.cc.cc.cc.f8.d8.cc.cc.cc.1cc.0.0.0.0","83":"0.0.f8.18c.18c.c0.70.18.c.18c.18c.f8.0.0.0.0","84":"0.0.1fe.1b6.132.30.30.30.30.30.30.78.0.0.0.0","85":"0.0.18c.18c.18c.18c.18c.18c.18c.18c.18c.f8.0.0.0.0","86":"0.0.186.186.186.186.186.186.186.cc.78.30.0.0.0.0","87":"0.0.186.186.186.186.186.1b6.1b6.1fe.cc.cc.0.0.0.0","88":"0.0.186.186.cc.78.30.30.78.cc.186.186.0.0.0.0","89":"0.0.186.186.186.cc.78.30.30.30.30.78.0.0.0.0","90":"0.0.1fe.186.10c.18.30.60.c0.182.186.1fe.0.0.0.0","91":"0.0.78.60.60.60.60.60.60.60.60.78.0.0.0.0","92":"0.0.0.100.180.1c0.e0.70.38.1c.c.4.0.0.0.0","93":"0.0.78.18.18.18.18.18.18.18.18.78.0.0.0.0","94":"20.70.d8.18c.0.0.0.0.0.0.0.0.0.0.0.0","95":"0.0.0.0.0.0.0.0.0.0.0.0.0.1fe.0.0","96":"60.60.30.0.0.0.0.0.0.0.0.0.0.0.0.0","97":"0.0.0.0.0.f0.18.f8.198.198.198.ec.0.0.0.0","98":"0.0.1c0.c0.c0.f0.d8.cc.cc.cc.cc.f8.0.0.0.0","99":"0.0.0.0.0.f8.18c.180.180.180.18c.f8.0.0.0.0","100":"0.0.38.18.18.78.d8.198.198.198.198.ec.0.0.0.0","101":"0.0.0.0.0.f8.18c.1fc.180.180.18c.f8.0.0.0.0","102":"0.0.70.d8.c8.c0.1e0.c0.c0.c0.c0.1e0.0.0.0.0","103":"0.0.0.0.0.ec.198.198.198.198.198.f8.18.198.f0.0","104":"0.0.1c0.c0.c0.d8.ec.cc.cc.cc.cc.1cc.0.0.0.0","105":"0.0.30.30.0.70.30.30.30.30.30.78.0.0.0.0","106":"0.0.c.c.0.1c.c.c.c.c.c.c.cc.cc.78.0","107":"0.0.1c0.c0.c0.cc.d8.f0.f0.d8.cc.1cc.0.0.0.0","108":"0.0.70.30.30.30.30.30.30.30.30.78.0.0.0.0","109":"0.0.0.0.0.1cc.1fe.1b6.1b6.1b6.1b6.1b6.0.0.0.0","110":"0.0.0.0.0.1b8.cc.cc.cc.cc.cc.cc.0.0.0.0","111":"0.0.0.0.0.f8.18c.18c.18c.18c.18c.f8.0.0.0.0","112":"0.0.0.0.0.1b8.cc.cc.cc.cc.cc.f8.c0.c0.1e0.0","113":"0.0.0.0.0.ec.198.198.198.198.198.f8.18.18.3c.0","114":"0.0.0.0.0.1b8.ec.cc.c0.c0.c0.1e0.0.0.0.0","115":"0.0.0.0.0.f8.18c.c0.70.18.18c.f8.0.0.0.0","116":"0.0.20.60.60.1f8.60.60.60.60.6c.38.0.0.0.0","117":"0.0.0.0.0.198.198.198.198.198.198.ec.0.0.0.0","118":"0.0.0.0.0.186.186.186.186.cc.78.30.0.0.0.0","119":"0.0.0.0.0.186.186.186.1b6.1b6.1fe.cc.0.0.0.0","120":"0.0.0.0.0.186.cc.78.30.78.cc.186.0.0.0.0","121":"0.0.0.0.0.18c.18c.18c.18c.18c.18c.fc.c.18.1f0.0","122":"0.0.0.0.0.1fc.198.30.60.c0.18c.1fc.0.0.0.0","123":"0.0.1c.30.30.30.e0.30.30.30.30.1c.0.0.0.0","124":"0.0.30.30.30.30.0.30.30.30.30.30.0.0.0.0","125":"0.0.e0.30.30.30.1c.30.30.30.30.e0.0.0.0.0","126":"0.0.ec.1b8.0.0.0.0.0.0.0.0.0.0.0.0","176":"22.88.22.88.22.88.22.88.22.88.22.88.22.88.22.88","177":"aa.154.aa.154.aa.154.aa.154.aa.154.aa.154.aa.154.aa.154","178":"1ba.ee.1ba.ee.1ba.ee.1ba.ee.1ba.ee.1ba.ee.1ba.ee.1ba.ee","219":"1ff.1ff.1ff.1ff.1ff.1ff.1ff.1ff.1ff.1ff.1ff.1ff.1ff.1ff.1ff.1ff","220":"0.0.0.0.0.0.0.1ff.1ff.1ff.1ff.1ff.1ff.1ff.1ff.1ff","221":"1e0.1e0.1e0.1e0.1e0.1e0.1e0.1e0.1e0.1e0.1e0.1e0.1e0.1e0.1e0.1e0","222":"1f.1f.1f.1f.1f.1f.1f.1f.1f.1f.1f.1f.1f.1f.1f.1f","223":"1ff.1ff.1ff.1ff.1ff.1ff.1ff.0.0.0.0.0.0.0.0.0","254":"0.0.0.0.f8.f8.f8.f8.f8.f8.f8.0.0.0.0.0"};
+
+/* ================= TEXT-MODE CRASH SCREEN (80x25, VGA 9x16) ================= */
+const TM = { cols: 80, rows: 25, cw: 9, chh: 16, grid: [], cur: null, curOn: true, ctx: null, img: null, buf: null, glyph: {} };
+const VGA_COL = { blue: '#0000aa', white: '#ffffff', gray: '#aaaaaa', black: '#000000', cyan: '#55ffff', magenta: '#ff55ff', yellow: '#ffff55', red: '#aa0000', ltblue: '#5555ff' };
+(function initTM() {
+  for (const k in VGA9x16) TM.glyph[k] = VGA9x16[k].split('.').map(v => parseInt(v, 16));
+  const cv = document.getElementById('bsod'); TM.ctx = cv.getContext('2d');
+  TM.img = TM.ctx.createImageData(720, 400); TM.buf = new Uint32Array(TM.img.data.buffer);
+})();
+const rgba = hex => { const n = parseInt(hex.slice(1), 16); return (255 << 24) | ((n & 255) << 16) | (((n >> 8) & 255) << 8) | (n >> 16); };
+function tmClear(bg = VGA_COL.blue) {
+  TM.grid = Array.from({ length: TM.rows }, () => Array.from({ length: TM.cols }, () => ({ c: 32, fg: VGA_COL.white, bg })));
+}
+function tmPut(x, y, s, fg = VGA_COL.white, bg = VGA_COL.blue) {
+  if (y < 0 || y >= TM.rows) return;
+  [...s].forEach((ch, i) => { const cx = x + i; if (cx >= 0 && cx < TM.cols) TM.grid[y][cx] = { c: ch.charCodeAt(0), fg, bg }; });
+}
+const tmCenter = (y, s, fg, bg) => tmPut(Math.floor((TM.cols - s.length) / 2), y, s, fg, bg);
+function tmDraw() {
+  const b = TM.buf;
+  for (let y = 0; y < TM.rows; y++) for (let x = 0; x < TM.cols; x++) {
+    let cell = TM.grid[y][x];
+    if (TM.cur && TM.curOn && TM.cur.x === x && TM.cur.y === y) cell = Object.assign({}, cell, { c: 95 });
+    const g = TM.glyph[cell.c] || TM.glyph[32], f = rgba(cell.fg), bk = rgba(cell.bg);
+    for (let r = 0; r < 16; r++) {
+      const bits = g[r], o = (y * 16 + r) * 720 + x * 9;
+      for (let c = 0; c < 9; c++) b[o + c] = (bits >> (8 - c)) & 1 ? f : bk;
+    }
+  }
+  TM.ctx.putImageData(TM.img, 0, 0);
+}
+let tmBlink = null;
+function tmCursor(x, y) {
+  TM.cur = x == null ? null : { x, y }; clearInterval(tmBlink);
+  if (TM.cur) tmBlink = setInterval(() => { TM.curOn = !TM.curOn; tmDraw(); }, 270);
+  tmDraw();
+}
+function drawBSOD() {
+  tmClear();
+  tmCenter(7, ' Kestrel ', VGA_COL.blue, VGA_COL.gray);
+  const L = [
+    'A fatal exception 0E has occurred at 0028:C0011E36 in VXD BROADCAST(01) +',
+    '00010E36. The current application will be terminated.',
+    '',
+    '*  live.cutoffmyfeet.net is not responding.',
+    '*  Too many users are connected.',
+    '*  Press CTRL+ALT+DEL again to restart your computer. You will',
+    '   lose any unsaved information in all applications.'
+  ];
+  L.forEach((l, i) => tmPut(3, 9 + i, l));
+  tmCenter(17, 'Press any key to continue  ');
+  tmCursor(52, 17);
+}
+function showCrash() {
+  document.querySelectorAll('.popup').forEach(x => x.remove());
+  const c = document.getElementById('crash'); c.classList.add('on'); drawBSOD();
+  return c;
+}
+function rebootNow() {
+  try { sessionStorage.setItem('cmf_seized', '1'); } catch (e) {}
+  clearInterval(tmBlink); tmClear(VGA_COL.black); TM.cur = null; tmDraw();
+  document.getElementById('crash').style.background = '#000';
+  setTimeout(() => location.reload(), 900);
+}
+
+/* the broadcast crash: blue screen -> glitch -> title types out -> reboot */
+function filmCrash() {
+  showCrash(); play('error');
+  setTimeout(() => {
+    tmCursor(null);
+    const glyphs = [176, 177, 178, 219, 220, 221, 222, 223, 254, 35, 37, 38, 64, 33, 47, 92, 60, 62, 61, 43];
+    const cols = [VGA_COL.white, VGA_COL.cyan, VGA_COL.magenta, VGA_COL.yellow, VGA_COL.ltblue];
+    let k = 0;
+    const iv = setInterval(() => {
+      const shift = Array.from({ length: TM.rows }, () => Math.random() < .25 ? (Math.random() * 8 - 4 | 0) : 0);
+      TM.grid = TM.grid.map((row, y) => {
+        const r = shift[y] ? row.slice(-shift[y]).concat(row.slice(0, -shift[y])) : row;
+        return r.map(cell => Math.random() < .03 + k * .03
+          ? { c: glyphs[Math.random() * glyphs.length | 0], fg: cols[Math.random() * cols.length | 0], bg: Math.random() < .15 ? VGA_COL.black : VGA_COL.blue }
+          : cell);
+      });
+      tmDraw();
+      if (++k > 12) { clearInterval(iv); typeTitle(); }
+    }, 70);
+  }, 2600);
+  function typeTitle() {
+    tmClear(); tmDraw();
+    const lines = [[9, ' CUT OFF MY FEET ', VGA_COL.blue, VGA_COL.gray], [12, 'a short film by Bradley Geiger'], [15, 'Summer 2027']];
+    let li = 0, ci = 0;
+    const step = () => {
+      const [y, text, fg, bg] = lines[li];
+      const x = Math.floor((TM.cols - text.length) / 2);
+      tmPut(x, y, text.slice(0, ci + 1), fg, bg);
+      TM.cur = { x: x + ci + 1, y }; TM.curOn = true; tmDraw();
+      ci++;
+      if (ci >= text.length) { li++; ci = 0; if (li >= lines.length) { tmCursor(TM.cur.x, TM.cur.y); setTimeout(rebootNow, 3800); return; } setTimeout(step, 260); }
+      else setTimeout(step, 45);
+    };
+    step();
+  }
+}
+/* the older crash path: blue screen, any key (or 8 seconds) reboots */
+let crashed = false;
+function crashNow() {
+  if (crashed) return; crashed = true;
+  if (typeof tcTimers !== 'undefined') { tcTimers.forEach(clearTimeout); tcTimers = []; }
+  document.getElementById('titlecard').classList.remove('on');
+  const c = showCrash(); play('error');
+  const t = setTimeout(rebootNow, 8000);
+  setTimeout(() => {
+    const go = () => { clearTimeout(t); rebootNow(); };
+    addEventListener('keydown', go, { once: true }); c.addEventListener('click', go, { once: true });
+  }, 600);
 }
 
 /* ================= BOOT ================= */
