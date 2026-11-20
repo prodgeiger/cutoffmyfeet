@@ -756,7 +756,7 @@ const FUND = { raised: 3215, goal: 25000 };
 const NAV = [
   ['h', 'MENU'], ['home', 'Home'],
   ['h', "MIKEY'S STORY"], ['about', 'About Mikey'], ['accident', 'The Accident'], ['why', 'Why Feet?'],
-  ['h', 'HELP MIKEY'], ['donate', 'Donate'], ['faq', 'Questions']
+  ['h', 'HELP MIKEY'], ['donate', 'Donate'], ['chat', 'Chat Room'], ['faq', 'Questions']
 ];
 
 const PLAYER = `<div class="player chunk">
@@ -805,6 +805,12 @@ const PAGES = {
     <p class="body16 l chunk">My insurance lapsed. They won't cover the surgery and they won't cover the legs. A good pair costs more than everything I own.</p>
     <p class="body16 l chunk">So here's my deal. You help pay for the legs. I take care of the feet. Live, so you know it's real.</p>
     ${THERMO}`,
+
+  chat: () => `
+    <p class="body16 chunk">Talk with other people who are waiting for the broadcast. Please be respectful. Mikey reads this.</p>
+    <div class="boxw chunk"><h3>#cutoffmyfeet <span style="float:right;font-weight:normal" id="chatn">38 users</span></h3>
+      <div class="chat" id="chat"></div>
+      <input class="chatin" id="chatin" placeholder="Type a message and press Enter..." maxlength="80"></div>`,
 
   faq: () => `
     <dl class="faq chunk">
@@ -920,7 +926,22 @@ function crash() {
 }
 
 /* live elements */
-function chatLine() {}
+const CHAT = [
+  ['sys', '*** Topic: THE BROADCAST IS JANUARY 8TH. BE RESPECTFUL.'], ['linda_k', 'is he still going to do it'],
+  ['gary_lansing', 'thats what the site says'], ['danny_boy77', 'a/s/l?'], ['ruth_fi', 'hello from finland'],
+  ['xXNiGhTxHaWkXx', 'how much has he raised'], ['gary_lansing', 'not enough'], ['moonchild', 'i keep refreshing the page'],
+  ['linda_k', 'mikey if you read this you dont have to do this'], ['dr_steve', 'evening all'], ['skate_or_die', 'is the video working for anyone'],
+  ['ruth_fi', 'no'], ['danny_boy77', 'my brother says its fake'], ['moonchild', 'it isnt'], ['sys', '*** skate_or_die has quit (Ping timeout)'],
+  ['xXNiGhTxHaWkXx', 'what time does it start'], ['gary_lansing', 'midnight i think'], ['linda_k', 'god bless you mikey'],
+  ['sys', '*** mikey_d has joined #cutoffmyfeet'], ['dr_steve', 'mikey?'], ['ruth_fi', 'hello mikey'], ['moonchild', 'hi mikey'],
+  ['sys', '*** mikey_d has quit (Connection reset by peer)'], ['danny_boy77', 'brb mom needs the phone'], ['gary_lansing', 'ill be here']
+];
+let ci = 0;
+function chatLine(html) {
+  const c = document.getElementById('chat'); if (!c) return;
+  const p = document.createElement('p'); p.innerHTML = html; c.appendChild(p);
+  while (c.children.length > 14) c.removeChild(c.firstChild);
+}
 function startLive() {
   const cd = () => {
     const el = document.getElementById('cd'); if (!el) return;
@@ -933,6 +954,11 @@ function startLive() {
   let hits = parseInt(document.getElementById('hits')?.textContent || '0', 10);
   const bump = () => { const el = document.getElementById('hits'); if (!el) return; hits += 1; el.innerHTML = String(hits).padStart(7, '0').split('').map(d => '<b>' + d + '</b>').join(''); later(bump, 3000 + Math.random() * 7000); };
   later(bump, 4000);
+  if (document.getElementById('chat')) {
+    let u = 38; every(() => { const n = document.getElementById('chatn'); if (!n) return; u = Math.max(20, u + (Math.random() * 5 - 2 | 0)); n.textContent = u + ' users'; }, 2600);
+    const nextChat = () => { const [n, m] = CHAT[ci++ % CHAT.length]; chatLine(n === 'sys' ? `<span class="sys">${m}</span>` : `<span class="u">&lt;${n}&gt;</span> ${m}`); later(nextChat, 1800 + Math.random() * 3200); };
+    chatLine('<span class="sys">*** You have joined #cutoffmyfeet</span>'); later(nextChat, 900);
+  }
   // the page never quite finishes loading
   const st = document.getElementById('bstatus');
   st.textContent = '(1 item remaining) Waiting for http://live.cutoffmyfeet.net/cam.jpg...';
