@@ -843,19 +843,19 @@ function hoursLeft() {
 const FUND = { raised: 3215, goal: 25000 };
 const NAV = [
   ['h', 'MENU'], ['home', 'Home'],
-  ['h', "MIKEY'S STORY"], ['about', 'About Mikey'], ['accident', 'The Accident'], ['why', 'Why Feet?'],
-  ['h', 'HELP MIKEY'], ['donate', 'Donate'], ['guestbook', 'Guestbook'], ['chat', 'Chat Room'], ['faq', 'Questions']
+  ['h', "JIMMY'S STORY"], ['about', 'About Jimmy'], ['accident', 'The Accident'], ['why', 'Why Feet?'],
+  ['h', 'HELP JIMMY'], ['donate', 'Donate'], ['guestbook', 'Guestbook'], ['chat', 'Chat Room'], ['faq', 'Questions']
 ];
 
 const PLAYER = `<div class="player chunk">
-    <div class="ph"><span>StreamCast Player 6.0</span><span id="pfile">mikey_message.rm</span></div>
+    <div class="ph"><span>StreamCast Player 6.0</span><span id="pfile">jimmy_message.rm</span></div>
     <div class="screenbox" id="scr"><div class="static"></div><div class="grain"></div>
       <div class="msg" id="scrmsg">Click PLAY to watch</div></div>
     <div class="pctl"><button id="pplay">&#9654;</button><button id="pstop">&#9632;</button><div class="seekbar"><i id="pseek"></i></div><div class="stat" id="pstat">Ready</div></div>
   </div>`;
 const pct = () => (FUND.raised / FUND.goal * 100).toFixed(1);
 const money = n => '$' + n.toLocaleString('en-US');
-const THERMO = `<div class="boxw chunk"><h3>MIKEY'S LEGS FUND</h3>
+const THERMO = `<div class="boxw chunk"><h3>JIMMY'S LEGS FUND</h3>
   <div class="thermo"><i style="width:${pct()}%"></i><span>${money(FUND.raised)} of ${money(FUND.goal)}</span></div>
   <div class="tiny" style="margin:4px 0 6px">We still need <b style="color:#c00">${money(FUND.goal - FUND.raised)}</b> before the broadcast can happen.</div>
   <a class="bigbtn" data-nav="donate">DONATE NOW</a></div>`;
@@ -863,28 +863,27 @@ const THERMO = `<div class="boxw chunk"><h3>MIKEY'S LEGS FUND</h3>
 const PAGES = {
   home: () => `
     <p class="lead chunk">WATCH ME CUT OFF MY FEET...<br><span class="liveword">LIVE!</span></p>
-    <p class="body16 chunk">Hello. My name is Mikey Dunbar. Fifteen years ago I was paralyzed when I severed my T12 vertebra in a boating accident. Due to a lapse in insurance, I am unable to afford proper treatment.</p>
+    <p class="body16 chunk">Hello. My name is James Miller. Fifteen years ago I was paralyzed when I severed my T12 vertebra in a boating accident. Due to a lapse in insurance, I am unable to afford proper treatment.</p>
     <p class="body16 chunk">With that being said, I've started this website with some friends as an online fundraiser for new prosthetic legs. If my goals are met by January 8th, 2002, I will host a live broadcast cutting off my feet.</p>
-    <p class="body16 chunk">Thanks.<br>- Mikey</p>
+    <p class="body16 chunk">Thanks.<br>- Jimmy</p>
     <div class="boxw chunk"><h3>THE BROADCAST BEGINS IN</h3>
       <div class="count" id="cd">--:--:--</div>
       <div class="cdl">JANUARY 8TH, 2002</div>
       <div class="tiny" style="margin-top:6px">People waiting: <b id="viewers">4,213</b></div>
       <a class="bigbtn blk" data-act2="live">ENTER THE BROADCAST</a></div>
-    <p class="body16 chunk"><b>A message from Mikey</b></p>
+    <p class="body16 chunk"><b>A message from Jimmy</b></p>
     ${PLAYER}
     ${THERMO}`,
 
   about: () => `
-    <p class="body16 l chunk">My name is Michael Dunbar. Everybody calls me Mikey. I'm 34 years old and I live with my mother outside of town.</p>
-    <p class="body16 l chunk">Before the accident I fished every weekend I could get. Bass, mostly. My tackle box is still out in the garage right where I left it.</p>
-    <p class="body16 l chunk">I've been in this chair for fifteen years. People who know me say I'm a funny guy. Most people don't get to know me.</p>
-    <p class="body16 l chunk">I want to fish again.</p>`,
+    <p class="body16 l chunk">My name is James Miller, but everybody calls me Jimmy. I'm 34 years old. When I was 19, I severed my T12 vertebra in a boating accident.</p>
+    <p class="body16 l chunk">Before the accident, I fished every weekend I could get. My tackle box is still out in the garage, right where I left it.</p>
+    <p class="body16 l chunk">I've been in this chair for fifteen years. Please help me get new legs. I want to fish again!</p>`,
 
   accident: () => `
-    <p class="body16 l chunk">It was the summer of 1986. I was 19. My buddy had just bought a used bass boat and we took it out on the lake the first weekend he had it.</p>
-    <p class="body16 l chunk">We were going full throttle when we hit something under the water. A log, they think. I went over the windshield and came down across the bow rail.</p>
-    <p class="body16 l chunk">I severed my T12 vertebra. The doctor told my mother I would never walk again. So far he's been right.</p>
+    <p class="body16 l chunk">It was the summer of 1986. I was 19. My buddy had just bought a used bass boat, and we took it out on the lake the first weekend he had it.</p>
+    <p class="body16 l chunk">We were going full throttle when we hit a log just under the surface. I was thrown over the windshield and landed across the bow rail.</p>
+    <p class="body16 l chunk">I severed my T12 vertebra. The doctors told me I would never walk again.</p>
     <p class="body16 l chunk">I haven't been back on the water since.</p>`,
 
   why: () => `
@@ -895,7 +894,7 @@ const PAGES = {
     ${THERMO}`,
 
   guestbook: () => `
-    <p class="body16 chunk">Please sign my guestbook! Tell me where you're from. I read every one.<br>- Mikey</p>
+    <p class="body16 chunk">Please sign my guestbook! Tell me where you're from. I read every one.<br>- Jimmy</p>
     <div class="boxw chunk"><h3>SIGN THE GUESTBOOK</h3>
       <form class="form98 gbform" id="gbform" autocomplete="off">
         <label>Your name</label><input name="name" maxlength="40" required>
@@ -903,12 +902,12 @@ const PAGES = {
         <label>Message</label><textarea name="message" rows="4" maxlength="500" required></textarea>
         <input name="website" class="hp" tabindex="-1" aria-hidden="true">
         <br><button type="submit">SIGN!</button>
-        <div class="gbnote" id="gbnote">All entries are read by Mikey before they appear.</div>
+        <div class="gbnote" id="gbnote">All entries are read by Jimmy before they appear.</div>
       </form></div>
     <div class="gb chunk" id="gblist"><p class="tiny" style="text-align:center">Loading entries...</p></div>`,
 
   chat: () => `
-    <p class="body16 chunk">Talk with other people who are waiting for the broadcast. Please be respectful. Mikey reads this.</p>
+    <p class="body16 chunk">Talk with other people who are waiting for the broadcast. Please be respectful. Jimmy reads this.</p>
     <div class="boxw chunk"><h3>#cutoffmyfeet <span style="float:right;font-weight:normal" id="chatn">38 users</span></h3>
       <div class="chat" id="chat"></div>
       <input class="chatin" id="chatin" placeholder="Type a message and press Enter..." maxlength="80"></div>`,
@@ -961,28 +960,28 @@ async function gbSubmit(e) {
   try {
     const r = await fetch(`${GB.url}/rest/v1/guestbook`, { method: 'POST', headers: Object.assign(gbHeaders(), { Prefer: 'return=minimal' }), body: JSON.stringify(body) });
     if (!r.ok) { let d = ''; try { const j = await r.json(); d = j.code || j.message || ''; } catch (x) {} throw new Error(r.status + (d ? ' / ' + d : '')); }
-    f.reset(); note.textContent = 'Thank you for signing! Your entry will appear after Mikey reads it.';
-    msgbox('Thank you for signing!<br><br>Your entry will appear after Mikey reads it.', { title: 'Guestbook', kind: 'info' });
+    f.reset(); note.textContent = 'Thank you for signing! Your entry will appear after Jimmy reads it.';
+    msgbox('Thank you for signing!<br><br>Your entry will appear after Jimmy reads it.', { title: 'Guestbook', kind: 'info' });
   } catch (err) {
-    note.textContent = 'All entries are read by Mikey before they appear.';
+    note.textContent = 'All entries are read by Jimmy before they appear.';
     console.warn('guestbook error', err); msgbox('Could not sign the guestbook. The server is busy.<br><br>Please try again later.<br><br><span style="color:#808080;font-size:11px">Error code: ' + esc(err.message) + '</span>', { title: 'WebSurfer' });
   }
   btn.disabled = false;
 }
 
-/* Donate leaves Mikey's site and shows a plain page about the film */
+/* Donate leaves Jimmy's site and shows a plain page about the film */
 const DONATE = `<div class="reveal">
   <div class="rv chunk">
-    <p class="rv1">Thank you for wanting to help Mikey.</p>
-    <p>Mikey isn't real. But this story is.</p>
+    <p class="rv1">Thank you for wanting to help Jimmy.</p>
+    <p>Jimmy isn't real. But this story is.</p>
     <hr>
     <p><b>cutoffmyfeet.net</b> is part of</p>
     <p class="rvt">CUT OFF MY FEET</p>
-    <p>a capstone short film by <b>Bradley Geiger</b><br>A Geigerfilms production<br>Based on a true story</p>
+    <p>a capstone short film by <b>Bradley Geiger</b><br>Based on a true story</p>
     <p class="rvd">Coming Summer 2027</p>
     <hr>
     <p class="rvs">No money is collected on this website.</p>
-    <p><a data-nav="home">&lt;&lt; Back to Mikey's page</a></p>
+    <p><a data-nav="home">&lt;&lt; Back to Jimmy's page</a></p>
   </div></div>`;
 
 function SITE(key) {
@@ -990,8 +989,8 @@ function SITE(key) {
   const body = (PAGES[key] || PAGES.home)();
   const nav = NAV.map(([k, l]) => k === 'h' ? `<a class="nh">${l}</a>` : `<a class="nb${k === key ? ' cur' : ''}" data-nav="${k}">${l}</a>`).join('');
   return `<div class="site">
-  <div class="top90 chunk"><div class="mast90">CUT OFF MY FEET</div><div class="sub90">~ The Official Homepage of Mikey Dunbar ~</div></div>
-  <div class="marq90 chunk"><span>*** THE BROADCAST IS JANUARY 8TH, 2002 *** HELP MIKEY GET HIS LEGS *** PLEASE TELL YOUR FRIENDS ABOUT THIS SITE *** THANK YOU FOR YOUR SUPPORT ***</span></div>
+  <div class="top90 chunk"><div class="mast90">CUT OFF MY FEET</div><div class="sub90">~ The Official Homepage of Jimmy Miller ~</div></div>
+  <div class="marq90 chunk"><span>*** THE BROADCAST IS JANUARY 8TH, 2002 *** HELP JIMMY GET HIS LEGS *** PLEASE TELL YOUR FRIENDS ABOUT THIS SITE *** THANK YOU FOR YOUR SUPPORT ***</span></div>
   <table class="lay"><tr><td class="navcol chunk">${nav}
       <div class="sidecount"><b>THE BROADCAST</b><br>JAN 8, 2002<br><span class="newblink">COMING SOON</span></div></td>
     <td class="maincol">${body}
@@ -1050,7 +1049,7 @@ function wireSite() {
     tell: ['Mail server unavailable. Please try again later.', 'warn'],
     dl: ['Download failed. The connection to the server was reset.', 'warn'],
     vote: ['Your vote could not be counted. The voting server is busy.<br><br>Please try again later.', 'warn'],
-    sign: ['Thank you for signing! Your entry will appear after Mikey reads it.', 'info'],
+    sign: ['Thank you for signing! Your entry will appear after Jimmy reads it.', 'info'],
     dead: ['The page cannot be displayed.<br><br>Server not found.', 'warn']
   };
   page.querySelectorAll('[data-act2]').forEach(a => a.addEventListener('click', () => {
@@ -1079,11 +1078,11 @@ const CHAT = [
   ['sys', '*** Topic: THE BROADCAST IS JANUARY 8TH. BE RESPECTFUL.'], ['linda_k', 'is he still going to do it'],
   ['gary_lansing', 'thats what the site says'], ['danny_boy77', 'a/s/l?'], ['ruth_fi', 'hello from finland'],
   ['xXNiGhTxHaWkXx', 'how much has he raised'], ['gary_lansing', 'not enough'], ['moonchild', 'i keep refreshing the page'],
-  ['linda_k', 'mikey if you read this you dont have to do this'], ['dr_steve', 'evening all'], ['skate_or_die', 'is the video working for anyone'],
+  ['linda_k', 'jimmy if you read this you dont have to do this'], ['dr_steve', 'evening all'], ['skate_or_die', 'is the video working for anyone'],
   ['ruth_fi', 'no'], ['danny_boy77', 'my brother says its fake'], ['moonchild', 'it isnt'], ['sys', '*** skate_or_die has quit (Ping timeout)'],
-  ['xXNiGhTxHaWkXx', 'what time does it start'], ['gary_lansing', 'midnight i think'], ['linda_k', 'god bless you mikey'],
-  ['sys', '*** mikey_d has joined #cutoffmyfeet'], ['dr_steve', 'mikey?'], ['ruth_fi', 'hello mikey'], ['moonchild', 'hi mikey'],
-  ['sys', '*** mikey_d has quit (Connection reset by peer)'], ['danny_boy77', 'brb mom needs the phone'], ['gary_lansing', 'ill be here']
+  ['xXNiGhTxHaWkXx', 'what time does it start'], ['gary_lansing', 'midnight i think'], ['linda_k', 'god bless you jimmy'],
+  ['sys', '*** jimmy_m has joined #cutoffmyfeet'], ['dr_steve', 'jimmy?'], ['ruth_fi', 'hello jimmy'], ['moonchild', 'hi jimmy'],
+  ['sys', '*** jimmy_m has quit (Connection reset by peer)'], ['danny_boy77', 'brb mom needs the phone'], ['gary_lansing', 'ill be here']
 ];
 let ci = 0;
 function chatLine(html) {
