@@ -565,8 +565,9 @@
       <div class="icon"><svg data-i="cd"></svg><span>CD-ROM (D:)</span></div>
       <div class="icon"><svg data-i="folder"></svg><span>Control Panel</span></div>
       <div class="icon"><svg data-i="folder"></svg><span>Dial-Up Networking</span></div>
+      <div class="icon" data-open="w-mines"><svg data-i="mine"></svg><span>Mines</span></div>
     </div>
-    <div class="statusbar"><div>5 object(s)</div><div></div></div>
+    <div class="statusbar"><div>6 object(s)</div><div></div></div>
   </div>
 
   <!-- README -->
@@ -772,9 +773,7 @@ const DESK = [
   { label: 'My Computer', icon: 'computer', open: 'w-computer' },
   { label: 'Recycle Bin', icon: 'bin', open: 'w-bin' },
   { label: 'WebSurfer', icon: 'globe', open: 'w-browser' },
-  { label: 'about.txt', icon: 'note', open: 'w-readme' },
-  { label: 'TRAILER.MPG', icon: 'film', err: 'TRAILER.MPG<br><br>Cannot play the file. The file is not available yet.' },
-  { label: 'Mines', icon: 'mine', open: 'w-mines' }
+  { label: 'about.txt', icon: 'note', open: 'w-readme' }
 ];
 const iconsEl = document.getElementById('icons');
 DESK.forEach(d => {
@@ -789,7 +788,11 @@ DESK.forEach(d => {
   el.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
   iconsEl.appendChild(el);
 });
-document.querySelectorAll('.explorer .icon').forEach(el => el.addEventListener('dblclick', () => msgbox(el.dataset.err || 'The device is not ready.')));
+document.querySelectorAll('.explorer .icon').forEach(el => {
+  const go = () => el.dataset.open ? openWin(el.dataset.open) : msgbox(el.dataset.err || 'The device is not ready.');
+  el.addEventListener('dblclick', go);
+  el.addEventListener('click', () => { if (matchMedia('(pointer: coarse)').matches) go(); });
+});
 document.querySelectorAll('[data-err]:not(.icon)').forEach(el => el.addEventListener('click', () => msgbox(el.dataset.err)));
 document.getElementById('emptybin').addEventListener('click', () => {
   play('trash'); document.getElementById('binfiles').innerHTML = ''; document.getElementById('binstat').textContent = '0 object(s)';
