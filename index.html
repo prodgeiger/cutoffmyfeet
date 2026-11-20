@@ -271,7 +271,7 @@
   .fp.r { transform: scaleX(-1); }
   @keyframes fpf { to { opacity: 0; } }
   .viewport { position: relative; }
-  .viewport::after { content: ""; position: absolute; inset: 2px; pointer-events: none; background: radial-gradient(ellipse at 50% 45%, transparent 50%, rgba(40, 20, 0, .22)); }
+  .viewport::after { content: ""; position: absolute; inset: 2px; pointer-events: none; background: radial-gradient(ellipse at 50% 45%, transparent 50%, rgba(40, 20, 0, .15)); }
   .site .lead { font-size: 34px; }
   .site .boxw { background: #f8f6ee; }
   .site .count { color: #8b0000; letter-spacing: 2px; animation: dimflick 7s infinite; }
@@ -279,6 +279,44 @@
   .bubble.flinch { transform: translate(2px, -1px) skewX(-6deg); filter: invert(1); }
   .upd { text-align: center; }
   .upd b.h { color: #000; }
+  /* ---------- In-world site, Win98 framework look ---------- */
+  .site.w9 { padding: 14px 10px 24px; }
+  .w9 .frame { max-width: 760px; margin: 0 auto 14px; background: #c0c0c0; padding: 3px; box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff, inset -2px -2px #808080, inset 2px 2px #dfdfdf, 3px 3px 0 rgba(0,0,0,.25); }
+  .w9 .bar { height: 22px; background: linear-gradient(90deg, #000080, #1084d0); color: #fff; font: bold 12px var(--ui-font); display: flex; align-items: center; justify-content: space-between; padding: 0 3px 0 6px; }
+  .w9 .bar .bb { display: flex; gap: 2px; } .w9 .bar .bb i { width: 16px; height: 14px; background: #c0c0c0; box-shadow: var(--raised); }
+  .w9 .masthead { background: #fff; box-shadow: var(--sunken); margin: 3px; padding: 18px 12px 14px; text-align: center; }
+  .w9 .mast { font: bold 46px/1 "Times New Roman", Times, serif; letter-spacing: 6px; color: #1a1a1a; text-transform: uppercase; display: inline-block; }
+  .w9 .mast.flinch { transform: translateX(2px) skewX(-4deg); color: #8b0000; }
+  .w9 .masthead hr { border: 0; border-top: 1px solid #808080; border-bottom: 1px solid #fff; width: 70%; margin: 10px auto 6px; }
+  .w9 .mastsub { font: 13px var(--ui-font); letter-spacing: 3px; color: #444; text-transform: uppercase; }
+  .w9 .tabs { display: flex; flex-wrap: wrap; gap: 0; padding: 6px 6px 0; position: relative; z-index: 1; }
+  .w9 .tab { padding: 5px 12px 4px; background: #c0c0c0; font: 12px var(--ui-font); color: #000; cursor: pointer; box-shadow: inset -1px 0 #0a0a0a, inset 1px 1px #fff, inset -2px 0 #808080, inset 2px 2px #dfdfdf; border-radius: 3px 3px 0 0; position: relative; top: 2px; margin-right: -1px; text-decoration: none !important; }
+  .w9 .tab.cur { top: 0; padding-bottom: 7px; z-index: 2; font-weight: bold; }
+  .w9 .panel { margin: 0 6px 6px; padding: 12px; background: #c0c0c0; box-shadow: var(--raised); }
+  .w9 .paper { background: #fff; box-shadow: var(--sunken); padding: 16px 20px; text-align: left; font: 17px/1.45 "Times New Roman", Times, serif; }
+  .w9 .paper p { margin: 0 0 12px; }
+  .w9 .live { font: bold 30px/1.15 "Times New Roman", Times, serif; text-align: center; margin: 4px 0 14px; letter-spacing: 1px; }
+  .w9 .live .dot { color: #c00; animation: blink 1.4s steps(1) infinite; }
+  .w9 fieldset { border: 1px solid #808080; margin: 14px 0 0; padding: 10px 12px 12px; box-shadow: 1px 1px 0 #fff, inset 1px 1px 0 #fff; font: 12px var(--ui-font); text-align: center; }
+  .w9 legend { padding: 0 4px; font: 12px var(--ui-font); }
+  .w9 .count { font: bold 34px "Courier New", monospace; color: #8b0000; background: #000; display: inline-block; padding: 2px 14px; box-shadow: var(--sunken); letter-spacing: 3px; animation: dimflick 7s infinite; }
+  .w9 .cdl { font: 12px var(--ui-font); letter-spacing: 2px; margin: 6px 0; }
+  .w9 .btn9 { font: bold 12px var(--ui-font); background: #c0c0c0; border: 0; min-height: 26px; padding: 0 18px; margin-top: 8px; box-shadow: 0 0 0 1px #000, var(--raised); cursor: pointer; color: #000; }
+  .w9 .btn9:active { box-shadow: 0 0 0 1px #000, var(--pressed); }
+  .w9 .prog { height: 22px; box-shadow: var(--sunken); background: #fff; padding: 3px; display: flex; gap: 2px; overflow: hidden; }
+  .w9 .prog i { flex: 0 0 9px; background: #000080; }
+  .w9 .player { max-width: 340px; margin: 6px auto 0; border: 0; box-shadow: var(--raised); }
+  .w9 .faq dt { color: #000080; font: bold 14px var(--ui-font); margin-top: 14px; }
+  .w9 .faq dd { font: 17px "Times New Roman", serif; margin: 4px 0 0 16px; }
+  .w9 .ads { margin: 16px 0 6px; }
+  .w9 .foot9 { text-align: center; font: 11px var(--ui-font); color: #222; }
+  .w9 .foot9 .disclaimer { color: #333; border-top: 1px solid #808080; }
+  @media (max-width: 640px) {
+    .w9 .mast { font-size: 28px; letter-spacing: 3px; }
+    .w9 .live { font-size: 22px; }
+    .w9 .tab { padding: 5px 8px 4px; }
+    .w9 .paper { padding: 12px; font-size: 16px; }
+  }
   /* server error page */
   .errpage { padding: 20px 26px; font: 13px Verdana, Arial, sans-serif; color: #000; background: #fff; min-height: 100%; }
   .errpage h2 { font: bold 18px Verdana, Arial, sans-serif; margin: 0 0 4px; }
@@ -417,36 +455,42 @@
   </div>
 
   <!-- README -->
-  <div class="win" id="w-readme" data-title="todo.txt - Notepad" data-icon="note" style="left:200px; top:70px; width:420px; height:360px;">
-    <div class="title"><svg data-i="note"></svg><span class="t">todo.txt - Notepad</span><button class="tb" data-act="min">_</button><button class="tb" data-act="max">□</button><button class="tb x" data-act="close">✕</button></div>
+  <div class="win" id="w-readme" data-title="about.txt - Notepad" data-icon="note" style="left:200px; top:70px; width:440px; height:380px;">
+    <div class="title"><svg data-i="note"></svg><span class="t">about.txt - Notepad</span><button class="tb" data-act="min">_</button><button class="tb" data-act="max">□</button><button class="tb x" data-act="close">✕</button></div>
     <div class="menubar"><span><u>F</u>ile</span><span><u>E</u>dit</span><span><u>S</u>earch</span><span><u>H</u>elp</span></div>
-    <div class="body notepad">THINGS TO DO BEFORE THE BIG DAY
+    <div class="body notepad">CUT OFF MY FEET
+a short film by Bradley Geiger
+A Geigerfilms production
 
-[x] finish guillotine
-[x] sharpen blade (again)
-[x] buy blue tarp
-[ ] ask Darryl if his EMT thing
-    is still good
-[ ] new modem (56k!!!)
-[ ] call the hospital about
-    AFTER
-[ ] answer guestbook (412 new)
-[ ] pick names for the feet
-[ ] tell mom the date
-[ ] wash feet one last time
-[ ] write something for the end
-    of the broadcast. something
-    people will remember
+Based on a true story.
 
-the date: 2027??? that's so far away</div>
+-------------------------------------
+In 2001, a man paralyzed for fifteen
+years and failed by his insurance
+puts up a website with a promise:
+
+If the fundraiser for his prosthetic
+legs reaches its goal, he will cut
+off his own feet with a homemade
+guillotine, live, for anyone with
+a modem to watch.
+
+The site was real. The broadcast was
+real. This is the story of the day
+it was supposed to happen.
+-------------------------------------
+
+Cast and crew to be announced.
+
+Coming Summer 2027.</div>
   </div>
 
   <!-- Trailer -->
-  <div class="win" id="w-film" data-title="REEL_01.MPG - Media Player" data-icon="film" style="left:240px; top:110px; width:440px; height:330px;">
-    <div class="title"><svg data-i="film"></svg><span class="t">REEL_01.MPG - Media Player</span><button class="tb" data-act="min">_</button><button class="tb" data-act="max">□</button><button class="tb x" data-act="close">✕</button></div>
+  <div class="win" id="w-film" data-title="TRAILER.MPG - Media Player" data-icon="film" style="left:240px; top:110px; width:440px; height:330px;">
+    <div class="title"><svg data-i="film"></svg><span class="t">TRAILER.MPG - Media Player</span><button class="tb" data-act="min">_</button><button class="tb" data-act="max">□</button><button class="tb x" data-act="close">✕</button></div>
     <div class="menubar"><span><u>F</u>ile</span><span><u>E</u>dit</span><span><u>D</u>evice</span><span>S<u>c</u>ale</span><span><u>H</u>elp</span></div>
-    <div class="mplayer"><div class="noise"></div><div>REEL_01.MPG<br><br><span style="color:#777">0 bytes</span></div></div>
-    <div class="controls"><button class="b98" data-err="REEL_01.MPG<br><br>The file is empty (0 bytes). It may still be being written.">▶</button><button class="b98">■</button><div class="seek"></div><span>00:00</span></div>
+    <div class="mplayer"><div class="noise"></div><div>TRAILER.MPG<br><br><span style="color:#777">Opening...</span></div></div>
+    <div class="controls"><button class="b98" data-err="TRAILER.MPG<br><br>Cannot play the file. The file is not available yet.">▶</button><button class="b98">■</button><div class="seek"></div><span>00:00</span></div>
   </div>
 
   <!-- Recycle Bin -->
@@ -555,9 +599,8 @@ const DESK = [
   { label: 'My Computer', icon: 'computer', open: 'w-computer' },
   { label: 'Recycle Bin', icon: 'bin', open: 'w-bin' },
   { label: 'WebSurfer', icon: 'globe', open: 'w-browser' },
-  { label: 'todo.txt', icon: 'note', open: 'w-readme' },
-  { label: 'REEL_01.MPG', icon: 'film', open: 'w-film' },
-  { label: 'feet_before.jpg', icon: 'img', err: 'C:\\My Documents\\feet_before.jpg<br><br>The file is corrupt and cannot be opened.' }
+  { label: 'about.txt', icon: 'note', open: 'w-readme' },
+  { label: 'TRAILER.MPG', icon: 'film', err: 'TRAILER.MPG<br><br>Cannot play the file. The file is not available yet.' }
 ];
 const iconsEl = document.getElementById('icons');
 DESK.forEach(d => {
@@ -689,9 +732,9 @@ function hoursLeft() {
   return 86400 - sinceMidnight;
 }
 
-const NAV = [['home', 'Home'], ['about', 'About Mikey'], ['fall', 'The Fall'], ['why', 'Why Feet?'], ['faq', 'Questions'], ['poem', 'A Poem']];
+const NAV = [['home', 'Home'], ['about', 'About Mikey'], ['accident', 'The Accident'], ['why', 'Why Feet?'], ['faq', 'Questions']];
 
-const PLAYER = `<div class="player chunk">
+const PLAYER = `<div class="player">
     <div class="ph"><span>StreamCast Player 6.0</span><span id="pfile">mikey_message.rm</span></div>
     <div class="screenbox" id="scr"><div class="static"></div><div class="grain"></div>
       <div class="msg" id="scrmsg">Click PLAY to watch</div></div>
@@ -699,77 +742,77 @@ const PLAYER = `<div class="player chunk">
   </div>`;
 
 const PAGES = {
-  home: { title: null, body: () => `
-    <p class="lead chunk">My name is Mikey.<br>Tomorrow I am going to cut off my feet.</p>
-    <p class="body16 chunk">For fifteen years they have gone everywhere I go. They have not taken one step. On January 8th, 2002, LIVE over the World Wide Web, I am going to remove them with a guillotine I built myself.</p>
-    <p class="body16 chunk">This is not a joke. It is not a freak show. The money from this site buys me a pair of legs that work.</p>
-    <div class="boxw chunk"><h3>THE BROADCAST BEGINS IN</h3>
+  home: () => `
+    <div class="live chunk"><span class="dot">&#9679;</span> LIVE: WATCH ME CUT OFF MY FEET</div>
+    <div class="paper chunk">
+      <p>Hello. My name is Mikey Dunbar. Fifteen years ago I was paralyzed when I severed my T12 vertebra in a boating accident. Due to a lapse in insurance, I am unable to afford proper treatment.</p>
+      <p>With that being said, I've started this website with some friends as an online fundraiser for new prosthetic legs. If my goals are met by January 8th, 2002, I will host a live broadcast cutting off my feet.</p>
+      <p>Thanks.<br>- Mikey</p>
+    </div>
+    <fieldset class="chunk"><legend>The Broadcast</legend>
       <div class="count" id="cd">--:--:--</div>
       <div class="cdl">JANUARY 8TH, 2002</div>
-      <div class="tiny" style="margin-top:6px">People waiting: <b id="viewers">4,213</b></div>
-      <a class="bigbtn" data-act2="live">ENTER THE BROADCAST</a></div>
-    <p class="body16 chunk"><b>A message from Mikey</b></p>
-    ${PLAYER}
-    <div class="boxw chunk"><h3>MIKEY'S LEGS FUND</h3>
-      <div class="thermo"><i style="width:99.6%"></i><span>$24,910 of $25,000</span></div></div>
-    <div class="upd chunk"><b class="h">UPDATE 01/07/02</b>Thank you for waiting with me. - Mikey</div>` },
+      <div>People waiting: <b id="viewers">4,213</b></div>
+      <button class="btn9" data-act2="live">Enter the Broadcast</button>
+    </fieldset>
+    <fieldset class="chunk"><legend>A message from Mikey</legend>${PLAYER}</fieldset>
+    <fieldset class="chunk"><legend>Mikey's Legs Fund: $24,910 of $25,000</legend>
+      <div class="prog">${'<i></i>'.repeat(60)}</div>
+    </fieldset>`,
 
-  about: { title: 'About Mikey', body: () => `
-    <p class="body16 l chunk">My name is Michael Dunbar. Everybody calls me Mikey. I am 34 years old and I live with my mother.</p>
-    <p class="body16 l chunk">I like swimming at the Y, computers, and being honest.</p>
-    <p class="body16 l chunk">I do not like stairs, insurance companies, or my feet.</p>` },
+  about: () => `<div class="paper chunk">
+      <p>My name is Michael Dunbar. Everybody calls me Mikey. I'm 34 years old and I live with my mother outside of town.</p>
+      <p>Before the accident I fished every weekend I could get. Bass, mostly. My tackle box is still out in the garage right where I left it.</p>
+      <p>I've been in this chair for fifteen years. People who know me say I'm a funny guy. Most people don't get to know me.</p>
+      <p>I want to fish again.</p>
+    </div>`,
 
-  fall: { title: 'The Fall', body: () => `
-    <p class="body16 l chunk">On August 3rd, 1986, I was 19 years old and painting a billboard on Route 9 for a dentist. The billboard said WE CARE ABOUT YOUR SMILE.</p>
-    <p class="body16 l chunk">I was finishing the E in SMILE when the catwalk let go. I fell forty-one feet into a soybean field. I remember the sky was very blue.</p>
-    <p class="body16 l chunk">I broke my back. I have not felt my feet since.</p>` },
+  accident: () => `<div class="paper chunk">
+      <p>It was the summer of 1986. I was 19. My buddy had just bought a used bass boat and we took it out on the lake the first weekend he had it.</p>
+      <p>We were going full throttle when we hit something under the water. A log, they think. I went over the windshield and came down across the bow rail.</p>
+      <p>I severed my T12 vertebra. The doctor told my mother I would never walk again. So far he's been right.</p>
+      <p>I haven't been back on the water since.</p>
+    </div>`,
 
-  why: { title: 'Why Feet?', body: () => `
-    <p class="body16 l chunk">People ask me why I don't just keep them. They are not hurting anybody.</p>
-    <p class="body16 l chunk">A prosthetic leg does not need a foot that does not work. My feet are in the way of my future.</p>
-    <p class="body16 l chunk">The insurance company will not pay for new legs. You can.</p>
-    <p class="body16 l chunk">I want to walk into the ocean one time. That is all.</p>` },
+  why: () => `<div class="paper chunk">
+      <p>People ask me why I don't just keep them. They aren't hurting anybody.</p>
+      <p>Here's the thing. Good prosthetic legs need a proper fit below the knee. My feet don't work, they don't feel anything, and they're in the way. The doctors call it an elective amputation.</p>
+      <p>My insurance lapsed. They won't cover the surgery and they won't cover the legs. A good pair costs more than everything I own.</p>
+      <p>So here's my deal. You help pay for the legs. I take care of the feet. Live, so you know it's real.</p>
+    </div>`,
 
-  faq: { title: 'Questions', body: () => `
-    <dl class="faq chunk">
+  faq: () => `<div class="paper chunk"><dl class="faq">
       <dt>Is this real?</dt><dd>Yes.</dd>
-      <dt>Won't it hurt?</dt><dd>I have not felt my feet since 1986.</dd>
+      <dt>Won't it hurt?</dt><dd>I haven't felt my feet since 1986.</dd>
       <dt>Why a guillotine?</dt><dd>One motion. No going back.</dd>
-      <dt>Is this legal?</dt><dd>I am an adult and these are my feet.</dd>
-      <dt>What happens to them after?</dt><dd>They will be scattered on Route 9.</dd>
-    </dl>` },
-
-  poem: { title: 'A Poem', body: () => `
-    <div class="poem chunk">
-      <b>TO MY FEET</b><br><br>
-      You were with me on the ladder.<br>
-      You were with me when I fell.<br>
-      You came along to every place<br>
-      and never helped me, well.<br><br>
-      Go on now, little travelers.<br>
-      You've done what you could do.<br>
-      I'll find another way to walk.<br>
-      I'll think of you.<br><br>
-      <i>- Mikey</i></div>` }
+      <dt>Is this legal?</dt><dd>I'm an adult and these are my feet.</dd>
+      <dt>Will there be a doctor?</dt><dd>There will be paramedics.</dd>
+      <dt>What happens to them after?</dt><dd>They go in the lake.</dd>
+    </dl></div>`
 };
 
 function SITE(key) {
-  const pg = PAGES[key] || PAGES.home;
-  const nav = `<a class="nh">MENU</a>` + NAV.map(([k, l]) => `<a class="nb${k === key ? ' cur' : ''}" data-nav="${k}">${l}</a>`).join('');
-  const head = pg.title ? wave(pg.title.toUpperCase()) : wave('CUT OFF MY FEET');
-  return `<div class="site">
-  <div class="top chunk"><a class="homebub" data-nav="home"><span>HOME</span></a><div class="bubble">${head}</div></div>
-  <table class="lay"><tr><td class="navcol chunk">${nav}</td><td class="maincol">${pg.body()}
-    <div class="ads chunk">
-      <a class="ad ad-ammo" data-ad="1"><span class="bul"><i></i><i></i><i></i><i></i></span>AMMOWORLD<span class="flash">BULK DEALS<br>SHIPS TODAY!</span><span class="lbl">ad</span></a>
-      <a class="ad ad-adult" data-ad="1"><span class="pic">adultwarehouse</span><span class="txt"><span class="t1">DVDs &bull; VIDEOS &bull; MORE</span><span class="t2">FREE GIFT WITH EVERY ORDER &bull; 18+</span></span><span class="lbl">ad</span></a>
-    </div>
-    <div class="chunk">
-      <p style="font:12px Verdana,Arial;margin-top:16px">You are visitor # <span class="hits" id="hits">${visitorCount().split('').map(d => '<b>' + d + '</b>').join('')}</span></p>
-      <p style="font:11px Verdana,Arial;color:#555">Last updated: 01/07/2002</p>
-      <div class="disclaimer">CutOffMyFeet is a fictional website created for <b>CUT OFF MY FEET</b>, a capstone short film by Bradley Geiger &middot; A Geigerfilms production &middot; Coming Summer 2027.<br>No donations or memberships are collected. All people and advertisers are fictional.</div>
-    </div>
-  </td></tr></table></div>`;
+  const body = (PAGES[key] || PAGES.home)();
+  const tabs = NAV.map(([k, l]) => `<a class="tab${k === key ? ' cur' : ''}" data-nav="${k}">${l}</a>`).join('');
+  return `<div class="site w9">
+  <div class="frame chunk">
+    <div class="bar"><span>cutoffmyfeet.net</span><span class="bb"><i></i><i></i><i></i></span></div>
+    <div class="masthead"><div class="mast">Cut Off My Feet</div><hr><div class="mastsub">the official website of Mikey Dunbar</div></div>
+  </div>
+  <div class="frame">
+    <div class="tabs chunk">${tabs}</div>
+    <div class="panel">${body}</div>
+  </div>
+  <div class="ads chunk">
+    <a class="ad ad-ammo" data-ad="1"><span class="bul"><i></i><i></i><i></i><i></i></span>AMMOWORLD<span class="flash">BULK DEALS<br>SHIPS TODAY!</span><span class="lbl">ad</span></a>
+    <a class="ad ad-adult" data-ad="1"><span class="pic">adultwarehouse</span><span class="txt"><span class="t1">DVDs &bull; VIDEOS &bull; MORE</span><span class="t2">FREE GIFT WITH EVERY ORDER &bull; 18+</span></span><span class="lbl">ad</span></a>
+  </div>
+  <div class="foot9 chunk">
+    <p>You are visitor # <span class="hits" id="hits">${visitorCount().split('').map(d => '<b>' + d + '</b>').join('')}</span></p>
+    <p>Last updated: 01/07/2002</p>
+    <div class="disclaimer">CutOffMyFeet is a fictional website created for <b>CUT OFF MY FEET</b>, a capstone short film by Bradley Geiger &middot; A Geigerfilms production &middot; Coming Summer 2027.<br>No donations or memberships are collected. All people and advertisers are fictional.</div>
+  </div>
+</div>`;
 }
 
 const ERRPAGE = `<div class="errpage">
@@ -856,7 +899,7 @@ function startLive() {
   st.textContent = '(1 item remaining) Waiting for http://live.cutoffmyfeet.net/cam.jpg...';
   setProgress(.93);
   // every so often, the heading flinches
-  const flinch = () => { const b = document.querySelector('#page .bubble'); if (b) { b.classList.add('flinch'); later(() => b.classList.remove('flinch'), 140); } later(flinch, 9000 + Math.random() * 14000); };
+  const flinch = () => { const b = document.querySelector('#page .mast'); if (b) { b.classList.add('flinch'); later(() => b.classList.remove('flinch'), 140); } later(flinch, 9000 + Math.random() * 14000); };
   later(flinch, 6000);
 }
 
