@@ -1414,6 +1414,13 @@ function startIM() {
   const log = document.getElementById('imlog'); log.innerHTML = '';
   openWin('w-im'); play('im', .7);
   let t = 400;
+  if (SEIZED) {                                   // second time around, after the site was seized
+    [['that was crazy!', 0], ['can u believe he did it?', 0], ['you found an easter egg!', 3500], ['cut off my feet coming soon...', 0]].forEach(([l, pause]) => {
+      t += pause + 700 + l.length * 35;
+      setTimeout(() => { imLine(l); play('im', .5); }, t);
+    });
+    return;
+  }
   IM_LINES.forEach((l, k) => {
     t += 700 + l.length * 35;
     setTimeout(() => { imLine(l); play('im', .5); if (k === IM_LINES.length - 1) setTimeout(goLive, 1600); }, t);
@@ -1429,7 +1436,7 @@ function goLive() {
 function imSend() {
   const i = document.getElementById('imin'); const v = i.value.trim(); if (!v) return;
   imLine(v.replace(/[<>&]/g, ''), 'me'); i.value = '';
-  setTimeout(() => { imLine(['lol just go look', 'GO TO THE SITE', 'hurry it already started', 'omg its happening'][Math.random() * 4 | 0]); play('im', .5); }, 1200);
+  setTimeout(() => { imLine((SEIZED ? ['i still cant believe it', 'see u at the premiere', 'summer 2027!!', 'lol'] : ['lol just go look', 'GO TO THE SITE', 'hurry it already started', 'omg its happening'])[Math.random() * 4 | 0]); play('im', .5); }, 1200);
 }
 document.getElementById('imsend').addEventListener('click', imSend);
 document.getElementById('imin').addEventListener('keydown', e => { if (e.key === 'Enter') imSend(); });
