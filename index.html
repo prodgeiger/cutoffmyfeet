@@ -376,6 +376,10 @@
   #titlecard .tc3 { font: 12px "Courier New", monospace; letter-spacing: 4px; color: #888; }
   #titlecard .tc4 { font: bold 14px "Courier New", monospace; letter-spacing: 6px; color: #b00; margin-top: 18px; }
   #titlecard .tcx { position: absolute; bottom: 16px; left: 0; right: 0; text-align: center; font: 11px "Courier New", monospace; color: #555; }
+  .gbform { width: 100%; max-width: 360px; }
+  .gbform input, .gbform textarea { width: 100%; }
+  .gbform .hp { position: absolute; left: -9999px; width: 1px; height: 1px; }
+  .gbnote { font: 11px Verdana, Arial, sans-serif; color: #555; margin-top: 6px; }
   /* server error page */
   .errpage { padding: 20px 26px; font: 13px Verdana, Arial, sans-serif; color: #000; background: #fff; min-height: 100%; }
   .errpage h2 { font: bold 18px Verdana, Arial, sans-serif; margin: 0 0 4px; }
@@ -826,7 +830,7 @@ const FUND = { raised: 3215, goal: 25000 };
 const NAV = [
   ['h', 'MENU'], ['home', 'Home'],
   ['h', "MIKEY'S STORY"], ['about', 'About Mikey'], ['accident', 'The Accident'], ['why', 'Why Feet?'],
-  ['h', 'HELP MIKEY'], ['donate', 'Donate'], ['chat', 'Chat Room'], ['faq', 'Questions']
+  ['h', 'HELP MIKEY'], ['donate', 'Donate'], ['guestbook', 'Guestbook'], ['chat', 'Chat Room'], ['faq', 'Questions']
 ];
 
 const PLAYER = `<div class="player chunk">
@@ -876,6 +880,19 @@ const PAGES = {
     <p class="body16 l chunk">So here's my deal. You help pay for the legs. I take care of the feet. Live, so you know it's real.</p>
     ${THERMO}`,
 
+  guestbook: () => `
+    <p class="body16 chunk">Please sign my guestbook! Tell me where you're from. I read every one.<br>- Mikey</p>
+    <div class="boxw chunk"><h3>SIGN THE GUESTBOOK</h3>
+      <form class="form98 gbform" id="gbform" autocomplete="off">
+        <label>Your name</label><input name="name" maxlength="40" required>
+        <label>Where are you from?</label><input name="location" maxlength="40">
+        <label>Message</label><textarea name="message" rows="4" maxlength="500" required></textarea>
+        <input name="website" class="hp" tabindex="-1" aria-hidden="true">
+        <br><button type="submit">SIGN!</button>
+        <div class="gbnote" id="gbnote">All entries are read by Mikey before they appear.</div>
+      </form></div>
+    <div class="gb chunk" id="gblist"><p class="tiny" style="text-align:center">Loading entries...</p></div>`,
+
   chat: () => `
     <p class="body16 chunk">Talk with other people who are waiting for the broadcast. Please be respectful. Mikey reads this.</p>
     <div class="boxw chunk"><h3>#cutoffmyfeet <span style="float:right;font-weight:normal" id="chatn">38 users</span></h3>
@@ -891,6 +908,53 @@ const PAGES = {
       <dt>Will there be a doctor?</dt><dd>There will be paramedics.</dd>
     </dl>`
 };
+
+/* ===== GUESTBOOK (Supabase) =====
+   Visitors can add entries; nothing shows until it's approved in the Supabase table editor. */
+const GB = {
+  url: '',   // e.g. https://abcdefgh.supabase.co
+  key: ''    // the project's publishable / anon key (safe to be public)
+};
+const GB_SEED = [
+  ['Linda K.', 'Duluth, MN', 'I prayed on it and I think you are very brave. My husband thinks you are crazy. We are both watching.'],
+  ['Gary', 'Lansing, MI', 'Do you need someone to drive you to the hospital after. I have a van.'],
+  ['Ruth', 'Finland', 'Hello from Finland. I hope you get your legs.'],
+  ['anonymous', '', 'Please dont do this.']
+];
+const esc = t => String(t || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const gbHeaders = () => Object.assign({ apikey: GB.key, 'Content-Type': 'application/json' }, GB.key.startsWith('eyJ') ? { Authorization: 'Bearer ' + GB.key } : {});
+const gbEntry = (n, l, m) => `<div class="gbe"><b>${esc(n)}</b>${l ? ` <span>from ${esc(l)}</span>` : ''}<p>${esc(m)}</p></div>`;
+async function gbLoad() {
+  const list = document.getElementById('gblist'); if (!list) return;
+  let real = [];
+  if (GB.url && GB.key) {
+    try {
+      const r = await fetch(`${GB.url}/rest/v1/guestbook?select=name,location,message&approved=eq.true&order=created_at.desc&limit=100`, { headers: gbHeaders() });
+      if (r.ok) real = await r.json();
+    } catch (e) {}
+  }
+  if (!document.getElementById('gblist')) return;
+  list.innerHTML = real.map(e => gbEntry(e.name, e.location, e.message)).join('') + GB_SEED.map(e => gbEntry(...e)).join('');
+}
+async function gbSubmit(e) {
+  e.preventDefault();
+  const f = e.target, note = document.getElementById('gbnote'), btn = f.querySelector('button');
+  if (f.website.value) return;                                    // spam bot filled the hidden field
+  const body = { name: f.name.value.trim().slice(0, 40), location: f.location.value.trim().slice(0, 40), message: f.message.value.trim().slice(0, 500) };
+  if (!body.name || !body.message) return;
+  if (!GB.url || !GB.key) { msgbox('The guestbook server is not responding. Please try again later.', { title: 'WebSurfer' }); return; }
+  btn.disabled = true; note.textContent = 'Sending...';
+  try {
+    const r = await fetch(`${GB.url}/rest/v1/guestbook`, { method: 'POST', headers: Object.assign(gbHeaders(), { Prefer: 'return=minimal' }), body: JSON.stringify(body) });
+    if (!r.ok) throw new Error(r.status);
+    f.reset(); note.textContent = 'Thank you for signing! Your entry will appear after Mikey reads it.';
+    msgbox('Thank you for signing!<br><br>Your entry will appear after Mikey reads it.', { title: 'Guestbook', kind: 'info' });
+  } catch (err) {
+    note.textContent = 'All entries are read by Mikey before they appear.';
+    msgbox('Could not sign the guestbook. The server is busy.<br><br>Please try again later.', { title: 'WebSurfer' });
+  }
+  btn.disabled = false;
+}
 
 /* Donate leaves Mikey's site and shows a plain page about the film */
 const DONATE = `<div class="reveal">
@@ -980,6 +1044,7 @@ function wireSite() {
     msgbox(MSG[n][0], { title: 'WebSurfer', kind: MSG[n][1] });
   }));
   page.querySelectorAll('[data-ad]').forEach(a => a.addEventListener('click', () => msgbox('This advertiser has been removed from our site.', { title: 'WebSurfer', kind: 'info' })));
+  const gf = document.getElementById('gbform'); if (gf) { gf.addEventListener('submit', gbSubmit); gbLoad(); }
   const pp = document.getElementById('pplay'); if (pp) { pp.addEventListener('click', () => playVideo()); document.getElementById('pstop').addEventListener('click', stopPlayer); }
   page.querySelectorAll('[data-vid]').forEach(a => a.addEventListener('click', () => playVideo(a.dataset.vid)));
   const inp = document.getElementById('chatin');
