@@ -417,6 +417,21 @@
   #crash .ctype { font: bold 22px/1.6 "Courier New", Courier, monospace; text-align: center; white-space: nowrap; }
   #crash .ctype .cursor { width: 12px; height: 22px; vertical-align: -4px; }
   @media (max-width: 640px) { #crash .ctype { font-size: 16px; white-space: normal; } }
+  .seized { min-height: 100%; background: #0a0a0a radial-gradient(ellipse at 50% 30%, #1a2a55, #050814 70%); display: grid; place-items: center; padding: 24px 12px; font-family: "Times New Roman", Times, serif; color: #fff; }
+  .szbox { max-width: 720px; width: 100%; border: 3px double #c9a227; background: rgba(5,10,30,.85); box-shadow: 0 0 40px rgba(0,0,0,.7); }
+  .szhead { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 18px 14px; background: linear-gradient(#7a0000, #3d0000); border-bottom: 3px solid #c9a227; }
+  .szhead .seal { width: 92px; height: 92px; flex-shrink: 0; }
+  .szt { font: bold 30px/1.15 "Times New Roman", serif; text-align: center; letter-spacing: 1px; text-shadow: 2px 2px 0 #000; }
+  .szbody { padding: 18px 26px 6px; font-size: 16px; line-height: 1.5; }
+  .szbody p { margin: 0 0 12px; }
+  .sztab { border-collapse: collapse; margin: 14px auto 6px; font: 12px Verdana, Arial, sans-serif; }
+  .sztab td { border: 1px solid #c9a227; padding: 5px 12px; } .sztab td:first-child { color: #c9a227; font-weight: bold; }
+  .szfoot { font: 10px Verdana, Arial, sans-serif; color: #8a8fa8; text-align: center; padding: 10px 14px 12px; border-top: 1px solid #333; }
+  @media (max-width: 640px) { .szhead { flex-wrap: wrap; } .szhead .seal { width: 60px; height: 60px; } .szt { font-size: 22px; order: -1; width: 100%; } .szbody { padding: 14px; font-size: 15px; } }
+  .calgrid i.cut { color: #c00; background: linear-gradient(-12deg, transparent 46%, #c00 46%, #c00 54%, transparent 54%); animation: cutshake .3s; }
+  .calgrid i.cut, .calgrid i.cut.sel { color: #c00; font-weight: bold; background: linear-gradient(-14deg, transparent 44%, #c00 44%, #c00 56%, transparent 56%); }
+  .calgrid i.cut::after { border-color: #c00; opacity: .35; }
+  @keyframes cutshake { 0% { transform: translateY(-3px); } 50% { transform: translate(2px, 2px); } }
   /* server error page */
   .errpage { padding: 20px 26px; font: 13px Verdana, Arial, sans-serif; color: #000; background: #fff; min-height: 100%; }
   .errpage h2 { font: bold 18px Verdana, Arial, sans-serif; margin: 0 0 4px; }
@@ -696,7 +711,7 @@ Coming Summer 2027.</div>
 <script>
 /* ================= SOUND ================= */
 const SND = {}; let muted = false;
-['post', 'hdd', 'startup', 'shutdown', 'ding', 'error', 'click', 'trash', 'dialup', 'im'].forEach(n => { const a = new Audio('sounds/' + n + '.mp3'); a.preload = 'auto'; SND[n] = a; });
+['post', 'hdd', 'startup', 'shutdown', 'ding', 'error', 'click', 'trash', 'dialup', 'im', 'slice'].forEach(n => { const a = new Audio('sounds/' + n + '.mp3'); a.preload = 'auto'; SND[n] = a; });
 function play(n, vol = 1) { if (muted || !SND[n]) return; try { const a = SND[n]; a.pause(); a.currentTime = 0; a.volume = vol; a.play().catch(() => {}); } catch (e) {} }
 function stopSnd(n) { try { SND[n].pause(); } catch (e) {} }
 
@@ -1016,6 +1031,23 @@ async function gbSubmit(e) {
   btn.disabled = false;
 }
 
+const SEIZED_PAGE = `<div class="seized"><div class="szbox">
+  <div class="szhead"><svg class="seal" viewBox="0 0 120 120"><defs><path id="sc" d="M60 60 m-46 0 a46 46 0 1 1 92 0 a46 46 0 1 1 -92 0"/></defs>
+  <circle cx="60" cy="60" r="58" fill="#0b1f4d" stroke="#c9a227" stroke-width="3"/><circle cx="60" cy="60" r="38" fill="#12306f" stroke="#c9a227" stroke-width="2"/>
+  <text font-family="Times New Roman" font-size="10" font-weight="bold" fill="#c9a227" letter-spacing="1.5"><textPath href="#sc">NATIONAL CYBER ENFORCEMENT DIVISION &#8226; N.C.E.D. &#8226;</textPath></text>
+  <path d="M60 32l6 18h19l-15 11 6 18-16-11-16 11 6-18-15-11h19z" fill="#c9a227"/><text x="60" y="94" text-anchor="middle" font-family="Times New Roman" font-size="8" fill="#c9a227" letter-spacing="2">MCMXCVIII</text></svg><div class="szt">THIS WEBSITE HAS BEEN SEIZED</div><svg class="seal" viewBox="0 0 120 120"><defs><path id="sc" d="M60 60 m-46 0 a46 46 0 1 1 92 0 a46 46 0 1 1 -92 0"/></defs>
+  <circle cx="60" cy="60" r="58" fill="#0b1f4d" stroke="#c9a227" stroke-width="3"/><circle cx="60" cy="60" r="38" fill="#12306f" stroke="#c9a227" stroke-width="2"/>
+  <text font-family="Times New Roman" font-size="10" font-weight="bold" fill="#c9a227" letter-spacing="1.5"><textPath href="#sc">NATIONAL CYBER ENFORCEMENT DIVISION &#8226; N.C.E.D. &#8226;</textPath></text>
+  <path d="M60 32l6 18h19l-15 11 6 18-16-11-16 11 6-18-15-11h19z" fill="#c9a227"/><text x="60" y="94" text-anchor="middle" font-family="Times New Roman" font-size="8" fill="#c9a227" letter-spacing="2">MCMXCVIII</text></svg></div>
+  <div class="szbody">
+    <p>The domain name <b>cutoffmyfeet.net</b> has been seized by the <b>National Cyber Enforcement Division</b> pursuant to a seizure warrant issued by a United States District Court.</p>
+    <p>This website and its associated live broadcast are the subject of an <b>ongoing federal investigation</b>. All content, membership records, and payment records associated with this domain have been preserved as evidence.</p>
+    <p>Any person with information regarding the events of <b>January 8, 2002</b> is asked to contact the investigating office. Visitors to this site may be identified.</p>
+    <table class="sztab"><tr><td>CASE NUMBER</td><td>NCED-02-0108-CMF</td></tr><tr><td>DATE OF SEIZURE</td><td>01/08/2002</td></tr><tr><td>STATUS</td><td>UNDER INVESTIGATION</td></tr></table>
+  </div>
+  <div class="szfoot">This notice is part of a fictional website for <i>CUT OFF MY FEET</i>, a short film by Bradley Geiger. The agency named above does not exist.</div>
+</div></div>`;
+
 /* Donate leaves Jimmy's site and shows a plain page about the film */
 const DONATE = `<div class="reveal">
   <div class="rv chunk">
@@ -1070,7 +1102,18 @@ function visitorCount() {
 function setProgress(p) { document.getElementById('prog').innerHTML = '<i></i>'.repeat(Math.round(p * 14)); }
 
 let curPage = 'home';
+const SEIZED = (() => { try { const v = sessionStorage.getItem('cmf_seized'); sessionStorage.removeItem('cmf_seized'); return !!v; } catch (e) { return false; } })();
+function loadSeized() {
+  clearTimers(); stopPlayer();
+  const w = document.getElementById('w-browser'), page = document.getElementById('page'), st = document.getElementById('bstatus');
+  document.getElementById('url').textContent = 'http://www.cutoffmyfeet.net/';
+  w.classList.add('loading'); page.innerHTML = '<div style="padding:20px;font:13px Verdana,Arial">Opening page http://www.cutoffmyfeet.net/...</div>'; st.textContent = 'Opening page http://www.cutoffmyfeet.net/...';
+  setTimeout(() => {
+    page.innerHTML = SEIZED_PAGE; page.scrollTop = 0; w.classList.remove('loading'); st.textContent = 'Done'; setProgress(0);
+  }, 1400);
+}
 function loadSite(key = curPage, fast = false) {
+  if (SEIZED) return loadSeized();
   curPage = key; clearTimers(); stopPlayer();
   const w = document.getElementById('w-browser'), page = document.getElementById('page'), st = document.getElementById('bstatus');
   document.getElementById('url').textContent = 'http://www.cutoffmyfeet.net/' + (key === 'home' ? 'main' : key) + '.html';
@@ -1197,7 +1240,7 @@ function buildCal() {
   g.innerHTML = h;
   g.querySelectorAll('i[data-d]').forEach(c => c.addEventListener('click', () => {
     g.querySelectorAll('i.sel').forEach(x => x.classList.remove('sel')); c.classList.add('sel'); play('click', .5);
-    if (c.dataset.d === '8') setTimeout(titleCard, 250);
+    if (c.dataset.d === '8' && !c.classList.contains('cut')) { play('slice', .8); c.classList.add('cut'); }
   }));
 }
 function calClock() {
@@ -1430,7 +1473,7 @@ function filmCrash() {
     };
     step();
   }
-  function reboot() { c.style.background = '#000'; c.innerHTML = ''; setTimeout(() => location.reload(), 900); }
+  function reboot() { try { sessionStorage.setItem('cmf_seized', '1'); } catch (e) {} c.style.background = '#000'; c.innerHTML = ''; setTimeout(() => location.reload(), 900); }
 }
 
 /* ================= BOOT ================= */
