@@ -411,6 +411,12 @@
   .imtype input { flex: 1; font: 13px Arial, sans-serif; box-shadow: var(--sunken); border: 0; padding: 3px; }
   .imtype .b98 { min-width: 60px; }
   .site .count.zero { color: #f00; animation: blink 1s steps(1) infinite; }
+  #freeze { position: fixed; inset: 0; z-index: 99998; cursor: wait; }
+  #crash .glitch { animation: cglitch .12s steps(2) infinite; }
+  @keyframes cglitch { 0% { transform: translate(0); text-shadow: 2px 0 #f0f, -2px 0 #0ff; } 50% { transform: translate(-4px, 2px) skewX(-8deg); text-shadow: -3px 0 #f0f, 3px 0 #0ff; } }
+  #crash .ctype { font: bold 22px/1.6 "Courier New", Courier, monospace; text-align: center; white-space: nowrap; }
+  #crash .ctype .cursor { width: 12px; height: 22px; vertical-align: -4px; }
+  @media (max-width: 640px) { #crash .ctype { font-size: 16px; white-space: normal; } }
   /* server error page */
   .errpage { padding: 20px 26px; font: 13px Verdana, Arial, sans-serif; color: #000; background: #fff; min-height: 100%; }
   .errpage h2 { font: bold 18px Verdana, Arial, sans-serif; margin: 0 0 4px; }
@@ -1384,8 +1390,47 @@ document.getElementById('imin').addEventListener('keydown', e => { if (e.key ===
 
 /* Watching the live broadcast: the site crashes, the title card plays, then the computer crashes and reboots */
 function bigCrash() {
-  crash();
-  setTimeout(titleCard, 3200);
+  // 1. the computer freezes: input is swallowed, the hourglass shows, the screen stutters
+  Object.keys(SND).forEach(stopSnd);
+  const fr = document.createElement('div'); fr.id = 'freeze'; document.body.appendChild(fr);
+  const d = document.getElementById('desktop');
+  [300, 700, 950, 1300].forEach((t, k) => setTimeout(() => { d.style.transform = k % 2 ? 'translate(-3px, 1px)' : 'translate(4px, -2px)'; d.style.filter = k % 2 ? '' : 'contrast(1.4) hue-rotate(20deg)'; setTimeout(() => { d.style.transform = ''; d.style.filter = ''; }, 90); }, t));
+  setTimeout(() => { fr.remove(); filmCrash(); }, 1800);
+}
+
+/* 2. the blue error screen, which glitches and types out the title, then reboots */
+function filmCrash() {
+  const c = document.getElementById('crash');
+  c.innerHTML = `<div class="cbox" id="cbox">
+    <div class="ctitle">Geigerfilms 98</div>
+    <p>A fatal error has occurred in BROADCAST.VXD at 0028:C0011E36.<br>The current application will be terminated.</p>
+    <p>* live.cutoffmyfeet.net is not responding.<br>* Too many users are connected.</p>
+    <p class="cc">Press any key to continue <span class="cursor"></span></p></div>`;
+  c.classList.add('on'); play('error');
+  const box = document.getElementById('cbox');
+  const glyphs = '#%&@$*!?/\\<>[]{}=+_|~^01';
+  setTimeout(() => {                                   // glitch: jitter and scramble the text
+    box.classList.add('glitch');
+    const nodes = []; const walk = n => n.nodeType === 3 ? nodes.push(n) : n.childNodes.forEach(walk); walk(box);
+    let k = 0; const iv = setInterval(() => {
+      nodes.forEach(n => { n.textContent = n.textContent.split('').map(ch => ch.trim() && Math.random() < .12 + k * .06 ? glyphs[Math.random() * glyphs.length | 0] : ch).join(''); });
+      if (++k > 10) { clearInterval(iv); typeTitle(); }
+    }, 70);
+  }, 2600);
+  function typeTitle() {
+    box.classList.remove('glitch');
+    box.innerHTML = '<div class="ctype" id="ctype"></div>';
+    const out = document.getElementById('ctype');
+    const text = 'CUT OFF MY FEET\n\na short film by Bradley Geiger\n\nSummer 2027';
+    let i = 0;
+    const step = () => {
+      out.innerHTML = text.slice(0, i).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/\n/g, '<br>') + '<span class="cursor"></span>';
+      if (i++ < text.length) setTimeout(step, text[i - 1] === '\n' ? 180 : 45);
+      else setTimeout(reboot, 3800);
+    };
+    step();
+  }
+  function reboot() { c.style.background = '#000'; c.innerHTML = ''; setTimeout(() => location.reload(), 900); }
 }
 
 /* ================= BOOT ================= */
