@@ -946,12 +946,12 @@ async function gbSubmit(e) {
   btn.disabled = true; note.textContent = 'Sending...';
   try {
     const r = await fetch(`${GB.url}/rest/v1/guestbook`, { method: 'POST', headers: Object.assign(gbHeaders(), { Prefer: 'return=minimal' }), body: JSON.stringify(body) });
-    if (!r.ok) throw new Error(r.status);
+    if (!r.ok) { let d = ''; try { const j = await r.json(); d = j.code || j.message || ''; } catch (x) {} throw new Error(r.status + (d ? ' / ' + d : '')); }
     f.reset(); note.textContent = 'Thank you for signing! Your entry will appear after Mikey reads it.';
     msgbox('Thank you for signing!<br><br>Your entry will appear after Mikey reads it.', { title: 'Guestbook', kind: 'info' });
   } catch (err) {
     note.textContent = 'All entries are read by Mikey before they appear.';
-    msgbox('Could not sign the guestbook. The server is busy.<br><br>Please try again later.', { title: 'WebSurfer' });
+    console.warn('guestbook error', err); msgbox('Could not sign the guestbook. The server is busy.<br><br>Please try again later.<br><br><span style="color:#808080;font-size:11px">Error code: ' + esc(err.message) + '</span>', { title: 'WebSurfer' });
   }
   btn.disabled = false;
 }
@@ -1147,8 +1147,7 @@ function calClock() {
   document.getElementById('mh').style.transform = `rotate(${m * 6}deg)`;
 }
 buildCal(); calClock(); setInterval(calClock, 1000);
-['dblclick', 'click'].forEach(ev => document.getElementById('clock').addEventListener(ev, e => {
-  if (ev === 'click' && !matchMedia('(pointer: coarse)').matches) return;
+['click'].forEach(ev => document.getElementById('clock').addEventListener(ev, e => {
   openWin('w-cal');
 }));
 
