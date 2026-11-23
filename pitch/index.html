@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kestrel 98</title>
+<title>Geigerfilms 98</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="../favicon.ico">
 <style>
@@ -536,7 +536,7 @@
   #tray svg { width: 16px; height: 16px; }
 
   /* browser with tabs */
-  #w-browser { left: 200px; top: 10px; right: 200px; height: calc(100% - 52px); width: auto !important; }
+  #w-browser { left: 0; top: 0; right: 0; bottom: 0; width: auto !important; height: auto !important; z-index: 9500; }
   .tabstrip { display: flex; gap: 2px; padding: 4px 4px 0; flex-shrink: 0; }
   .tabstrip .tab { display: flex; align-items: center; gap: 5px; padding: 3px 10px 4px; max-width: 220px; background: #c0c0c0; box-shadow: inset -1px 0 #0a0a0a, inset 1px 1px #fff, inset -2px 0 #808080, inset 2px 2px #dfdfdf; border-radius: 3px 3px 0 0; font-size: 11px; white-space: nowrap; overflow: hidden; position: relative; top: 2px; }
   .tabstrip .tab svg { width: 14px; height: 14px; flex-shrink: 0; }
@@ -627,12 +627,12 @@
   <!-- 1. LOGIN -->
   <div id="login" class="scr on">
     <div class="win open active lwin">
-      <div class="title"><span class="t">Welcome to Kestrel</span><button class="tb">?</button><button class="tb x">✕</button></div>
+      <div class="title"><span class="t">Welcome to Geigerfilms</span><button class="tb">?</button><button class="tb x">✕</button></div>
       <div style="display:flex">
         <div class="lbody">
           <svg class="key" viewBox="0 0 32 32" shape-rendering="crispEdges"><circle cx="10" cy="16" r="7" fill="#e8c84a" stroke="#000"/><circle cx="8" cy="16" r="2" fill="#008080"/><path d="M16 14h13v4h-2v3h-3v-3h-2v3h-3v-3h-3z" fill="#e8c84a" stroke="#000"/></svg>
           <div class="lform">
-            <p>Type a user name and password to log on to Kestrel.</p>
+            <p>Type a user name and password to log on to Geigerfilms.</p>
             <div class="row"><label><u>U</u>ser name:</label><div class="fld" id="fuser"><span></span><i class="caret"></i></div></div>
             <div class="row"><label><u>P</u>assword:</label><div class="fld" id="fpass"><span></span><i class="caret"></i></div></div>
           </div>
@@ -640,15 +640,14 @@
         <div class="lbtns"><button class="b98" id="okbtn">OK</button><button class="b98">Cancel</button></div>
       </div>
     </div>
-    <div class="win dialog" id="loading"><div class="title"><span class="t">Kestrel</span></div><div class="body"><svg data-i="computer" style="width:32px;height:32px"></svg>Loading your personal settings...</div></div>
-    <div class="brand">Kestrel<sup>98</sup></div>
+    <div class="win dialog" id="loading"><div class="title"><span class="t">Geigerfilms</span></div><div class="body"><svg data-i="computer" style="width:32px;height:32px"></svg>Loading your personal settings...</div></div>
+    <div class="brand">Geigerfilms<sup>98</sup></div>
   </div>
 
   <!-- 2. DESKTOP -->
   <div id="desktop" class="scr">
-    <div id="wallpaper"><div class="wmark"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><i></i></div><div class="wname">Kestrel<sup>98</sup></div></div>
+    <div id="wallpaper"><div class="wmark"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><i></i></div><div class="wname">Geigerfilms<sup>98</sup></div></div>
     <div id="icons"></div>
-    <div class="note" style="right:40px; top:40px">TODO:<br>- finish pitch<br>- call DP back<br>- feet??<br>- DINNERTIME notes</div>
 
     <div class="win" id="w-browser" data-icon="globe">
       <div class="title"><svg data-i="globe"></svg><span class="t" id="btitle">WebSurfer</span><button class="tb">_</button><button class="tb">□</button><button class="tb x">✕</button></div>
@@ -930,11 +929,11 @@ const SPAM = [
 ];
 const ERRS = [
   ['WEBSURF', 'This program has performed an illegal operation and will be shut down.'],
-  ['Kestrel', 'You are running low on virtual memory.'],
+  ['Geigerfilms', 'You are running low on virtual memory.'],
   ['Error', 'A required .DLL file, MSVBVM50.DLL, was not found.'],
   ['FunBuddy Toolbar', 'Would you like to install FunBuddy Toolbar? It will make browsing FUN!'],
   ['Low Disk Space', 'You are running out of disk space on Local Disk (C:).'],
-  ['Kestrel Update', 'Important updates are available for your computer.'],
+  ['Geigerfilms Update', 'Important updates are available for your computer.'],
   ['Mail', 'You have 1,284 unread messages.'],
   ['Error', 'An error has occurred in your program. To keep working anyway, click Ignore.']
 ];
@@ -945,30 +944,47 @@ function mkWin(html, x, y, w, title, cls = '') {
   el.innerHTML = `<div class="title"><span class="t">${title}</span><button class="tb x">✕</button></div>${html}`;
   $('desktop').appendChild(el); return el;
 }
-function spawnPopup(k) {
-  const r = Math.random;
-  if (k % 3 === 0) {
-    const a = SPAM[r() * SPAM.length | 0];
+const MORE_SPAM = [
+  ['Win a Trip!', 'FREE CRUISE TO THE BAHAMAS', 'You have been selected! Just pay port fees.', 'CLAIM TRIP', '#fff', '#06c'],
+  ['Lose Weight Fast', 'LOSE 30 LBS IN 30 DAYS', 'Doctors HATE this one weird trick!', 'LEARN MORE', '#000', '#f90'],
+  ['Free Ringtones', 'FREE RINGTONES!!!', 'Get the hottest ringtones for your cell phone!', 'GET THEM', '#ff0', '#909'],
+  ['Online Degree', 'GET YOUR DEGREE ONLINE', 'Earn a diploma in weeks, not years!', 'ENROLL', '#003', '#ffd']
+];
+const MORE_ERRS = [
+  ['Printer', 'Printer is out of paper. Load paper in Tray 1.'],
+  ['Floppy Disk', 'A:\\ is not accessible. The device is not ready.'],
+  ['Screen Saver', 'Your screen saver has stopped responding.'],
+  ['Virus Alert', 'A virus has been detected: W32.ILOVEYOU. Delete now?'],
+  ['Dial-Up Networking', 'Connection lost. Would you like to reconnect?'],
+  ['Kernel', 'Fatal error at 0028:C0034B23. Press any key to continue.'],
+  ['Desk Helper', 'It looks like you are writing a pitch. Would you like help?'],
+  ['Download Complete', 'FREE_SCREENSAVER.exe has finished downloading. Open it?'],
+  ['Explorer', 'Cannot delete file: it is being used by another person or program.'],
+  ['Calendar', 'Reminder: DINNERTIME notes are overdue.']
+];
+let POOL = [];
+function refillPool() {
+  POOL = SPAM.concat(MORE_SPAM).map(a => ['spam', a]).concat(ERRS.concat(MORE_ERRS).map(e => ['err', e]));
+  for (let i = POOL.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [POOL[i], POOL[j]] = [POOL[j], POOL[i]]; }
+}
+function spawnPopup() {
+  if (!POOL.length) refillPool();
+  const [kind, a] = POOL.pop(), r = Math.random;
+  if (kind === 'spam') {
     mkWin(`<div class="spam" style="background:${a[5]};color:${a[4]}"><div class="sh">${a[1]}</div><div class="sb">${a[2]}</div><button class="sbtn">${a[3]}</button></div>`, r() * (SW - 300) | 0, r() * (SH - 250) | 0, 290, a[0]);
     play('ding', .5, 90);
   } else {
-    const e = ERRS[r() * ERRS.length | 0], icon = e[0] === 'FunBuddy Toolbar' || e[0] === 'Kestrel Update' ? 'info' : 'warn';
-    mkWin(`<div class="body"><svg data-i="${icon}"></svg><div>${e[1]}</div></div><div class="btns"><button class="b98">OK</button>${icon === 'info' ? '<button class="b98">Cancel</button>' : ''}</div>`, r() * (SW - 330) | 0, r() * (SH - 210) | 0, 320, e[0], 'errbox');
+    const info = /Update|Download|Desk Helper|Calendar|Dial-Up/.test(a[0]);
+    mkWin(`<div class="body"><svg data-i="${info ? 'info' : 'warn'}"></svg><div>${a[1]}</div></div><div class="btns"><button class="b98">OK</button>${info ? '<button class="b98">Cancel</button>' : ''}</div>`, r() * (SW - 330) | 0, r() * (SH - 210) | 0, 320, a[0], 'errbox');
     paintIcons($('desktop').lastChild);
     play('error', .45, 90);
   }
 }
-function spawnTrail(x0, y0, n) {               // the classic stuck-window trail
-  for (let i = 0; i < n; i++) {
-    mkWin(`<div class="body"><svg data-i="warn"></svg><div>WEBSURF caused an invalid page fault in module KERNEL32.DLL at 0167:bff9a5d0.</div></div><div class="btns"><button class="b98">Close</button><button class="b98">Details &gt;&gt;</button></div>`, x0 + i * 14, y0 + i * 14, 330, 'WEBSURF', 'errbox');
-    paintIcons($('desktop').lastChild);
-  }
-}
 const clearPopups = () => document.querySelectorAll('.popup').forEach(p => p.remove());
 async function storm(g) {
-  clearPopups();
-  for (let k = 0; k < 26; k++) {
-    if (k === 10) spawnTrail(SW * .15 | 0, 60, 9); else spawnPopup(k);
+  clearPopups(); refillPool();
+  for (let k = 0; k < 30; k++) {
+    spawnPopup();
     if (!(await wait(k < 6 ? 220 : 110, g))) return;
   }
 }
@@ -1030,7 +1046,7 @@ function tmDraw() {
 let blinkIv = null;
 async function crash(g) {
   clearInterval(blinkIv);
-  tmClear(); tmCenter(7, ' Kestrel ', VC.blue, VC.gray);
+  tmClear(); tmCenter(7, ' Geigerfilms ', VC.blue, VC.gray);
   ['A fatal exception 0E has occurred at 0028:C0011E36 in VXD BROADCAST(01) +', '00010E36. The current application will be terminated.', '',
    '*  live.cutoffmyfeet.net is not responding.', '*  Too many users are connected.',
    '*  Press CTRL+ALT+DEL again to restart your computer. You will', '   lose any unsaved information in all applications.'].forEach((l, i) => tmPut(3, 9 + i, l));
@@ -1064,7 +1080,7 @@ function render(i, animate) {
     if (a === 'login') { showScreen('login'); renderLogin(st); $('okbtn').classList.add('down');
       wait(180, g).then(ok => { if (!ok) return; $('okbtn').classList.remove('down'); $('loading').classList.add('on');
         return wait(900, g); }).then(ok => { if (!ok) return; showScreen('desktop'); play('startup', .8); }); }
-    if (st.popups) { if (a === 'storm') storm(g); else if (!document.querySelector('.popup')) { for (let k = 0; k < 26; k++) k === 10 ? spawnTrail(SW * .15 | 0, 60, 9) : spawnPopup(k); } }
+    if (st.popups) { if (a === 'storm') storm(g); else if (!document.querySelector('.popup')) { refillPool(); for (let k = 0; k < 30; k++) spawnPopup(); } }
     else clearPopups();
     renderBrowser(st, a === 'page');
   }
