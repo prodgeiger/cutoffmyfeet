@@ -616,6 +616,119 @@
   #crash canvas { width: 1024px; height: 768px; image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
   #black { background: #000; }
 
+
+  /* ================= TITLE CARD (big boot text) ================= */
+  #title.on { background: #0000aa; display: grid; place-items: center; }
+  #tcv { height: 100%; width: auto; aspect-ratio: 360 / 208; image-rendering: pixelated; image-rendering: crisp-edges; display: block; max-width: 100%; }
+
+  /* ================= DINNERTIME: bulb + concrete room ================= */
+  #dt { background: #000; overflow: hidden; }
+  #dt .room { position: absolute; inset: 0; opacity: 0; transition: opacity 1.6s ease-in; }
+  #dt.lit .room { opacity: 1; }
+  #dt.instant .room, #dt.instant .bulb .glass, #dt.instant .glow { transition: none !important; }
+  #dt .wall { position: absolute; left: 0; right: 0; top: 0; height: 70%;
+    background-color: #6d6a63;
+    background-image:
+      radial-gradient(circle at 50% 50%, #3e3b36 0 3px, #575449 4px, transparent 6px),
+      linear-gradient(90deg, transparent 0 calc(25% - 1px), rgba(0,0,0,.22) calc(25% - 1px) 25%, transparent 25% calc(50% - 1px), rgba(0,0,0,.22) calc(50% - 1px) 50%, transparent 50% calc(75% - 1px), rgba(0,0,0,.22) calc(75% - 1px) 75%, transparent 75%),
+      linear-gradient(transparent 0 calc(50% - 1px), rgba(0,0,0,.2) calc(50% - 1px) 50%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .48 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E"),
+      linear-gradient(#5f5c55, #77736b 60%, #5a5750);
+    background-size: 12.5% 50%, 100% 100%, 100% 50%, 300px 300px, 100% 100%;
+    background-position: 6.25% 25%, 0 0, 0 0, 0 0, 0 0; }
+  #dt .wall::after { content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 55%, rgba(30,20,10,.35)),
+      radial-gradient(ellipse 4% 40% at 18% 70%, rgba(40,30,20,.35), transparent),
+      radial-gradient(ellipse 3% 30% at 77% 65%, rgba(40,30,20,.3), transparent),
+      radial-gradient(ellipse 2% 25% at 62% 72%, rgba(60,10,10,.25), transparent); }
+  #dt .floor { position: absolute; left: 0; right: 0; bottom: 0; height: 30%;
+    background:
+      radial-gradient(ellipse 9% 18% at 30% 60%, rgba(80,8,8,.55), transparent 70%),
+      radial-gradient(ellipse 5% 10% at 64% 80%, rgba(80,8,8,.45), transparent 70%),
+      radial-gradient(ellipse 14% 22% at 72% 30%, rgba(30,20,10,.35), transparent 70%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .44 0 0 0 0 .42 0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E"),
+      linear-gradient(#4b4842, #5b5850 40%, #3a3833);
+    box-shadow: inset 0 6px 10px rgba(0,0,0,.55); }
+  #dt .redline { position: absolute; left: 0; right: 0; bottom: 12%; height: 2.6%; background: linear-gradient(#c41a1a, #8e0d0d); clip-path: polygon(0 20%, 100% 20%, 100% 100%, 0 100%); box-shadow: 0 0 10px rgba(200,20,20,.45); opacity: .9;
+    -webkit-mask-image: linear-gradient(90deg, rgba(0,0,0,.75), #000 20%, #000 80%, rgba(0,0,0,.7)); mask-image: linear-gradient(90deg, rgba(0,0,0,.15), rgba(0,0,0,.75) 22%, #000 40%, #000 60%, rgba(0,0,0,.75) 78%, rgba(0,0,0,.15)); }
+  #dt .shade { position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse 34% 26% at 50% 86%, rgba(255,210,140,.10), transparent 70%), radial-gradient(ellipse 52% 70% at 50% 30%, rgba(255,220,150,.10), rgba(0,0,0,.3) 48%, rgba(0,0,0,.8) 82%, rgba(0,0,0,.95)); }
+  #dt.lit .shade { animation: flick 9s infinite; }
+  @keyframes flick { 0%, 93%, 100% { opacity: 1; } 94% { opacity: .55; } 95% { opacity: 1; } 96.5% { opacity: .7; } 97% { opacity: 1; } }
+  #dt .dtitle { position: absolute; left: 0; right: 0; top: 40%; text-align: center; font: bold 96px "Courier New", Courier, monospace; letter-spacing: .28em; padding-left: .28em;
+    color: #efe2c2; text-shadow: 0 0 18px rgba(255,210,140,.45), 0 0 2px #fff, 3px 4px 0 rgba(0,0,0,.6); }
+  #dt .bulb { position: absolute; left: 50%; top: 0; width: 0; transform-origin: 0 0; animation: sway 6s ease-in-out infinite; z-index: 2; }
+  @keyframes sway { 0%, 100% { transform: rotate(1.4deg); } 50% { transform: rotate(-1.4deg); } }
+  #dt .cord { position: absolute; left: -1px; top: 0; width: 2px; height: 150px; background: #1b1a18; }
+  #dt .socket { position: absolute; left: -9px; top: 148px; width: 18px; height: 20px; background: linear-gradient(90deg, #222, #3a3a3a, #1a1a1a); border-radius: 2px; }
+  #dt .glass { position: absolute; left: -16px; top: 165px; width: 32px; height: 42px; border-radius: 50% 50% 48% 48% / 40% 40% 60% 60%; background: radial-gradient(circle at 45% 60%, #4d3b22, #241a10 70%); box-shadow: 0 0 6px rgba(255,170,80,.12); transition: background 1.2s, box-shadow 1.2s; }
+  #dt .glow { position: absolute; left: -170px; top: 20px; width: 340px; height: 340px; border-radius: 50%; background: radial-gradient(circle, rgba(255,190,110,.10), transparent 60%); transition: background 1.4s; pointer-events: none; }
+  #dt.lit .glass { background: radial-gradient(circle at 45% 55%, #fffbe8, #ffd98a 45%, #e0a24a 80%); box-shadow: 0 0 24px 8px rgba(255,210,140,.75), 0 0 80px 30px rgba(255,190,110,.35); }
+  #dt.lit .glow { background: radial-gradient(circle, rgba(255,210,140,.38), rgba(255,190,110,.12) 35%, transparent 62%); }
+
+  /* ================= PALOMA COUNTY (modern site in a modern browser) ================= */
+  #pc { background: #dfe3e8; font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+  #pc .mb { position: absolute; inset: 0; display: flex; flex-direction: column; background: #fff; }
+  #pc .mbtop { height: 40px; background: #e8eaed; display: flex; align-items: flex-end; padding: 0 10px; gap: 8px; }
+  #pc .dots { display: flex; gap: 7px; align-self: center; margin-right: 8px; }
+  #pc .dots i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; } #pc .dots i:nth-child(2) { background: #febc2e; } #pc .dots i:nth-child(3) { background: #28c840; }
+  #pc .mtab { background: #fff; border-radius: 9px 9px 0 0; padding: 8px 16px; font-size: 13px; color: #202124; display: flex; align-items: center; gap: 8px; min-width: 230px; }
+  #pc .mtab svg { width: 16px; height: 16px; }
+  #pc .mbar { height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 14px; border-bottom: 1px solid #e3e5e8; }
+  #pc .mbar .nav { color: #5f6368; font-size: 18px; letter-spacing: 8px; }
+  #pc .omni { flex: 1; height: 32px; border-radius: 16px; background: #f1f3f4; display: flex; align-items: center; gap: 8px; padding: 0 14px; font-size: 14px; color: #202124; }
+  #pc .omni b { font-weight: 400; color: #5f6368; }
+  #pc .mview { flex: 1; overflow: hidden; position: relative; }
+  #pc .pg { position: absolute; inset: 0; overflow-y: scroll; scrollbar-width: thin; background: #fff; color: #1d2630; }
+  #pc .pg.blurscroll { filter: blur(1.2px); }
+  /* site */
+  .pcx-head { display: flex; align-items: center; gap: 14px; padding: 16px 48px; border-bottom: 1px solid #e7e9ec; }
+  .pcx-seal { width: 46px; height: 46px; }
+  .pcx-brand b { display: block; font-size: 19px; letter-spacing: .02em; color: #123b2f; }
+  .pcx-brand span { font-size: 12px; color: #5d6b78; letter-spacing: .08em; text-transform: uppercase; }
+  .pcx-nav { margin-left: auto; display: flex; gap: 26px; font-size: 14px; color: #33414e; }
+  .pcx-nav .on { color: #123b2f; font-weight: 600; border-bottom: 2px solid #c98a2b; padding-bottom: 4px; }
+  .pcx-hero { position: relative; height: 330px; background: linear-gradient(110deg, #0f3a2e 0%, #1d5a47 55%, #c98a2b 140%); color: #fff; display: flex; align-items: center; padding: 0 48px; overflow: hidden; }
+  .pcx-hero::after { content: ""; position: absolute; right: -80px; top: -60px; width: 520px; height: 520px; border-radius: 50%; border: 60px solid rgba(255,255,255,.06); }
+  .pcx-hero h1 { font-size: 64px; line-height: 1; margin: 0 0 14px; font-weight: 800; letter-spacing: -.02em; }
+  .pcx-hero p { font-size: 19px; max-width: 520px; margin: 0 0 26px; color: #d8e7e1; line-height: 1.45; }
+  .pcx-btn { display: inline-block; background: #c98a2b; color: #fff; font-weight: 600; padding: 14px 26px; border-radius: 8px; font-size: 15px; }
+  .pcx-btn.ghost { background: transparent; border: 1.5px solid rgba(255,255,255,.6); margin-left: 10px; }
+  .pcx-wrap { padding: 34px 48px; }
+  .pcx-wrap h2 { font-size: 24px; margin: 0 0 4px; } .pcx-sub { color: #5d6b78; margin: 0 0 18px; font-size: 14px; }
+  .pcx-jobs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .pcx-job { border: 1px solid #e3e6ea; border-radius: 12px; padding: 18px; box-shadow: 0 1px 2px rgba(16,24,40,.05); }
+  .pcx-job .tag { display: inline-block; font-size: 11px; font-weight: 600; color: #8a5a12; background: #fbf0dc; padding: 3px 8px; border-radius: 99px; margin-bottom: 10px; }
+  .pcx-job h3 { font-size: 17px; margin: 0 0 6px; } .pcx-job .m { font-size: 13px; color: #5d6b78; margin-bottom: 14px; line-height: 1.5; }
+  .pcx-job .go { font-size: 14px; font-weight: 600; color: #123b2f; }
+  .pcx-job.hot { border: 2px solid #c98a2b; box-shadow: 0 6px 20px rgba(201,138,43,.18); }
+  /* NDA */
+  .nda { max-width: 820px; margin: 0 auto; padding: 36px 48px 60px; }
+  .nda .steps { display: flex; gap: 8px; margin-bottom: 22px; font-size: 13px; color: #5d6b78; }
+  .nda .steps span { padding: 6px 12px; border-radius: 99px; background: #eef1f4; } .nda .steps span.on { background: #123b2f; color: #fff; }
+  .nda h1 { font-size: 30px; margin: 0 0 6px; } .nda .lead { color: #5d6b78; margin: 0 0 22px; }
+  .nda .doc { border: 1px solid #e3e6ea; border-radius: 12px; padding: 26px 30px; font: 14px/1.65 Georgia, "Times New Roman", serif; color: #2a333c; background: #fcfcfb; }
+  .nda .doc h4 { font: 600 13px/1.4 -apple-system, "Segoe UI", Arial, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: #123b2f; margin: 18px 0 6px; }
+  .nda .doc p { margin: 0 0 10px; text-align: justify; }
+  .nda .signbox { margin-top: 26px; border: 1px solid #e3e6ea; border-radius: 12px; padding: 22px 26px; }
+  .nda .chk { display: flex; align-items: center; gap: 10px; font-size: 14px; margin-bottom: 18px; }
+  .nda .chk i { width: 20px; height: 20px; border: 2px solid #9aa5b1; border-radius: 5px; display: grid; place-items: center; color: #fff; font-style: normal; font-size: 14px; transition: .2s; }
+  .nda .chk i.on { background: #123b2f; border-color: #123b2f; }
+  .nda .sigrow { display: flex; gap: 20px; align-items: flex-end; }
+  .nda .fld { flex: 1; } .nda .fld label { display: block; font-size: 12px; color: #5d6b78; margin-bottom: 6px; }
+  .nda .fld .in { height: 44px; border: 1px solid #cfd5dc; border-radius: 8px; padding: 0 12px; display: flex; align-items: center; font-size: 15px; }
+  .nda .sigpad { flex: 1.3; height: 90px; border: 1px dashed #b7c0c9; border-radius: 8px; position: relative; }
+  .nda .sigpad svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .nda .sigpad path { fill: none; stroke: #0b2a6b; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+  .nda .sigpad span { position: absolute; left: 12px; bottom: 8px; font-size: 11px; color: #9aa5b1; }
+  .nda .agree { margin-top: 20px; display: flex; justify-content: flex-end; }
+  .nda .agree b { background: #c4ccd4; color: #fff; padding: 14px 28px; border-radius: 8px; font-size: 15px; transition: .2s; }
+  .nda .agree b.ready { background: #123b2f; } .nda .agree b.press { transform: scale(.96); background: #0b261e; }
+  .pcx-done { display: grid; place-items: center; text-align: center; height: 100%; padding: 40px; }
+  .pcx-done .ok { width: 74px; height: 74px; border-radius: 50%; background: #123b2f; color: #fff; display: grid; place-items: center; font-size: 38px; margin: 0 auto 18px; }
+  .pcx-done h1 { font-size: 34px; margin: 0 0 8px; } .pcx-done p { color: #5d6b78; font-size: 16px; margin: 0 0 6px; }
+  .pcx-done .ph { margin-top: 22px; }
+  .fadein { animation: fadein .5s ease-out; } @keyframes fadein { from { opacity: 0; transform: translateY(8px); } }
   /* rehearsal overlay (press D) */
   #hud { position: fixed; right: 8px; bottom: 8px; z-index: 99; background: rgba(0,0,0,.7); color: #0f0; font: 12px "Courier New", monospace; padding: 6px 8px; display: none; pointer-events: none; white-space: pre; }
   #hud.on { display: block; }
@@ -679,7 +792,19 @@
   </div>
 
   <!-- 3. CRASH, 4. BLACK -->
+  <div id="title" class="scr"><canvas id="tcv" width="360" height="208"></canvas></div>
   <div id="crash" class="scr"><canvas id="bsod" width="720" height="400"></canvas></div>
+
+  <!-- DINNERTIME -->
+  <div id="dt" class="scr">
+    <div class="room"><div class="wall"></div><div class="floor"></div><div class="shade"></div><div class="redline"></div><div class="dtitle">DINNERTIME</div></div>
+    <div class="bulb"><div class="glow"></div><div class="cord"></div><div class="socket"></div><div class="glass"></div></div>
+  </div>
+  <div id="pc" class="scr"><div class="mb">
+    <div class="mbtop"><div class="dots"><i></i><i></i><i></i></div><div class="mtab"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="23" fill="#123b2f"/><path d="M13 27c4-1 7-4 9-8 1-2 3-3 5-3 2 0 3 1 4 2l3-1-2 3c0 5-4 9-10 10l-4 4-1-4c-2 0-3-1-4-3z" fill="#fff"/></svg>Careers | Paloma County</div></div>
+    <div class="mbar"><span class="nav">&larr;&rarr;&#8635;</span><div class="omni">&#128274; <span id="pcurl"></span></div></div>
+    <div class="mview"><div class="pg" id="pcpage"></div></div>
+  </div></div>
   <div id="black" class="scr"></div>
 </div>
 <div id="hud"></div>
@@ -879,7 +1004,8 @@ const STEPS = [];
   add({}, null, 'login screen');
   add({ user: CONTENT.login.user }, 'typeUser', 'type username');
   add({ pass: CONTENT.login.pass }, 'typePass', 'type password');
-  add({ screen: 'desktop' }, 'login', 'log in: desktop');
+  add({ screen: 'title' }, 'login', 'log in: title card');
+  add({ screen: 'desktop' }, 'desk', 'desktop');
   add({ popups: true }, 'storm', 'pop-up storm');
   add({ popups: false }, 'clear', 'clear pop-ups');
   add(tab('cmf', 'cmf', 'home'), 'page', 'cutoffmyfeet.net');
@@ -895,13 +1021,19 @@ const STEPS = [];
   add(tab('bb', 'bb', 0), 'page', 'cameras');
   add(tab('cmf', 'cmf', 'home'), 'page', 'back to cutoffmyfeet');
   add({ screen: 'crash' }, 'crash', 'crash, then black');
+  add({ screen: 'dt', dt: 'bulb' }, 'bulb', 'DINNERTIME: dim bulb');
+  add({ dt: 'room' }, 'room', 'DINNERTIME: lights up');
+  add({ screen: 'pc', pc: 'home' }, 'pc', 'Paloma County hiring');
+  add({ pc: 'nda' }, 'pc', 'NDA');
+  add({ pc: 'ndaBottom' }, 'scroll', 'NDA: zoom to bottom');
+  add({ pc: 'signed' }, 'sign', 'NDA: auto-sign, next page');
 })();
 
 /* ================= RENDERING ================= */
 let step = 0, gen = 0;
 const wait = (ms, g) => new Promise(r => setTimeout(() => r(g === gen), ms));
 const $ = id => document.getElementById(id);
-function showScreen(name) { ['login', 'desktop', 'crash', 'black'].forEach(s => $(s).classList.toggle('on', s === name)); }
+function showScreen(name) { ['login', 'title', 'desktop', 'crash', 'black', 'dt', 'pc'].forEach(s => $(s).classList.toggle('on', s === name)); }
 function setField(id, text, focus) { const f = $(id); f.querySelector('span').textContent = text; f.classList.toggle('focus', !!focus); }
 
 async function typeInto(id, text, g) {
@@ -1065,9 +1197,147 @@ async function crash(g) {
   showScreen('black');
 }
 
+
+/* ================= TITLE CARD: big boot text ================= */
+const TC = { cols: 40, rows: 13 };
+TC.ctx = $('tcv').getContext('2d'); TC.img = TC.ctx.createImageData(360, 208); TC.buf = new Uint32Array(TC.img.data.buffer);
+function tcDraw(lines, cursor) {           // lines: [[row, text]], cursor: {x, y} or null
+  const b = TC.buf, bg = rgba(VC.blue), fg = rgba(VC.white);
+  const grid = Array.from({ length: TC.rows }, () => Array(TC.cols).fill(32));
+  lines.forEach(([y, t]) => { const x = Math.floor((TC.cols - t.length) / 2); [...t].forEach((c, i) => grid[y][x + i] = c.charCodeAt(0)); });
+  if (cursor) grid[cursor.y][cursor.x] = 95;
+  for (let y = 0; y < TC.rows; y++) for (let x = 0; x < TC.cols; x++) {
+    const gl = TM.glyph[grid[y][x]] || TM.glyph[32];
+    for (let r = 0; r < 16; r++) { const bits = gl[r], o = (y * 16 + r) * 360 + x * 9; for (let c = 0; c < 9; c++) b[o + c] = (bits >> (8 - c)) & 1 ? fg : bg; }
+  }
+  TC.ctx.putImageData(TC.img, 0, 0);
+}
+const TC_LINES = [[5, 'CUT OFF MY FEET'], [7, 'BASED ON A TRUE STORY']];
+let tcBlink = null;
+function tcFinal() {
+  const last = TC_LINES[TC_LINES.length - 1], x = Math.floor((TC.cols - last[1].length) / 2) + last[1].length;
+  let on = true; clearInterval(tcBlink);
+  const d = () => tcDraw(TC_LINES, on ? { x, y: last[0] } : null); d();
+  tcBlink = setInterval(() => { on = !on; d(); }, 300);
+}
+async function tcType(g) {
+  clearInterval(tcBlink); tcDraw([], null);
+  if (!(await wait(350, g))) return;
+  for (let li = 0; li < TC_LINES.length; li++) {
+    const [y, t] = TC_LINES[li], x0 = Math.floor((TC.cols - t.length) / 2);
+    for (let i = 1; i <= t.length; i++) {
+      tcDraw(TC_LINES.slice(0, li).concat([[y, t.slice(0, i)]]).map(([yy, tt], k) => k === li ? [yy, tt.padEnd(t.length)] : [yy, tt]), { x: x0 + i, y });
+      if (!(await wait(55, g))) return;
+    }
+    if (!(await wait(300, g))) return;
+  }
+  tcFinal();
+}
+
+/* ================= DINNERTIME: PALOMA COUNTY ================= */
+const SEAL = `<svg class="pcx-seal" viewBox="0 0 48 48"><circle cx="24" cy="24" r="23" fill="#123b2f"/><circle cx="24" cy="24" r="19" fill="none" stroke="#c98a2b" stroke-width="1.5"/>
+  <path d="M13 27c4-1 7-4 9-8 1-2 3-3 5-3 2 0 3 1 4 2l3-1-2 3c0 5-4 9-10 10l-4 4-1-4c-2 0-3-1-4-3z" fill="#fff"/><circle cx="29" cy="19" r="1" fill="#123b2f"/></svg>`;
+const PC_URL = { home: 'palomacounty.gov/careers', nda: 'palomacounty.gov/careers/apply/2291/agreement', done: 'palomacounty.gov/careers/apply/2291/complete' };
+const PC_SIGNER = 'Bradley Geiger';
+function pcHead() {
+  return `<div class="pcx-head">${SEAL}<div class="pcx-brand"><b>PALOMA COUNTY</b><span>Human Resources</span></div>
+    <nav class="pcx-nav"><span>Residents</span><span>Services</span><span>Government</span><span class="on">Careers</span><span>Contact</span></nav></div>`;
+}
+function pcHome() {
+  return pcHead() + `<section class="pcx-hero"><div><h1>We're Hiring.</h1>
+      <p>Help keep Paloma safe, clean and running. Competitive pay, full county benefits, and a team that looks out for each other.</p>
+      <span class="pcx-btn">View Open Positions</span><span class="pcx-btn ghost">How to Apply</span></div></section>
+    <div class="pcx-wrap"><h2>Open positions</h2><p class="pcx-sub">3 openings &middot; Updated today</p>
+      <div class="pcx-jobs">
+        <div class="pcx-job hot"><span class="tag">URGENT &middot; NIGHTS</span><h3>Facilities Attendant, City Hall</h3><div class="m">Lower Level &middot; Full-time &middot; $21.40/hr<br>Feeding schedule, light custodial, monitoring.</div><span class="go">Apply now &rarr;</span></div>
+        <div class="pcx-job"><span class="tag">DAYS</span><h3>Parks Maintenance Worker II</h3><div class="m">Paloma Parks &middot; Full-time &middot; $19.10/hr<br>Groundskeeping and equipment upkeep.</div><span class="go">View &rarr;</span></div>
+        <div class="pcx-job"><span class="tag">PART-TIME</span><h3>Records Clerk</h3><div class="m">Clerk's Office &middot; Part-time &middot; $17.75/hr<br>Filing, scanning and public requests.</div><span class="go">View &rarr;</span></div>
+      </div></div>`;
+}
+const NDA_SPECIAL = [
+  ['Confidential Information', 'For the purposes of this Agreement, "Confidential Information" includes, without limitation, the existence, identity, condition, diet, and location of any individual residing in, held within, or otherwise occupying the Lower Level of Paloma City Hall (the "Resident").'],
+  ['Non-Disclosure', 'Employee shall not disclose, describe, photograph, record, or otherwise communicate any Confidential Information to any third party, including but not limited to family members, roommates, romantic partners of family members, members of the press, or recreational sports leagues.'],
+  ['Designated Floor Markings', 'Employee agrees to remain behind all designated floor markings at all times while on duty. Floor markings are painted red for Employee convenience. The County assumes no responsibility for any Employee who crosses a designated floor marking for any reason.'],
+  ['Feeding Schedule', 'Employee shall provide one (1) meal to the Resident each evening, delivered by placing said meal on the floor beyond the designated marking. Employee shall announce each meal clearly. Poultry is preferred.'],
+  ['Insurance', 'Employee acknowledges that, for insurance purposes, Employee is classified under General Municipalities. Employee is responsible for completing all insurance paperwork for the City prior to the first shift.'],
+  ['Historical Matters', 'Employee agrees that any events occurring in or around Paloma County prior to the date of this Agreement, including any events commonly referred to as "the Slasher matter," are closed, resolved, and not to be discussed.'],
+  ['Visitors', 'No visitors are permitted in the Lower Level. Under no circumstances shall Employee bring any person into the Lower Level for the purpose of taking a photograph.'],
+  ['Survival', 'The obligations of this Agreement shall survive the termination of Employee\'s employment, and, where applicable, the Employee.']
+];
+const NDA_FILLER = ['Employee acknowledges that the obligations set forth herein are reasonable and necessary to protect the legitimate interests of the County, its residents, its elected officials, and its Resident.',
+  'Nothing in this Agreement shall be construed to create any right of continued employment. Employment with the County is at will and may be terminated by either party at any time, with or without cause, and with or without notice.',
+  'Any failure by the County to enforce any provision of this Agreement shall not be deemed a waiver of that provision or of the right of the County to subsequently enforce such provision or any other provision of this Agreement.',
+  'If any provision of this Agreement is held invalid or unenforceable, the remaining provisions shall continue in full force and effect, and the invalid provision shall be modified to the minimum extent necessary to make it enforceable.',
+  'This Agreement shall be governed by and construed in accordance with the laws of the State and the ordinances of Paloma County, without regard to conflict of law principles. Venue shall lie exclusively in the courts of Paloma County.',
+  'Employee shall promptly return to the County all keys, badges, logbooks, feeding records, and other materials upon request or upon termination of employment, whichever occurs first.'];
+function pcNda() {
+  let secs = '', n = 1;
+  for (let round = 0; round < 3; round++) {
+    NDA_SPECIAL.forEach(([h, t], i) => {
+      if (round === 0 || i % 3 === round - 1) secs += `<h4>${n}. ${round ? h + ' (Continued)' : h}</h4><p>${t}</p>`, n++;
+      secs += `<p>${NDA_FILLER[(i + round) % NDA_FILLER.length]}</p>`;
+      if (i % 2) secs += `<p>${NDA_FILLER[(i + round + 3) % NDA_FILLER.length]}</p>`;
+    });
+  }
+  return pcHead() + `<div class="nda"><div class="steps"><span>1. Position</span><span class="on">2. Agreement</span><span>3. Onboarding</span></div>
+    <h1>Confidentiality &amp; Non-Disclosure Agreement</h1><p class="lead">Facilities Attendant, City Hall (Lower Level) &middot; Please read the entire agreement before signing.</p>
+    <div class="doc"><p>This Confidentiality and Non-Disclosure Agreement (the "Agreement") is entered into by and between the County of Paloma, a political subdivision of the State (the "County"), and the undersigned applicant (the "Employee"), effective as of the date of Employee's signature below.</p>${secs}
+      <p>IN WITNESS WHEREOF, the parties have executed this Agreement as of the date set forth below. By signing, Employee confirms that Employee has read and understood this Agreement in its entirety and agrees to be bound by it.</p></div>
+    <div class="signbox" id="signbox"><div class="chk"><i id="ndachk"></i>I have read and agree to the Confidentiality &amp; Non-Disclosure Agreement.</div>
+      <div class="sigrow"><div class="fld"><label>Full legal name</label><div class="in" id="ndaname"></div></div>
+        <div class="sigpad"><svg viewBox="0 0 300 90" preserveAspectRatio="none"><path id="sigpath" style="stroke-dasharray:2000;stroke-dashoffset:2000" d="M18 62 C 24 30, 34 22, 36 40 S 30 70, 42 58 S 58 30, 64 46 S 70 66, 80 52 C 88 40, 96 38, 98 50 S 104 62, 114 50 M120 52 C 126 36, 140 30, 146 44 S 142 66, 156 56 S 170 40, 178 48 S 186 62, 198 50 C 208 40, 222 36, 232 46 S 248 60, 270 40"/></svg><span>Signature</span></div>
+        <div class="fld" style="flex:.6"><label>Date</label><div class="in" id="ndadate"></div></div></div>
+      <div class="agree"><b id="ndaagree">Agree &amp; Continue</b></div></div></div>`;
+}
+function pcDone() {
+  return pcHead() + `<div class="pcx-done fadein"><div><div class="ok">&#10003;</div><h1>Agreement signed.</h1>
+    <p>Thank you, ${PC_SIGNER}. Your onboarding begins tonight.</p><p>Report to the Lower Level of City Hall at 9:00 PM. Ask for Roger.</p>
+    ${IMG('dinnertime_next.jpg', 'next page: coming soon', 520, 220)}</div></div>`;
+}
+function pcRender(st, a, g) {
+  const page = st.pc === 'home' ? 'home' : st.pc === 'signed' ? (a === 'sign' ? 'nda' : 'done') : 'nda';
+  $('pcurl').innerHTML = '<b>https://</b>' + PC_URL[page];
+  const pg = $('pcpage');
+  pg.innerHTML = page === 'home' ? pcHome() : page === 'nda' ? pcNda() : pcDone();
+  pg.classList.remove('blurscroll');
+  if (page !== 'nda') { pg.scrollTop = 0; return; }
+  const bottom = () => pg.scrollHeight - pg.clientHeight;
+  if (st.pc === 'nda') pg.scrollTop = 0;
+  if (st.pc === 'ndaBottom' && a !== 'scroll') pg.scrollTop = bottom();
+  if (st.pc === 'ndaBottom' && a === 'scroll') { pg.scrollTop = 0; ndaScroll(pg, bottom(), g); }
+  if (st.pc === 'signed' && a === 'sign') { pg.scrollTop = bottom(); ndaSign(g); }
+}
+async function ndaScroll(pg, to, g) {
+  const t0 = performance.now(), dur = 1700;
+  pg.classList.add('blurscroll'); play('click', .3);
+  await new Promise(res => {
+    const f = now => {
+      if (g !== gen) return res();
+      const k = Math.min(1, (now - t0) / dur), e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+      pg.scrollTop = to * e; if (k < 1) requestAnimationFrame(f); else res();
+    };
+    requestAnimationFrame(f);
+  });
+  if (g === gen) pg.classList.remove('blurscroll');
+}
+async function ndaSign(g) {
+  const name = $('ndaname'), path = $('sigpath'), chk = $('ndachk'), agree = $('ndaagree');
+  for (let i = 1; i <= PC_SIGNER.length; i++) { name.textContent = PC_SIGNER.slice(0, i); play('click', .2); if (!(await wait(45, g))) return; }
+  const len = path.getTotalLength(); path.style.transition = 'none'; path.style.strokeDasharray = len; path.style.strokeDashoffset = len;
+  path.getBoundingClientRect(); path.style.transition = 'stroke-dashoffset 1s ease-in-out'; path.style.strokeDashoffset = 0;
+  if (!(await wait(1050, g))) return;
+  $('ndadate').textContent = new Date().toLocaleDateString('en-US');
+  chk.classList.add('on'); chk.innerHTML = '&#10003;'; play('click', .4);
+  if (!(await wait(350, g))) return;
+  agree.classList.add('ready'); if (!(await wait(400, g))) return;
+  agree.classList.add('press'); play('ding', .5);
+  if (!(await wait(500, g))) return;
+  const pg = $('pcpage'); pg.innerHTML = pcDone(); pg.scrollTop = 0; $('pcurl').innerHTML = '<b>https://</b>' + PC_URL.done;
+}
+
 /* ================= MAIN RENDER ================= */
 function render(i, animate) {
-  gen++; const g = gen; clearInterval(blinkIv);
+  gen++; const g = gen; clearInterval(blinkIv); clearInterval(tcBlink);
   const { st, anim } = STEPS[i];
   const a = animate ? anim : null;
   showScreen(st.screen);
@@ -1076,15 +1346,26 @@ function render(i, animate) {
     if (a === 'typeUser') typeInto('fuser', st.user, g);
     if (a === 'typePass') typeInto('fpass', st.pass, g);
   }
-  if (st.screen === 'desktop') {
-    if (a === 'login') { showScreen('login'); renderLogin(st); $('okbtn').classList.add('down');
+  if (st.screen === 'title') {
+    if (a === 'login') { showScreen('login'); renderLogin(st); $('okbtn').classList.add('down'); tcDraw([], null);
       wait(180, g).then(ok => { if (!ok) return; $('okbtn').classList.remove('down'); $('loading').classList.add('on');
-        return wait(900, g); }).then(ok => { if (!ok) return; showScreen('desktop'); play('startup', .8); }); }
+        return wait(900, g); }).then(ok => { if (!ok) return; showScreen('title'); play('error', .5); tcType(g); }); }
+    else tcFinal();
+  }
+  if (st.screen === 'desktop') {
+    if (a === 'desk') play('startup', .8);
     if (st.popups) { if (a === 'storm') storm(g); else if (!document.querySelector('.popup')) { refillPool(); for (let k = 0; k < 30; k++) spawnPopup(); } }
     else clearPopups();
     renderBrowser(st, a === 'page');
   }
   if (st.screen === 'crash') { if (a === 'crash') crash(g); else showScreen('black'); }
+  if (st.screen === 'dt') {
+    const d = $('dt'); d.classList.toggle('instant', !a); d.classList.toggle('lit', st.dt === 'room');
+    if (a === 'bulb') { d.style.opacity = 0; d.style.transition = 'opacity 1.4s'; requestAnimationFrame(() => requestAnimationFrame(() => d.style.opacity = 1)); }
+    else { d.style.transition = ''; d.style.opacity = 1; }
+    if (a === 'room') play('click', .7);
+  }
+  if (st.screen === 'pc') pcRender(st, a, g);
   $('hud').textContent = `step ${i + 1}/${STEPS.length}: ${STEPS[i].label}${STEPS[i + 1] ? '\nnext: ' + STEPS[i + 1].label : '\n(end)'}`;
 }
 function go(n, animate) { n = Math.max(0, Math.min(STEPS.length - 1, n)); if (n === step && animate) return; step = n; render(step, animate); }
