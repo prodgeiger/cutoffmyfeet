@@ -623,7 +623,7 @@
 
   /* ================= DINNERTIME: bulb + concrete room ================= */
   #dt { background: #000; overflow: hidden; }
-  #dt .room { position: absolute; inset: 0; opacity: 0; transition: opacity 1.6s ease-in; }
+  #dt .room { position: absolute; inset: 0; opacity: 0; transition: opacity 1.4s ease-in; background: radial-gradient(ellipse 38% 34% at 50% 40%, rgba(255,200,130,.07), transparent 70%); }
   #dt.lit .room { opacity: 1; }
   #dt.instant .room, #dt.instant .bulb .glass, #dt.instant .glow { transition: none !important; }
   #dt .wall { position: absolute; left: 0; right: 0; top: 0; height: 70%;
@@ -655,9 +655,9 @@
     background: radial-gradient(ellipse 34% 26% at 50% 86%, rgba(255,210,140,.10), transparent 70%), radial-gradient(ellipse 52% 70% at 50% 30%, rgba(255,220,150,.10), rgba(0,0,0,.3) 48%, rgba(0,0,0,.8) 82%, rgba(0,0,0,.95)); }
   #dt.lit .shade { animation: flick 9s infinite; }
   @keyframes flick { 0%, 93%, 100% { opacity: 1; } 94% { opacity: .55; } 95% { opacity: 1; } 96.5% { opacity: .7; } 97% { opacity: 1; } }
-  #dt .dtitle { position: absolute; left: 0; right: 0; top: 40%; text-align: center; font: bold 96px "Courier New", Courier, monospace; letter-spacing: .28em; padding-left: .28em;
+  #dt .dtitle { position: absolute; left: 0; right: 0; top: 42%; text-align: center; font: bold 96px "Courier New", Courier, monospace; letter-spacing: .28em; padding-left: .28em;
     color: #efe2c2; text-shadow: 0 0 18px rgba(255,210,140,.45), 0 0 2px #fff, 3px 4px 0 rgba(0,0,0,.6); }
-  #dt .bulb { position: absolute; left: 50%; top: 0; width: 0; transform-origin: 0 0; animation: sway 6s ease-in-out infinite; z-index: 2; }
+  #dt .bulb { position: absolute; left: 50%; top: 0; width: 0; transform-origin: 0 0; z-index: 2; }
   @keyframes sway { 0%, 100% { transform: rotate(1.4deg); } 50% { transform: rotate(-1.4deg); } }
   #dt .cord { position: absolute; left: -1px; top: 0; width: 2px; height: 150px; background: #1b1a18; }
   #dt .socket { position: absolute; left: -9px; top: 148px; width: 18px; height: 20px; background: linear-gradient(90deg, #222, #3a3a3a, #1a1a1a); border-radius: 2px; }
@@ -797,7 +797,7 @@
 
   <!-- DINNERTIME -->
   <div id="dt" class="scr">
-    <div class="room"><div class="wall"></div><div class="floor"></div><div class="shade"></div><div class="redline"></div><div class="dtitle">DINNERTIME</div></div>
+    <div class="room"><div class="dtitle">DINNERTIME</div></div>
     <div class="bulb"><div class="glow"></div><div class="cord"></div><div class="socket"></div><div class="glass"></div></div>
   </div>
   <div id="pc" class="scr"><div class="mb">
