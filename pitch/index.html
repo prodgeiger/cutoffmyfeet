@@ -503,7 +503,7 @@
   /* ================= PITCH STAGE ================= */
   html, body { background: #000; overflow: hidden; }
   body { cursor: default; }
-  #stage { position: absolute; left: 50%; top: 50%; width: 1024px; height: 768px; transform-origin: 50% 50%; overflow: hidden; background: #000; }
+  #stage { position: absolute; left: 0; top: 0; width: 1024px; height: 768px; transform-origin: 0 0; overflow: hidden; background: #000; }
   .scr { position: absolute; inset: 0; display: none; }
   .scr.on { display: block; }
   #desktop.scr { position: absolute; }
@@ -536,7 +536,7 @@
   #tray svg { width: 16px; height: 16px; }
 
   /* browser with tabs */
-  #w-browser { left: 92px; top: 10px; width: 900px; height: 716px; }
+  #w-browser { left: 200px; top: 10px; right: 200px; height: calc(100% - 52px); width: auto !important; }
   .tabstrip { display: flex; gap: 2px; padding: 4px 4px 0; flex-shrink: 0; }
   .tabstrip .tab { display: flex; align-items: center; gap: 5px; padding: 3px 10px 4px; max-width: 220px; background: #c0c0c0; box-shadow: inset -1px 0 #0a0a0a, inset 1px 1px #fff, inset -2px 0 #808080, inset 2px 2px #dfdfdf; border-radius: 3px 3px 0 0; font-size: 11px; white-space: nowrap; overflow: hidden; position: relative; top: 2px; }
   .tabstrip .tab svg { width: 14px; height: 14px; flex-shrink: 0; }
@@ -612,7 +612,7 @@
   .errbox .btns { display: flex; justify-content: center; gap: 6px; padding: 4px 0 10px; }
 
   /* crash + end */
-  #crash { background: #0000aa; }
+  #crash.on { background: #0000aa; display: grid; place-items: center; }
   #crash canvas { width: 1024px; height: 768px; image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
   #black { background: #000; }
 
@@ -784,9 +784,12 @@ function paintIcons(root = document) {
 
 /* ================= STAGE SCALING ================= */
 const stage = document.getElementById('stage');
+let SW = 1024, SH = 768;               // logical stage size: always 768 tall, as wide as the screen
 function fit() {
-  const k = Math.min(innerWidth / 1024, innerHeight / 768);
-  stage.style.transform = `translate(-50%, -50%) scale(${k})`;
+  let k = innerHeight / 768; SW = innerWidth / k; SH = 768;
+  if (SW < 1024) { k = innerWidth / 1024; SW = 1024; SH = innerHeight / k; }
+  stage.style.width = SW + 'px'; stage.style.height = SH + 'px';
+  stage.style.transform = `scale(${k})`;
 }
 addEventListener('resize', fit); fit();
 
@@ -946,11 +949,11 @@ function spawnPopup(k) {
   const r = Math.random;
   if (k % 3 === 0) {
     const a = SPAM[r() * SPAM.length | 0];
-    mkWin(`<div class="spam" style="background:${a[5]};color:${a[4]}"><div class="sh">${a[1]}</div><div class="sb">${a[2]}</div><button class="sbtn">${a[3]}</button></div>`, r() * 720 | 0, r() * 520 | 0, 290, a[0]);
+    mkWin(`<div class="spam" style="background:${a[5]};color:${a[4]}"><div class="sh">${a[1]}</div><div class="sb">${a[2]}</div><button class="sbtn">${a[3]}</button></div>`, r() * (SW - 300) | 0, r() * (SH - 250) | 0, 290, a[0]);
     play('ding', .5, 90);
   } else {
     const e = ERRS[r() * ERRS.length | 0], icon = e[0] === 'FunBuddy Toolbar' || e[0] === 'Kestrel Update' ? 'info' : 'warn';
-    mkWin(`<div class="body"><svg data-i="${icon}"></svg><div>${e[1]}</div></div><div class="btns"><button class="b98">OK</button>${icon === 'info' ? '<button class="b98">Cancel</button>' : ''}</div>`, r() * 700 | 0, r() * 560 | 0, 320, e[0], 'errbox');
+    mkWin(`<div class="body"><svg data-i="${icon}"></svg><div>${e[1]}</div></div><div class="btns"><button class="b98">OK</button>${icon === 'info' ? '<button class="b98">Cancel</button>' : ''}</div>`, r() * (SW - 330) | 0, r() * (SH - 210) | 0, 320, e[0], 'errbox');
     paintIcons($('desktop').lastChild);
     play('error', .45, 90);
   }
@@ -965,7 +968,7 @@ const clearPopups = () => document.querySelectorAll('.popup').forEach(p => p.rem
 async function storm(g) {
   clearPopups();
   for (let k = 0; k < 26; k++) {
-    if (k === 10) spawnTrail(120, 60, 9); else spawnPopup(k);
+    if (k === 10) spawnTrail(SW * .15 | 0, 60, 9); else spawnPopup(k);
     if (!(await wait(k < 6 ? 220 : 110, g))) return;
   }
 }
@@ -1061,7 +1064,7 @@ function render(i, animate) {
     if (a === 'login') { showScreen('login'); renderLogin(st); $('okbtn').classList.add('down');
       wait(180, g).then(ok => { if (!ok) return; $('okbtn').classList.remove('down'); $('loading').classList.add('on');
         return wait(900, g); }).then(ok => { if (!ok) return; showScreen('desktop'); play('startup', .8); }); }
-    if (st.popups) { if (a === 'storm') storm(g); else if (!document.querySelector('.popup')) { for (let k = 0; k < 26; k++) k === 10 ? spawnTrail(120, 60, 9) : spawnPopup(k); } }
+    if (st.popups) { if (a === 'storm') storm(g); else if (!document.querySelector('.popup')) { for (let k = 0; k < 26; k++) k === 10 ? spawnTrail(SW * .15 | 0, 60, 9) : spawnPopup(k); } }
     else clearPopups();
     renderBrowser(st, a === 'page');
   }
