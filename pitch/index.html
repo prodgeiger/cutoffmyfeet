@@ -655,10 +655,10 @@
     background: radial-gradient(ellipse 34% 26% at 50% 86%, rgba(255,210,140,.10), transparent 70%), radial-gradient(ellipse 52% 70% at 50% 30%, rgba(255,220,150,.10), rgba(0,0,0,.3) 48%, rgba(0,0,0,.8) 82%, rgba(0,0,0,.95)); }
   #dt.lit .shade { animation: flick 9s infinite; }
   @keyframes flick { 0%, 93%, 100% { opacity: 1; } 94% { opacity: .55; } 95% { opacity: 1; } 96.5% { opacity: .7; } 97% { opacity: 1; } }
-  #dt .dtitle { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; font: bold 110px "Courier New", Courier, monospace; letter-spacing: .28em; padding-left: .28em; color: #2a0000; }
-  #dt.lit .dtitle { animation: redglow 3.2s ease-in-out infinite alternate, buzz .12s steps(1) infinite; }
-  @keyframes redglow { 0% { color: #6e0000; text-shadow: 0 0 6px rgba(200,0,0,.35), 0 0 24px rgba(160,0,0,.2); } 100% { color: #e01010; text-shadow: 0 0 10px rgba(255,30,30,.9), 0 0 40px rgba(220,0,0,.6), 0 0 90px rgba(180,0,0,.35); } }
-  @keyframes buzz { 0%, 100% { translate: 0 0; } 25% { translate: 1.5px -1px; } 50% { translate: -1px 1px; } 75% { translate: 1px 1.5px; } }
+  #dt .dtitle { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; font: bold 110px "Courier New", Courier, monospace; letter-spacing: .28em; padding-left: .28em;
+    color: transparent; background: linear-gradient(180deg, #d9cbb0 0%, #9c8e76 45%, #3d362c 100%); -webkit-background-clip: text; background-clip: text;
+    filter: drop-shadow(0 0 14px rgba(255,214,160,.12)); }
+  #dt .room::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse 42% 30% at 50% 30%, rgba(255,214,160,.075), rgba(255,214,160,.02) 55%, transparent 75%); }
     color: #efe2c2; text-shadow: 0 0 18px rgba(255,210,140,.45), 0 0 2px #fff, 3px 4px 0 rgba(0,0,0,.6); }
   #dt .bulb { position: absolute; left: 50%; top: 0; width: 0; transform-origin: 0 0; z-index: 2; }
   @keyframes sway { 0%, 100% { transform: rotate(1.4deg); } 50% { transform: rotate(-1.4deg); } }
