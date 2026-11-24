@@ -617,6 +617,7 @@
   #black { background: #000; }
 
 
+  @font-face { font-family: 'IM Fell English SC'; src: url('fonts/imfell-sc.woff2') format('woff2'); font-display: block; }
   /* ================= TITLE CARD (big boot text) ================= */
   #title.on { background: #0000aa; display: grid; place-items: center; }
   #tcv { height: 100%; width: auto; aspect-ratio: 360 / 208; image-rendering: pixelated; image-rendering: crisp-edges; display: block; max-width: 100%; }
@@ -655,7 +656,7 @@
     background: radial-gradient(ellipse 34% 26% at 50% 86%, rgba(255,210,140,.10), transparent 70%), radial-gradient(ellipse 52% 70% at 50% 30%, rgba(255,220,150,.10), rgba(0,0,0,.3) 48%, rgba(0,0,0,.8) 82%, rgba(0,0,0,.95)); }
   #dt.lit .shade { animation: flick 9s infinite; }
   @keyframes flick { 0%, 93%, 100% { opacity: 1; } 94% { opacity: .55; } 95% { opacity: 1; } 96.5% { opacity: .7; } 97% { opacity: 1; } }
-  #dt .dtitle { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; font: bold 110px "Courier New", Courier, monospace; letter-spacing: .28em; padding-left: .28em;
+  #dt .dtitle { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; font: 400 118px 'IM Fell English SC', Georgia, serif; letter-spacing: .2em; padding-left: .2em;
     color: transparent; background: linear-gradient(180deg, #d9cbb0 0%, #9c8e76 45%, #3d362c 100%); -webkit-background-clip: text; background-clip: text;
     filter: drop-shadow(0 0 14px rgba(255,214,160,.12)); }
   #dt .room::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse 42% 30% at 50% 30%, rgba(255,214,160,.075), rgba(255,214,160,.02) 55%, transparent 75%); }
